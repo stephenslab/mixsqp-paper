@@ -1,0 +1,39 @@
+---
+  title: "mixopt"
+  output:
+    html_document:
+      toc: false
+---
+
+This documentation provides a brief introduction to mixopt. All functions can be imported from loading 'mixopt.R'. First of all, set working directory as a cloned repository on your local machine.
+
+```{r}
+# setwd("~/path/to/this/file");
+# for instance, this file's directory is "~/git/mixopt/code" on my computer.
+getwd();
+source("mixopt.R");
+```
+  
+The following code will install 'rjulia' package if you don't have it. You must have julia 0.5.2 for compatibility (Please see [rjulia repository][rjulia] for details). You may install julia package for the first time by setting julia_package_install = TRUE.
+
+```{r}
+mixopt_init(julia_package_install = FALSE);
+```
+
+Once installed and initialized, check if the following code works. Precompiling...
+
+```{r}
+out = mixopt_ex(100,2);
+```
+
+Let's try again...
+
+```{r}
+out = mixopt_ex(100000,1.1);
+```
+
+```{r}
+plot(out$pihat,type='l',xlim = c(0,length(out$pihat)));
+```
+
+[rjulia]: https://github.com/armgong/rjulia
