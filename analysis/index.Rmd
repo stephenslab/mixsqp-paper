@@ -7,8 +7,8 @@ output:
 
 ..
 
-*  Tutorial of the package [tutorial]
-*  Convergence analysis of sequential quadratic programming (SQP) [convergence analysis]
+*  [Tutorial of the package][tutorial]
+*  [Convergence analysis of sequential quadratic programming (SQP)][convergence analysis]
 *  
 
 [tutorial]: https://stephenslab.github.io/mixopt/mixopt.html
