@@ -5,11 +5,11 @@ output:
     toc: false
 ---
 
-The goal of this new template is to simplify the setup and maintenance of a research website.
-Specifically,
+..
 
-*  Easier to build and extend the website using the new tools in the [rmarkdown][] package and [latest RStudio release][rstudio]
-*  Easier to deploy the website with Git and GitHub by only using one branch
+*  Tutorial the package [tutorial]
+*  Convergence analysis of sequential quadratic programming (SQP) [convergence analysis]
+*  
 
-[rmarkdown]: http://rmarkdown.rstudio.com/rmarkdown_websites.htm
-[rstudio]: https://www.rstudio.com/products/rstudio/download/preview/
+[intro]: https://stephenslab.github.io/mixopt/mixopt.html
+[convergence analysis]: https://stephenslab.github.io/mixopt/conv_analysis.html
