@@ -252,15 +252,13 @@ plot(objectives, type = &#39;l&#39;, xlab = &quot;iteration&quot;, ylab = &quot;
 title(&quot;log-likelihood over iteration&quot;);</code></pre>
 <p><img src="conv_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code>slacks = rjulia::j2r(&quot;temp[3]&quot;);
-plot(slacks, type = &#39;l&#39;, xlab = &quot;iteration&quot;, ylab = &quot;log-likelihood&quot;);</code></pre>
+plot(slacks, type = &#39;l&#39;, xlab = &quot;iteration&quot;, ylab = &quot;complimentary slackness&quot;);</code></pre>
 <p><img src="conv_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code>rjulia::j2r(&quot;temp[3]&quot;)</code></pre>
-<pre><code>##  [1] -2.943654e-01 -1.988691e-01 -1.267632e-01 -6.217165e-02 -1.756404e-02
-##  [6] -1.612758e-03 -3.567722e-05 -3.774834e-06 -8.505634e-07 -7.355723e-07
-## [11] -7.348545e-07 -7.346191e-07 -7.345425e-07 -7.346838e-07 -7.347630e-07
-## [16] -7.346415e-07 -7.344389e-07 -7.346531e-07 -7.345000e-07 -7.343590e-07
-## [21] -7.345419e-07 -7.346072e-07 -7.346596e-07 -7.347117e-07 -7.346427e-07
-## [26] -7.345400e-07 -7.345337e-07 -7.346304e-07 -7.346211e-07</code></pre>
+<pre><code>##  [1] -2.943663e-01 -1.992199e-01 -1.267611e-01 -6.195210e-02 -1.781178e-02
+##  [6] -1.573413e-03 -4.329648e-05 -2.879571e-05 -2.785340e-05 -1.985577e-05
+## [11] -1.317686e-07 -3.143982e-08 -5.238237e-08 -8.366029e-09  1.869125e-08
+## [16]  1.946660e-08</code></pre>
 
 <hr>
 <p>
