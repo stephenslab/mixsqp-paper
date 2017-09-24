@@ -68,6 +68,6 @@ title("log-likelihood over iteration");
 
 ```{r}
 slacks = rjulia::j2r("temp[3]");
-plot(slacks, type = 'l', xlab = "iteration", ylab = "log-likelihood");
+plot(slacks, type = 'l', xlab = "iteration", ylab = "complimentary slackness");
 rjulia::j2r("temp[3]")
 ```
