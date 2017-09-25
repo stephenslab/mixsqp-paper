@@ -123,8 +123,8 @@ t(t)
 
 ```{r}
 m1 = min(log2(t[3,]))-1
-m2 = max(log2(t[2,1:9]))+1
-plot(log2(t[2,]),type='l',ylim = c(m1,m2))
-lines(log2(t[1,]),col=2)
-lines(log2(t[3,]),col=3)
+m2 = max(log2(t[2,]))+1
+plot(log2(n_range),log2(t[2,]),type='l',ylim = c(m1,m2),xlab = "log2(n)",ylab = "log2(time)")
+lines(log2(n_range),log2(t[1,]),col=2)
+lines(log2(n_range),log2(t[3,]),col=3)
 ```
