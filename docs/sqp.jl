@@ -15,7 +15,7 @@ function sqp(L,eps,tol,sptol)
     g = -P * F[:R]' * (F[:Q]'*D)/n;
     H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q]) * F[:R] * P'/n + tol * eye(k);
     # initialize
-    ind = find(x.>1e-2);
+    ind = find(x.>sptol);
     y = sparse(zeros(k)); y[ind] = 1/length(ind);
 
     # Active set method start
@@ -70,5 +70,5 @@ function sqp(L,eps,tol,sptol)
     end
   end
   x[x .< sptol] = 0
-  return full(x), sum(log(D)), i, i == iter
+  return full(x), sum(log(D + eps)), i, i == iter
 end
