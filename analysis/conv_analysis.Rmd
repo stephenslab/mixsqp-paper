@@ -1,0 +1,73 @@
+---
+  title: "mixopt"
+  output:
+    html_document:
+      toc: false
+---
+
+In this documentation, we will analyze convergence of SQP algorithm.
+
+```{r}
+getwd();
+rjulia::julia_init();
+rjulia::r2j(getwd(),"working_directory");
+rjulia::julia_void_eval('cd(working_directory[1])');
+```
+
+```{r}
+get_sample = function(n,seed=2017){
+  set.seed(seed)
+  n1 = floor(n/2)
+  z = c(rnorm(n1),4*rt(n-n1,df=6))
+  z = z[order(abs(z))]
+  return(z)
+}
+
+get_matrix_lik = function(z,m = 1.1){
+  data = ashr::set_data(z,1)
+  grid = ashr:::autoselect.mixsd(data, mult=m, mode=0, mixcompdist="normal", grange=c(-Inf,Inf))
+  grid = c(0,grid)
+  k = length(grid)
+  g  = ashr::normalmix(rep(1/k,k),rep(0,k),grid)
+  llik <- t(ashr:::log_comp_dens_conv.normalmix(g,data))
+  L = llik - apply(llik, 1, max)
+  L = exp(L)
+  return(L)
+}
+```
+
+We sample from the distribution $z\sim 0.5 N(0,1) + 0.5 t_{6,4}$.
+
+```{r}
+z = get_sample(100000);
+matrix_lik = get_matrix_lik(z, m = 1.1);
+rjulia::r2j(matrix_lik,"matrix_lik");
+```
+
+We pass the likelihood matrix to Julia and then run the code.
+
+```{r}
+rjulia::julia_void_eval('include("conv_analysis.jl")');
+#' rjulia::julia_void_eval('temp = sqp_conv_analysis(matrix_lik, eps, tol, sptol, maxiter, option)');
+#' @param matrix_lik : n by k likelihood matrix ::Array{Float64,2}
+#' @param eps : small constant (1e-8 default) that being used for avoiding numerical issue
+#' @param tol : tolerance for optimality, i.e. convergence check
+#' @param sptol : tolerance for enforcing sparsity
+#' @param maxiter : maximum iteration number of the outer loop, i.e. maximum number of subproblem solved
+#' @param option : TRUE if don't terminate until maxiter
+rjulia::julia_void_eval('temp = sqp_conv_analysis(matrix_lik, 1e-8, 1e-8, 1e-3, 30, false)');
+```
+
+The following is log-likelihood (or objective value, equivalently) plot over iterations. Here log-likelihood is up to constant.
+
+```{r}
+objectives = rjulia::j2r("temp[2]");
+plot(objectives, type = 'l', xlab = "iteration", ylab = "log-likelihood");
+title("log-likelihood over iteration");
+```
+
+```{r}
+slacks = rjulia::j2r("temp[3]");
+plot(slacks, type = 'l', xlab = "iteration", ylab = "complimentary slackness");
+rjulia::j2r("temp[3]")
+```

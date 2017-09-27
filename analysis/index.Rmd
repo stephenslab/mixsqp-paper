@@ -1,0 +1,16 @@
+---
+title: "Home"
+output:
+  html_document:
+    toc: false
+---
+
+..
+
+*  [Tutorial of the package][tutorial]
+*  [Convergence analysis of sequential quadratic programming (SQP)][convergence analysis]
+*  [Computation time comparison. SQP vs IP][comptime]
+
+[tutorial]: https://stephenslab.github.io/mixopt/mixopt.html
+[convergence analysis]: https://stephenslab.github.io/mixopt/conv_analysis.html
+[comptime]: https://stephenslab.github.io/mixopt/comp_time.html
