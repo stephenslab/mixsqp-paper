@@ -18,6 +18,6 @@ Description: This package implements several algorithms for solving
     procedure for estimating nonparametric mixtures.
 Depends: R (>= 3.4.0)
 Imports: rjulia
-License: GPL (>= 3)
+License: MIT | file LICENCE
 NeedsCompilation: no
 
