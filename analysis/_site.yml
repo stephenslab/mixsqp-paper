@@ -5,20 +5,21 @@ exclude: ["include"]
 navbar:
   title: mixopt
   left:
-    - text: "Home"
+    - text: "Overview"
       href: index.html
-    - text: "About"
-      href: about.html
+    - text: "Setup"
+      href: setup.html
     - text: "License"
       href: license.html
   right:
-    - icon: fa-github
-      href: https://github.com/jdblischak/workflowr
+    - text: source
+      href: https://github.com/stephenslab/mixopt
 output:
   html_document:
     toc: true
     toc_float: true
-    theme: cosmo
+    theme: readable
     highlight: textmate
     include:
+      before_body: include/header.html
       after_body: include/footer.html
