@@ -1,7 +1,7 @@
 ## introduction to be written 
 
 #'
-mixopt_init = function(julia_package_install = FALSE){
+mixopt_init <- function(julia_package_install = FALSE){
   if (!require("rjulia",character.only = TRUE)){
     install.packages("rjulia",dep=TRUE)
     if(!require(rjulia,character.only = TRUE)) stop("Package not found")
@@ -32,7 +32,7 @@ get_sample = function(n,seed=2017){
   return(z)
 }
 
-get_matrix_lik = function(z,m = 1.1){
+get_matrix_lik <- function(z,m = 1.1){
   data = ashr::set_data(z,1)
   grid = ashr:::autoselect.mixsd(data, mult=m, mode=0, mixcompdist="normal", grange=c(-Inf,Inf))
   grid = c(0,grid)
@@ -44,7 +44,7 @@ get_matrix_lik = function(z,m = 1.1){
   return(L)
 }
 
-mixopt = function(matrix_lik, eps = 1e-8, tol = 1e-8, sptol = 1e-3){
+mixopt <- function (matrix_lik, eps = 1e-8, tol = 1e-8, sptol = 1e-3){
   
   # pass arguments from R to Julia
   rjulia::r2j(matrix_lik,"matrix_lik");
