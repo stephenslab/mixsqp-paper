@@ -1,6 +1,6 @@
 using LowRankApprox
 
-function sqp(L,eps,tol,sptol)
+function sqp(L,eps=1e-8,tol=1e-8,sptol=1e-3)
   n = size(L,1); k = size(L,2);
   F = pqrfact(L, rtol=tol);
   P = sparse(F[:P]);
@@ -13,7 +13,7 @@ function sqp(L,eps,tol,sptol)
     # gradient and Hessian computation -- Rank reduction method
     D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
     g = -P * F[:R]' * (F[:Q]'*D)/n;
-    H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q]) * F[:R] * P'/n + tol * eye(k);
+    H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q]) * F[:R] * P'/n + eps * eye(k);
     # initialize
     ind = find(x.>sptol);
     y = sparse(zeros(k)); y[ind] = 1/length(ind);
