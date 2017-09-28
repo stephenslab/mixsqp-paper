@@ -5,10 +5,11 @@ output:
     toc: false
 ---
 
-..
++ [Tutorial of the package][tutorial]
 
-*  [Tutorial of the package][tutorial]
-*  [Convergence analysis of sequential quadratic programming (SQP)][convergence analysis]
++ [Convergence analysis of sequential quadratic programming
+(SQP)][conv_analysis.Rmd]
+
 *  [Computation time comparison. SQP vs IP][comptime]
 
 [tutorial]: https://stephenslab.github.io/mixopt/mixopt.html
