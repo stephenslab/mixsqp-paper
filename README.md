@@ -22,7 +22,7 @@ under the terms of the
    
 ## How to build the webpages
 
-*Add instructions here.*
+*Add instructions here.* 
 
 ## Credits
 
