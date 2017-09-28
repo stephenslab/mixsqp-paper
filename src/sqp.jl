@@ -1,9 +1,15 @@
 using LowRankApprox
 
-function sqp(L,eps,tol,sptol)
-  n = size(L,1); k = size(L,2);
-  F = pqrfact(L, rtol=tol);
+# TO DO: Briefly explain here what this function does, and how to use it.
+function sqp(L, x, eps, tol, sptol, verbose)
+
+  # Get the number of rows (n) and columns (k) of the likelihood matrix.
+  n = size(L,1);
+  k = size(L,2);
+    
+  F = pqrfact(L,rtol = tol);
   P = sparse(F[:P]);
+    
   iter = 100;
   # initialize
   x = zeros(k); x[1] = 1/2; x[k] = 1/2; D = 0; i = 0;
@@ -14,8 +20,8 @@ function sqp(L,eps,tol,sptol)
     D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
     g = -P * F[:R]' * (F[:Q]'*D)/n;
     H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q]) * F[:R] * P'/n + tol * eye(k);
-    # initialize
-    ind = find(x.>sptol);
+    # Initialize.
+    ind = find(x .> sptol);
     y = sparse(zeros(k)); y[ind] = 1/length(ind);
 
     # Active set method start
@@ -65,10 +71,10 @@ function sqp(L,eps,tol,sptol)
     x = y;
 
     # convergence check
-    if minimum(g+1) >= 0
+    if minimum(g + 1) >= 0
       break;
     end
   end
   x[x .< sptol] = 0
-  return full(x), sum(log(D + eps)), i, i == iter
+  return full(x), sum(log.(D + eps)), i, i == iter
 end

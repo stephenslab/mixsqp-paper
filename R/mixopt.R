@@ -44,17 +44,17 @@ get_matrix_lik <- function(z,m = 1.1){
   return(L)
 }
 
-mixopt <- function (matrix_lik, eps = 1e-8, tol = 1e-8, sptol = 1e-3){
+mixopt <- function (L, eps = 1e-8, tol = 1e-8, sptol = 1e-3) {
   
-  # pass arguments from R to Julia
-  rjulia::r2j(matrix_lik,"matrix_lik");
-  rjulia::r2j(eps,"eps"); rjulia::r2j(tol,"tol"); rjulia::r2j(sptol,"sptol");
+  # pass arguments from R to Julia.
+  rjulia::r2j(L,"L")
+  rjulia::r2j(eps,"eps"); rjulia::r2j(tol,"tol"); rjulia::r2j(sptol,"sptol")
   
   # load Julia code
-  rjulia::julia_void_eval('include("sqp.jl")');
+  rjulia::julia_void_eval('include("../src/sqp.jl")')
   
   # run convex programming
-  rjulia::julia_void_eval('temp = sqp(matrix_lik,eps[1],tol[1],sptol[1])');
+  rjulia::julia_void_eval('temp = sqp(L,eps[1],tol[1],sptol[1])');
   
   # get return value
   pihat <- rjulia::j2r('temp[1]'); # solution

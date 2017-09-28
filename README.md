@@ -2,7 +2,7 @@
 
 Algorithms for solving the "mixture distribution" optimization
 problem. See [here](https://stephenslab.github.io/mixopt) for an
-overview of the problem, including results of our experiments.
+overview of the problem and results of our experiments.
 
 ## License
 
@@ -12,8 +12,14 @@ under the terms of the
 
 ## Setup
 
-*Add instructions here.*
++ Install [Julia](http://julialang.org).
 
++ Install the LowRankApprox package in Julia:
+
+   ```julia
+   Pkg.add("LowRankApprox")
+   ```
+   
 ## How to build the webpages
 
 *Add instructions here.*
