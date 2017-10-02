@@ -2,6 +2,7 @@ using LowRankApprox
 
 # TO DO: Briefly explain here what this function does, and how to use it.
 # TO DO: Maybe find a better name for input argumnet "convtol"?
+# TO DO: Add per-iteration timing info.
 function sqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
              sptol = 1e-3, maxiter = 100, maxqpiter = 100,
              verbose = true)
@@ -13,54 +14,80 @@ function sqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
 
   # Compute partial QR decomposition with relative precision "tol",
   # then retrieve the permutation matrix, P. For details on the
-  # partial QR decomposition, see
-  # https://github.com/klho/LowRankApprox.jl.
+  # partial QR, see https://github.com/klho/LowRankApprox.jl.
   F = pqrfact(L,rtol = pqrtol);
   P = sparse(F[:P]);
 
-  # TO DO: Add summary of analysis here:
+  # TO DO: Add summary of the analysis here.
   if verbose
     p   = F[:p];
     err = maximum(abs.(F[:Q]*F[:R] - L[:,p]));
     @printf("Running SQP algorithm with the following settings:\n")
     @printf("- %d x %d data matrix\n",n,k)
     @printf("- convergence tolerance = %0.2e\n",convtol)
-    @printf("- zero threshold        = %0.2e\n",sptol)  
+    @printf("- zero threshold        = %0.2e\n",sptol)
     @printf("- partial QR tolerance  = %0.2e\n",pqrtol)
     @printf("- partial QR max. error = %0.2e\n",err)
   end
 
+  # Initialize storage for the outputs obj, ming1, nnz and nqp.
+  obj   = zeros(maxiter);
+  ming1 = zeros(maxiter);
+  nnz   = zeros(maxiter);
+  nqp   = zeros(maxiter);
+    
   # Initialize loop variables used in the loops below so that they
   # are available outside the scope of the loop.
   i = 0;
+  j = 0;
   D = 0;
 
-  # Report the initial algorithm state.
+  # Print the column labels for reporting the algorithm's progress.
   if verbose
-    f = -sum(log.(L * x + eps));
-    @printf("iter     objective\n")
-    @printf("   0 %0.6e\n",f)
+    @printf("iter       objective -min(g+1) #nnz #qp\n")
   end
     
   # QP subproblem start.
   for i = 1:maxiter
         
     # Compute the gradient and Hessian, using the partial QR
-    # decomposition to increase the speed of these computations..
+    # decomposition to increase the speed of these computations.
+    #
+    # TO DO: Maybe simplify this code by first setting Q = F[:Q] and 
+    # R = F[:R]?
+    #
     D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
     g = -P * F[:R]' * (F[:Q]'*D)/n;
     H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q]) * F[:R] * P'/n +
         pqrtol * eye(k);
 
-    # Initialize solution to QP subproblem.
+    # Report on the algorithm's progress.
+    if verbose
+      obj[i]   = -sum(log.(L * x + eps));
+      ming1[i] = minimum(g + 1);
+      nnz[i]   = sum(x .> sptol);
+      nqp[i]   = j;
+      @printf("%4d %0.8e %+0.2e %4d %3d\n",i,obj[i],-ming1[i],nnz[i],j);
+    end
+      
+    # Check convergence.
+    #  
+    # TO DO: Don't we want some sort of convergence tolerance
+    # parameter here? e.g., min(g+1) >= d, where d is a positive
+    # number near zero.
+    if minimum(g + 1) >= 0
+      break
+    end
+      
+    # Initialize the solution to the QP subproblem (y).
     ind    = find(x .> sptol);
     y      = sparse(zeros(k));
     y[ind] = 1/length(ind);
 
-    # Run active set method to solve QP subproblem.
+    # Run active set method to solve the QP subproblem.
     for j = 1:maxqpiter
           
-      # Define the smaller problem.
+      # Define the smaller QP subproblem.
       s   = length(ind);
       H_s = H[ind,ind];
       d   = H*y + 2*g + 1;
@@ -72,8 +99,9 @@ function sqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
       p[ind] = p_s;
 
       # Check convergence.
+      #  
       # TO DO: Why is convergence based on the norm of the search
-      # direction? Relate to KKT conditions.
+      # direction? Please relate to KKT conditions.
       if norm(p_s) < convtol
             
         # Compute the Lagrange multiplier.
@@ -94,29 +122,34 @@ function sqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
         ind_block = find(p_s .< 0);
         alpha0    = alpha0[ind_block];
         if ~isempty(ind_block)
-          t = findmin(alpha0);
-          if t[1] < 1
+          v, t = findmin(alpha0);
+          if v < 1
 
             # Blocking constraint.
-            ind_block = ind[ind_block[t[2]]]; 
-            alpha     = t[1];
+            ind_block = ind[ind_block[t]]; 
+            alpha     = v;
               
             # Update working set if there is a blocking constraint.
             deleteat!(ind,find(ind - ind_block .== 0));
           end
         end
           
-        # Move to the new iterate (y) along the search direction.
+        # Move to the new "inner loop" iterate (y) along the search
+        # direction.
         y = y + alpha * p;
       end
     end
-    x = y;
 
-    # Check convergence.
-    if minimum(g + 1) >= 0
-      break
-    end
+    # Update the solution to the original optimization problem.
+    x = y;
   end
+
+  # Return: (1) the solution (after zeroing out any values below the
+  # tolerance); (2) the value of the objective at each iteration; (3)
+  # the gradient of the modified objective ("ming1") at each
+  # iteration; (4) the number of nonzero entries in the vector at each
+  # iteration; and (5) the number of inner iterations taken to solve
+  # the QP subproblem at each outer iteration.
   x[x .< sptol] = 0
-  return full(x), sum(log.(D + eps)), i, i == maxiter
+  return full(x), obj[1:i], ming1[1:i], nnz[1:i], nqp[1:i]
 end
