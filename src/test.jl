@@ -9,7 +9,7 @@ k = size(L,2)
 x = ones(k)/k;
 
 # Run the SQP algorithm.
-out = sqp(L,x,verbose = true)
+out = mixsqp(L,x,verbose = true)
 
 # Show the progress toward the minimum.
 n = length(out[2])

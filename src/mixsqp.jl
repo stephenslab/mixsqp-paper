@@ -3,9 +3,9 @@ using LowRankApprox
 # TO DO: Briefly explain here what this function does, and how to use it.
 # TO DO: Maybe find a better name for input argumnet "convtol"?
 # TO DO: Add per-iteration timing info.
-function sqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
-             sptol = 1e-3, maxiter = 100, maxqpiter = 100,
-             verbose = true)
+function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
+                sptol = 1e-3, maxiter = 100, maxqpiter = 100,
+                verbose = true)
 
   # Get the number of rows (n) and columns (k) of the conditional
   # likelihood matrix.
