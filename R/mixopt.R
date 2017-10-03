@@ -21,14 +21,18 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   r2j(eps,"eps")
   r2j(sptol,"sptol")
   
-  # Load the Julia code.
-  julia_void_eval("include(\"../inst/code/mixsqp.jl\")")
+  # Load the Julia code. Note that this code may not work on all
+  # systems (e.g., Windows); need to test this. John Blischak can
+  # probably give guidance on this.
+  mixsqp.file <- paste(system.file(package = "mixopt"),
+                       "code/julia/mixsqp.jl",sep = "/")
+  julia_void_eval(sprintf("include(\"%s\")",mixsqp.file))
   
   # Run the SQP algorithm.
-  rjulia::julia_void_eval('out = mixsqp(L,x)');
+  julia_void_eval("out = mixsqp(L,x)");
   
   # Construct the return value.
-  return(rjulia::j2r("out[1]"))
+  return(j2r("out[\"x\"]"))
   # B <- rjulia::j2r('temp[2]'); # loglik at the solution
   # niter <- rjulia::j2r('temp[3]'); # number of 
   # converged <- rjulia::j2r('~temp[4]');

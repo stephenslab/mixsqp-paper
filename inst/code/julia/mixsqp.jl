@@ -167,7 +167,7 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   if verbose
     @printf("Optimization took %d iterations and %0.4f seconds.\n",i,totaltime)
   end
-  return Dict([("x",x), ("totaltime",totaltime), ("obj",obj[1:i]),
+  return Dict([("x",full(x)), ("totaltime",totaltime), ("obj",obj[1:i]),
                ("ming",ming[1:i]), ("nnz",nnz[1:i]), ("nqp",nqp[1:i]),
                ("timing",timing[1:i])])
 end
