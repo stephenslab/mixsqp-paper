@@ -1,4 +1,6 @@
 to do
 =====
 
+* Write basic roxygen2 documentation for mixopt().
+
 * Implement a test for mixsqp().

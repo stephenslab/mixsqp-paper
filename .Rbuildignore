@@ -1,2 +1,4 @@
 ^analysis$
-^TODO\.txt$
+^docs$
+TODO\.txt$
+^mixopt\.Rproj$

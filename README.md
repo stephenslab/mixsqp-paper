@@ -10,34 +10,44 @@ All source code and software in this repository are made available
 under the terms of the
 [MIT license](https://opensource.org/licenses/mit-license.html).
 
-## Setup
+## Quick Start
 
-+ Install [Julia](http://julialang.org).
+1. Install [Julia](http://julialang.org).
 
-+ Install the LowRankApprox package in Julia:
+2. Install the LowRankApprox package in Julia:
 
    ```julia
    Pkg.add("LowRankApprox")
    ```
 
-+ in R, install the mixopt package from this repository:
+3. in R, install and load the mixopt package from this repository:
 
-  ```R
-  library(devtools)
-  install_github("stephenslab/mixopt")
-  ```
+   ```R
+   library(devtools)
+   install_github("stephenslab/mixopt")
+   library(mixopt)
+   ```
+
+4. Add step here.
 
 ## How to build the webpages
 
 *Add instructions here.*
 
-## How to update the package documentation.
+## How to update the package documentation
 
 Within a local copy of this repository, run the following R commands:
 
 ```R
 library(devtools)
 document()
+```
+
+## How to check the package for errors and warnings
+
+```bash
+R CMD build mixopt --resave-data
+R CMD check --as-cran mixopt_0.1-0.tar.gz
 ```
 
 ## Credits

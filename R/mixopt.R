@@ -1,5 +1,12 @@
 # TO DO: Fill out roxygen2 documentation.
 #
+#' @title SQP algorithm with partial QR for optimizing mixtures.
+#' 
+#' @description Sequential quadratic programming (SQP) method with
+#'     partial QR-based approximate computation of gradients and Hessians
+#'     for efficiently solving the Mixture Distribution Optimization
+#'     Problem.
+#' 
 #' @export
 #' @importFrom rjulia r2j
 #' @importFrom rjulia j2r
@@ -12,11 +19,10 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   r2j(L,"L")
   r2j(x,"x")
   r2j(eps,"eps")
-  r2j(tol,"tol")
   r2j(sptol,"sptol")
   
   # Load the Julia code.
-  julia_void_eval("include(\"../src/mixsqp.jl\")")
+  julia_void_eval("include(\"../inst/code/mixsqp.jl\")")
   
   # Run the SQP algorithm.
   rjulia::julia_void_eval('out = mixsqp(L,x)');
@@ -30,6 +36,8 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   #             niter = niter, converged=converged))
 }
 
+#' @importFrom stats rnorm
+#' @importFrom stats rt
 get_sample = function(n,seed=2017) {
   set.seed(seed)
   n1 = floor(n/2)
