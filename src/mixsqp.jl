@@ -1,6 +1,7 @@
 using LowRankApprox
 
 # TO DO: Briefly explain here what this function does, and how to use it.
+# TO DO: Describe the function inputs and outputs.
 # TO DO: Maybe find a better name for input argumnet "convtol"?
 # TO DO: Add per-iteration timing info.
 function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
@@ -30,11 +31,11 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
     @printf("- partial QR max. error = %0.2e\n",err)
   end
 
-  # Initialize storage for the outputs obj, ming1, nnz and nqp.
-  obj   = zeros(maxiter);
-  ming1 = zeros(maxiter);
-  nnz   = zeros(maxiter);
-  nqp   = zeros(maxiter);
+  # Initialize storage for the outputs obj, ming, nnz and nqp.
+  obj  = zeros(maxiter);
+  ming = zeros(maxiter);
+  nnz  = zeros(maxiter);
+  nqp  = zeros(maxiter);
     
   # Initialize loop variables used in the loops below so that they
   # are available outside the scope of the loop.
@@ -63,11 +64,11 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
 
     # Report on the algorithm's progress.
     if verbose
-      obj[i]   = -sum(log.(L * x + eps));
-      ming1[i] = minimum(g + 1);
-      nnz[i]   = sum(x .> sptol);
-      nqp[i]   = j;
-      @printf("%4d %0.8e %+0.2e %4d %3d\n",i,obj[i],-ming1[i],nnz[i],j);
+      obj[i]  = -sum(log.(L * x + eps));
+      ming[i] = minimum(g + 1);
+      nnz[i]  = sum(x .> sptol);
+      nqp[i]  = j;
+      @printf("%4d %0.8e %+0.2e %4d %3d\n",i,obj[i],-ming[i],nnz[i],j);
     end
       
     # Check convergence.
@@ -146,10 +147,11 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
 
   # Return: (1) the solution (after zeroing out any values below the
   # tolerance); (2) the value of the objective at each iteration; (3)
-  # the gradient of the modified objective ("ming1") at each
+  # the minimum gradient value of the modified objective at each
   # iteration; (4) the number of nonzero entries in the vector at each
   # iteration; and (5) the number of inner iterations taken to solve
   # the QP subproblem at each outer iteration.
   x[x .< sptol] = 0
-  return full(x), obj[1:i], ming1[1:i], nnz[1:i], nqp[1:i]
+  return Dict([("x",x), ("obj",obj[1:i]), ("ming",ming[1:i]),
+               ("nnz",nnz[1:i]), ("nqp",nqp[1:i])])
 end

@@ -1,5 +1,5 @@
 using Plots
-include("sqp.jl")
+include("mixsqp.jl")
 
 # Load the conditional likelihood matrix.
 L = readdlm("normlik.5000x20.txt",' ');
@@ -9,7 +9,7 @@ k = size(L,2)
 x = ones(k)/k;
 
 # Run the SQP algorithm.
-out = mixsqp(L,x,verbose = true)
+out = mixsqp(L,x);
 
 # Show the progress toward the minimum.
 n = length(out[2])
