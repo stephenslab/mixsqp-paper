@@ -1,0 +1,8 @@
+to do
+=====
+
+* Add per-iteration timing information to mixsqp().
+
+* Add a "mixdpip" function.
+
+* Implement a test for mixsqp().
