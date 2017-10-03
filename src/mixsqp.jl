@@ -6,8 +6,11 @@ using LowRankApprox
 # TO DO: Add per-iteration timing info.
 function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
                 sptol = 1e-3, maxiter = 100, maxqpiter = 100,
-                verbose = true)
+                seed = 1, verbose = true)
 
+  # Start timing the function.
+  tic();
+    
   # Get the number of rows (n) and columns (k) of the conditional
   # likelihood matrix.
   n = size(L,1);
@@ -16,10 +19,11 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   # Compute partial QR decomposition with relative precision "tol",
   # then retrieve the permutation matrix, P. For details on the
   # partial QR, see https://github.com/klho/LowRankApprox.jl.
+  srand(1);
   F = pqrfact(L,rtol = pqrtol);
   P = sparse(F[:P]);
 
-  # TO DO: Add summary of the analysis here.
+  # Summarize the analysis here.
   if verbose
     p   = F[:p];
     err = maximum(abs.(F[:Q]*F[:R] - L[:,p]));
@@ -32,10 +36,11 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   end
 
   # Initialize storage for the outputs obj, ming, nnz and nqp.
-  obj  = zeros(maxiter);
-  ming = zeros(maxiter);
-  nnz  = zeros(maxiter);
-  nqp  = zeros(maxiter);
+  obj    = zeros(maxiter);
+  ming   = zeros(maxiter);
+  nnz    = zeros(maxiter);
+  nqp    = zeros(maxiter);
+  timing = zeros(maxiter);
     
   # Initialize loop variables used in the loops below so that they
   # are available outside the scope of the loop.
@@ -47,10 +52,13 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   if verbose
     @printf("iter       objective -min(g+1) #nnz #qp\n")
   end
-    
+
   # QP subproblem start.
   for i = 1:maxiter
-        
+
+    # Start timing the iteration.
+    tic();
+      
     # Compute the gradient and Hessian, using the partial QR
     # decomposition to increase the speed of these computations.
     #
@@ -143,6 +151,9 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
 
     # Update the solution to the original optimization problem.
     x = y;
+
+    # Get the elapsed time for the ith iteration.
+    timing[i] = toq();
   end
 
   # Return: (1) the solution (after zeroing out any values below the
@@ -152,6 +163,11 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   # iteration; and (5) the number of inner iterations taken to solve
   # the QP subproblem at each outer iteration.
   x[x .< sptol] = 0
-  return Dict([("x",x), ("obj",obj[1:i]), ("ming",ming[1:i]),
-               ("nnz",nnz[1:i]), ("nqp",nqp[1:i])])
+  totaltime = toq();  
+  if verbose
+    @printf("Optimization took %d iterations and %0.4f seconds.\n",i,totaltime)
+  end
+  return Dict([("x",x), ("totaltime",totaltime), ("obj",obj[1:i]),
+               ("ming",ming[1:i]), ("nnz",nnz[1:i]), ("nqp",nqp[1:i]),
+               ("timing",timing[1:i])])
 end
