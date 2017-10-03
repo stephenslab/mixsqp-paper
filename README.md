@@ -12,7 +12,7 @@ under the terms of the
 
 ## Quick Start
 
-1. Install [Julia](http://julialang.org).
+1. Install [Julia](http://julialang.org) version 0.6. 
 
 2. Install the LowRankApprox package in Julia:
 
@@ -20,14 +20,20 @@ under the terms of the
    Pkg.add("LowRankApprox")
    ```
 
-3. in R, install and load the mixopt package from this repository:
+3. In R, install and load the mixopt package from a local copy of the
+   repository downloaded (or "cloned") onto your computer.
 
    ```R
    library(devtools)
-   install_github("stephenslab/mixopt")
+   install_local("mixopt")
    library(mixopt)
    ```
 
+   This command should automatically retrieve and install the
+   appropriate version of the `rjulia` package from Github. (Note that
+   cannot use the `install_github` command here while the repository
+   is private.)
+   
 4. Add step here.
 
 ## How to build the webpages
