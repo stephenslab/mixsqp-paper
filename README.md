@@ -19,10 +19,26 @@ under the terms of the
    ```julia
    Pkg.add("LowRankApprox")
    ```
-   
+
++ in R, install the mixopt package from this repository:
+
+  ```R
+  library(devtools)
+  install_github("stephenslab/mixopt")
+  ```
+
 ## How to build the webpages
 
 *Add instructions here.*
+
+## How to update the package documentation.
+
+Within a local copy of this repository, run the following R commands:
+
+```R
+library(devtools)
+document()
+```
 
 ## Credits
 
