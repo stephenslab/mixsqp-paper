@@ -1,6 +1,7 @@
 using LowRankApprox
 
-# TO DO: Briefly explain here what this function does, and how to use it.
+# TO DO: Briefly explain here in a few sentences what this function
+# does, and how to use it.
 # TO DO: Describe the function inputs and outputs.
 # TO DO: Maybe find a better name for input argumnet "convtol"?
 # TO DO: Add per-iteration timing info.
@@ -16,23 +17,30 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   n = size(L,1);
   k = size(L,2);
 
-  # Compute partial QR decomposition with relative precision "tol",
-  # then retrieve the permutation matrix, P. For details on the
-  # partial QR, see https://github.com/klho/LowRankApprox.jl.
-  srand(1);
-  F = pqrfact(L,rtol = pqrtol);
-  P = sparse(F[:P]);
-
+  # If requested (i.e., if pqrtol > 0), compute the partial QR
+  # decomposition with relative precision "tol", then retrieve the
+  # permutation matrix, P. For details on the partial QR, see
+  # https://github.com/klho/LowRankApprox.jl.
+  if pqrtol > 0
+    srand(1);
+    F = pqrfact(L,rtol = pqrtol);
+    P = sparse(F[:P]);
+  end
+    
   # Summarize the analysis here.
   if verbose
-    p   = F[:p];
-    err = maximum(abs.(F[:Q]*F[:R] - L[:,p]));
     @printf("Running SQP algorithm with the following settings:\n")
     @printf("- %d x %d data matrix\n",n,k)
     @printf("- convergence tolerance = %0.2e\n",convtol)
     @printf("- zero threshold        = %0.2e\n",sptol)
-    @printf("- partial QR tolerance  = %0.2e\n",pqrtol)
-    @printf("- partial QR max. error = %0.2e\n",err)
+    if pqrtol > 0
+      p   = F[:p];
+      err = maximum(abs.(F[:Q]*F[:R] - L[:,p]));
+      @printf("- partial QR tolerance  = %0.2e\n",pqrtol)
+      @printf("- partial QR max. error = %0.2e\n",err)
+    else
+      @printf("- Exact derivative computation (partial QR not used).\n")
+    end
   end
 
   # Initialize storage for the outputs obj, ming, nnz and nqp.
@@ -59,16 +67,21 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
     # Start timing the iteration.
     tic();
       
-    # Compute the gradient and Hessian, using the partial QR
-    # decomposition to increase the speed of these computations.
-    #
-    # TO DO: Maybe simplify this code by first setting Q = F[:Q] and 
-    # R = F[:R]?
-    #
-    D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
-    g = -P * F[:R]' * (F[:Q]'*D)/n;
-    H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q]) * F[:R] * P'/n +
-        pqrtol * eye(k);
+    # Compute the gradient and Hessian, optionally using the partial
+    # QR decomposition to increase the speed of these computations.
+    if pqrtol > 0
+          
+      # TO DO: Maybe simplify this code by first setting Q = F[:Q] and 
+      # R = F[:R]?
+      D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
+      g = -P * F[:R]' * (F[:Q]'*D)/n;
+      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q]) * F[:R] * P'/n +
+          pqrtol * eye(k);
+    else
+      Z = Diagonal(1./(L*x + eps)) * L;
+      g = -Z'*ones(n)/n;
+      H = Z'*Z/n + eps*speye(k);        
+    end
 
     # Report on the algorithm's progress.
     if verbose
