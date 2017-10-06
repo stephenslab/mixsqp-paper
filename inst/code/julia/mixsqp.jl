@@ -1,10 +1,9 @@
 using LowRankApprox
 
 # TO DO: Briefly explain here in a few sentences what this function
-# does, and how to use it.
+#        does, and how to use it.
 # TO DO: Describe the function inputs and outputs.
 # TO DO: Maybe find a better name for input argumnet "convtol"?
-# TO DO: Add per-iteration timing info.
 function mixsqp(L, x; convtol = 1e-8, pqrtol = 0, eps = 1e-8,
                 sptol = 1e-3, maxiter = 100, maxqpiter = 100,
                 seed = 1, verbose = true)
@@ -132,7 +131,7 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 0, eps = 1e-8,
           break;
         else
             
-          # TO DO: Explain what ind and ind_min are here.
+          # TO DO: Explain what ind and ind_min are for.
           ind_min = findmin(lambda)[2];
           ind     = sort([ind; ind_min]);
         end

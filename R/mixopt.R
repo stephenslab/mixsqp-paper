@@ -18,8 +18,24 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
   # Pass arguments from R to Julia.
   r2j(L,"L")
   r2j(x,"x")
+  r2j(convtol,"convtol")
+  r2j(pqrtol,"pqrtol")
   r2j(eps,"eps")
   r2j(sptol,"sptol")
+  r2j(maxiter,"maxiter")
+  r2j(maxqpiter,"maxqpiter")
+  r2j(seed,"seed")
+  if (verbose)
+    julia_eval("verbose = true;")
+  else
+    julia_eval("verbose = false;")
+  julia_eval("convtol   = convtol[1]")
+  julia_eval("pqrtol    = pqrtol[1]")
+  julia_eval("eps       = eps[1]")
+  julia_eval("sptol     = sptol[1]")
+  julia_eval("maxiter   = Integer(maxiter[1])")
+  julia_eval("maxqpiter = Integer(maxqpiter[1])")
+  julia_eval("seed      = Integer(seed[1])")
   
   # Load the Julia code. Note that this code may not work on all
   # systems (e.g., Windows)---in the future it would be better to
@@ -30,17 +46,20 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
   julia_void_eval(sprintf("include(\"%s\")",mixsqp.file))
   
   # Run the SQP algorithm.
-  julia_void_eval("out = mixsqp(L,x)");
+  julia_void_eval(paste("out = mixsqp(L,x,convtol = convtol,pqrtol = pqrtol",
+                        "eps = eps,sptol = sptol,maxiter = maxiter",
+                        "maxqpiter = maxqpiter,seed = seed,verbose = verbose)",
+                        sep = ","))
   
   # Construct the return value. It seems that assigning the individual
   # dictionary (i.e., list) entries to variables within Julia helps to
   # prevent errors about memory not being correctly mapped.
-  return(list(x         = julia_eval("x         = out[\"x\"]"),
-              totaltime = julia_eval("totaltime = out[\"totaltime\"]"),
-              obj       = julia_eval("obj       = out[\"obj\"]"),
-              gmin      = julia_eval("gmin      = out[\"gmin\"]"),
-              nnz       = julia_eval("nqp       = out[\"nqp\"]"),
-              timing    = julia_eval("timing    = out[\"timing\"]")))
+  return(list(x         = julia_eval("x         = out[\"x\"];"),
+              totaltime = julia_eval("totaltime = out[\"totaltime\"];"),
+              obj       = julia_eval("obj       = out[\"obj\"];"),
+              gmin      = julia_eval("gmin      = out[\"gmin\"];"),
+              nnz       = julia_eval("nqp       = out[\"nqp\"];"),
+              timing    = julia_eval("timing    = out[\"timing\"];")))
 }
 
 #' @importFrom stats rnorm
