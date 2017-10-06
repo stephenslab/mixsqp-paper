@@ -4,14 +4,14 @@
 #' 
 #' @description Sequential quadratic programming (SQP) method with
 #'     partial QR-based approximate computation of gradients and Hessians
-#'     for efficiently solving the Mixture Distribution Optimization
-#'     Problem.
+#'     for efficiently solving the mixture distribution optimization
+#'     problem.
 #' 
 #' @export
 #' @importFrom rjulia r2j
-#' @importFrom rjulia j2r
+#' @importFrom rjulia julia_eval
 #' @importFrom rjulia julia_void_eval
-mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
+mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
                     sptol = 1e-3, maxiter = 100, maxqpiter = 100,
                     seed = 1, verbose = TRUE) {
     
@@ -22,8 +22,9 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   r2j(sptol,"sptol")
   
   # Load the Julia code. Note that this code may not work on all
-  # systems (e.g., Windows); need to test this. John Blischak can
-  # probably give guidance on this.
+  # systems (e.g., Windows)---in the future it would be better to
+  # create a separate mixopt Julia package so that "include" calls
+  # inside the julia_void_eval code are not needed.
   mixsqp.file <- paste(system.file(package = "mixopt"),
                        "code/julia/mixsqp.jl",sep = "/")
   julia_void_eval(sprintf("include(\"%s\")",mixsqp.file))
@@ -31,13 +32,15 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   # Run the SQP algorithm.
   julia_void_eval("out = mixsqp(L,x)");
   
-  # Construct the return value.
-  return(j2r("out[\"x\"]"))
-  # B <- rjulia::j2r('temp[2]'); # loglik at the solution
-  # niter <- rjulia::j2r('temp[3]'); # number of 
-  # converged <- rjulia::j2r('~temp[4]');
-  # return(list(pihat = pihat, B=B, 
-  #             niter = niter, converged=converged))
+  # Construct the return value. It seems that assigning the individual
+  # dictionary (i.e., list) entries to variables within Julia helps to
+  # prevent errors about memory not being correctly mapped.
+  return(list(x         = julia_eval("x         = out[\"x\"]"),
+              totaltime = julia_eval("totaltime = out[\"totaltime\"]"),
+              obj       = julia_eval("obj       = out[\"obj\"]"),
+              gmin      = julia_eval("gmin      = out[\"gmin\"]"),
+              nnz       = julia_eval("nqp       = out[\"nqp\"]"),
+              timing    = julia_eval("timing    = out[\"timing\"]")))
 }
 
 #' @importFrom stats rnorm

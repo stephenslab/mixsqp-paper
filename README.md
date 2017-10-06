@@ -14,11 +14,17 @@ under the terms of the
 
 1. Install [Julia](http://julialang.org) version 0.6. 
 
-2. Install the LowRankApprox package in Julia:
+2. Install the Plots and LowRankApprox packages in Julia:
 
    ```julia
+   Pkg.add("Plots")
+   Pkg.add("DataFrames")
+   Pkg.add("RCall")
    Pkg.add("LowRankApprox")
    ```
+
+   The Plots package is not needed to run the core mixopt functions,
+   but is useful for running the examples.
 
 3. In R, install and load the mixopt package from a local copy of the
    repository downloaded (or "cloned") onto your computer.
@@ -33,8 +39,17 @@ under the terms of the
    appropriate version of the `rjulia` package from Github. (Note that
    cannot use the `install_github` command here while the repository
    is private.)
-   
-4. Add step here.
+
+4.
+
+   ```
+   library(rjulia)
+   julia_init()
+   ```
+
+4. Run this small example.
+
+5. Check out the package documentation.
 
 ## How to build the webpages
 
@@ -49,7 +64,7 @@ library(devtools)
 document()
 ```
 
-## How to check the package for errors and warnings
+## How to test the package build
 
 ```bash
 R CMD build mixopt --resave-data

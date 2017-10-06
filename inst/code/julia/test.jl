@@ -9,10 +9,10 @@ k = size(L,2)
 x = ones(k)/k;
 
 # Run the SQP algorithm.
-out = mixsqp(L,x,pqrtol = 1e-8);
+out = mixsqp(L,x);
 
-# The the SQP algorithm without using the partial QR decmoposition.
-out2 = mixsqp(L,x,pqrtol = 0);
+# The the SQP algorithm using the partial QR decmoposition.
+out2 = mixsqp(L,x,pqrtol = 1e-8);
 
 # Show the progress toward the minimum.
 n = length(out[2])

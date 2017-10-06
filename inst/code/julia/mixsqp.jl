@@ -5,7 +5,7 @@ using LowRankApprox
 # TO DO: Describe the function inputs and outputs.
 # TO DO: Maybe find a better name for input argumnet "convtol"?
 # TO DO: Add per-iteration timing info.
-function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
+function mixsqp(L, x; convtol = 1e-8, pqrtol = 0, eps = 1e-8,
                 sptol = 1e-3, maxiter = 100, maxqpiter = 100,
                 seed = 1, verbose = true)
 
@@ -43,9 +43,9 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
     end
   end
 
-  # Initialize storage for the outputs obj, ming, nnz and nqp.
+  # Initialize storage for the outputs obj, gmin, nnz and nqp.
   obj    = zeros(maxiter);
-  ming   = zeros(maxiter);
+  gmin   = zeros(maxiter);
   nnz    = zeros(maxiter);
   nqp    = zeros(maxiter);
   timing = zeros(maxiter);
@@ -86,10 +86,10 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
     # Report on the algorithm's progress.
     if verbose
       obj[i]  = -sum(log.(L * x + eps));
-      ming[i] = minimum(g + 1);
+      gmin[i] = minimum(g + 1);
       nnz[i]  = sum(x .> sptol);
       nqp[i]  = j;
-      @printf("%4d %0.8e %+0.2e %4d %3d\n",i,obj[i],-ming[i],nnz[i],j);
+      @printf("%4d %0.8e %+0.2e %4d %3d\n",i,obj[i],-gmin[i],nnz[i],j);
     end
       
     # Check convergence.
@@ -181,6 +181,6 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
     @printf("Optimization took %d iterations and %0.4f seconds.\n",i,totaltime)
   end
   return Dict([("x",full(x)), ("totaltime",totaltime), ("obj",obj[1:i]),
-               ("ming",ming[1:i]), ("nnz",nnz[1:i]), ("nqp",nqp[1:i]),
+               ("gmin",gmin[1:i]), ("nnz",nnz[1:i]), ("nqp",nqp[1:i]),
                ("timing",timing[1:i])])
 end

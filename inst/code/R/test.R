@@ -1,4 +1,6 @@
+library(rjulia)
 library(mixopt)
+julia_init()
 data(normmix.data)
 L   <- normmix.data$L
 k   <- ncol(L)
