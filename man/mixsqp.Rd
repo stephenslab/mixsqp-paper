@@ -4,13 +4,48 @@
 \alias{mixsqp}
 \title{SQP algorithm with partial QR for optimizing mixtures.}
 \usage{
-mixsqp(L, x, convtol = 1e-08, pqrtol = 1e-08, eps = 1e-08,
-  sptol = 0.001, maxiter = 100, maxqpiter = 100, seed = 1,
-  verbose = TRUE)
+mixsqp(L, x, convtol = 1e-08, pqrtol = 0, eps = 1e-08, sptol = 0.001,
+  maxiter = 100, maxqpiter = 100, seed = 1, verbose = TRUE)
+}
+\arguments{
+\item{L}{\eqn{n x k} data matrix with positive entries. For fitting
+mixture models, n is the number of samples and k is the number of
+mixture components, and the entries of L are the conditional
+likelihoods for each sample (row) and each mixture component
+(column).}
+
+\item{x}{Vector of length k containing the initial estimate of the
+solution. For fitting mixture models, x is the initial estimate of
+the mixture weights.}
+
+\item{convtol}{Tolerance for stopping criterion in SQP method.
+TO DO: explain more precisely what the stopping criterion is.}
+
+\item{pqrtol}{Relative precision used to determine number of
+factors in QR decomposition of matrix L. See the LowRankApprox
+Julia package for details.}
+
+\item{eps}{A small positive number used to stabilize some of the
+numerical operations.}
+
+\item{sptol}{All entries of x below this value are treated as zero.}
+
+\item{maxiter}{}
+
+\item{maxqpiter}{}
+
+\item{seed}{}
+
+\item{verbose}{}
 }
 \description{
 Sequential quadratic programming (SQP) method with
     partial QR-based approximate computation of gradients and Hessians
-    for efficiently solving the Mixture Distribution Optimization
-    Problem.
+    for efficiently solving the mixture distribution optimization
+    problem.
+}
+\details{
+TO DO: Details about the algorithm go here, such as a
+    mathematical description of the optimization problem, and a brief
+    description of how the SQP algorithm works.
 }
