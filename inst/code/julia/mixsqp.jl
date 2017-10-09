@@ -83,11 +83,11 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 0, eps = 1e-8,
     end
 
     # Report on the algorithm's progress.
+    obj[i]  = -sum(log.(L * x + eps));
+    gmin[i] = minimum(g + 1);
+    nnz[i]  = sum(x .> sptol);
+    nqp[i]  = j;
     if verbose
-      obj[i]  = -sum(log.(L * x + eps));
-      gmin[i] = minimum(g + 1);
-      nnz[i]  = sum(x .> sptol);
-      nqp[i]  = j;
       @printf("%4d %0.8e %+0.2e %4d %3d\n",i,obj[i],-gmin[i],nnz[i],j);
     end
       
