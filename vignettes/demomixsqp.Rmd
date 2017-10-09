@@ -1,5 +1,5 @@
 ---
-title: "Illustration of SQ{ method on normmix data"
+title: "Illustration of SQP method on normmix data"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -7,3 +7,107 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{r knitr, echo=FALSE}
+knitr::opts_chunk$set(
+  comment    = "#",
+  results    = "hold",
+  collapse   = TRUE,
+  fig.align  = "center",
+  fig.width  = 6.5,
+  fig.height = 4)
+```
+
+Here, we illustrate a sequential quadratic programming (SQP) method
+for solving what we have called the "mixture distribution optimization
+problem." This problem can be motivated from many different
+applications (e..g,
+[Bovy *et al*](http://dx.doi.org/10.1214/10-AOAS439) and
+[this vignette from the REBayes package](https://cran.r-project.org/web/packages/REBayes/vignettes/rebayes.pdf)),
+but can be defined very concisely as follows:
+
+$$
+\begin{array}{ll}
+\mbox{minimize}   &\displaystyle  -\sum_{i=1}^n
+                   \log \sum_{j=1}^k L_{ij} w_j & \\
+\mbox{subject to} & w_j \geq 0, \mbox{for $j = 1, \ldots, k$} \\
+                  & w_1 + \cdots + w_k = 1
+\end{array}
+$$
+
+This is a convex optimization problem in most circumstances. In some
+problems, the $L_{ij}$'s can be interpreted as conditional likelihoods
+under some probabilistic model.
+
+Here we explore the convergence properties of the SQP method applied
+to a small data set.
+
+## Load data set
+
+Load the 5000 x 20 conditional likelhood matrix computed from a
+simulated data set.
+
+```{r load-data, message=FALSE}
+library(mixopt)
+data(normmix.data)
+L <- normmix.data$L
+dim(L)
+```
+
+## Fit mixture model without partial QR decomposition
+
+First we fit the model when the gradient and Hessian are computed
+exactly (that is, without any additional approximations).
+
+```{r mixsqp-exact}
+fit1 <- mixsqp(L,pqrtol = 0,verbose = FALSE)
+```
+
+## Fit mixture model using partial QR decomposition
+
+Next, we fit the model using a simple approximation that will
+hopefully yield faster computation of the gradient and Hessian.
+
+```{r mixsqp-partial-SQ}
+fit2 <- mixsqp(L,pqrtol = 1e-8,verbose = FALSE)
+```
+
+## Compare convergence with and without partial QR
+
+This plot compares the improvement in the solution at each iteration,
+with and without the partial QR decomposition.
+
+```{r plots, message=FALSE}
+library(ggplot2)
+library(cowplot)
+fmin <- min(c(normmix.data$obj,fit1$obj,fit2$obj))
+ggplot() +
+  geom_line(data = data.frame(x = 1:length(fit1$obj),
+                              y = fit1$obj - fmin),
+            mapping = aes(x = x,y = y,color = "exact"),
+			size = 1) +
+  geom_line(data = data.frame(x = 1:length(fit2$obj),
+                              y = fit2$obj - fmin),
+            mapping = aes(x = x,y = y,color = "partial QR"),
+	        size = 1,linetype = "dashed") +
+  scale_y_continuous(trans = "log10") +
+  scale_color_manual(values = c("darkorange","darkblue")) +
+  labs(x = "iteration",y = "distance from minimum")
+```
+
+We see that the partial QR decmoposition yields faster convergence to
+the solution, but the quality of the solution is not quite as good as
+the scheme using exact computations of the gradient and Hessian.
+
+Note that, in general, it is preferable to compare the elapsed time
+rather than the iteration number since different methods can have very
+different per-iteration computational costs.
+
+## Session information
+
+This is the operating system and R environment settings that were used
+to build this vignette.
+
+```{r session-info}
+sessionInfo()
+```

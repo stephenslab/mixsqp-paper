@@ -83,6 +83,15 @@ function mixsqp(L, x; convtol = 1e-8, pqrtol = 0, eps = 1e-8,
     end
 
     # Report on the algorithm's progress.
+    #
+    # TO DO: The L * x matrix operation here used to compute the
+    # objective function could dramatically slow down the algorithm
+    # when number of QR factors in the partial QR is much smaller than
+    # k. We need to think of a way to avoid this by having an option
+    # to not output the objective function at each iteration, and/or
+    # make sure that this objective function operation is not included
+    # in the timing.
+    #
     obj[i]  = -sum(log.(L * x + eps));
     gmin[i] = minimum(g + 1);
     nnz[i]  = sum(x .> sptol);

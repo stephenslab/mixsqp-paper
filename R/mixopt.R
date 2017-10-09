@@ -59,9 +59,7 @@
 #' # decomposition to speed up computation.
 #' data(normmix.data)
 #' L   <- normmix.data$L
-#' k   <- ncol(L)
-#' x0  <- rep(1/k,k)
-#' out <- mixsqp(L,x0,pqrtol = 1e-8)
+#' out <- mixsqp(L,pqrtol = 1e-8)
 #' cat("Compare SQP solution against the IP solution:\n")
 #' print(round(data.frame(ip = normmix.data$w,sqp = out$x),digits = 6))
 #' 
@@ -120,6 +118,10 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
   # assigning the individual "dictionary" (i.e., list) entries to
   # variables within Julia helps to prevent errors about memory not
   # being correctly mapped.
+  #
+  # TO DO: For convenience (e.g., to make it easier to draw plots),
+  # the per-iteration information should be returned in a data frame.
+  # 
   return(list(x         = julia_eval("x         = out[\"x\"];"),
               totaltime = julia_eval("totaltime = out[\"totaltime\"];"),
               obj       = julia_eval("obj       = out[\"obj\"];"),
