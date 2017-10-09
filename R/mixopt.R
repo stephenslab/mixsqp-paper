@@ -27,18 +27,41 @@
 #'
 #' @param sptol All entries of x below this value are treated as zero.
 #'
-#' @param maxiter
+#' @param maxiter Maximum number of outer loop iterations.
 #'
-#' @param maxqpiter
+#' @param maxqpiter Maximum number of inner loop iterations for
+#'     solving quadratic subproblem.
 #'
-#' @param seed
+#' @param seed Seed for pseudorandom number generator passed to
+#'     function \code{srand} in Julia.
 #'
-#' @param verbose
+#' @param verbose If \code{verbose = TRUE}, print progress of algorithm
+#'     to console.
 #'
+#' @return \code{mixsqp} returns a list containing the following components:
+#'     \item{x}{Estimated solution.}
+#'     \item{totaltime}{Total elapsed time to compute solution.}
+#'     \item{obj}{Value of objective function at each iteration of the
+#'                SQP algorithm.}
+#'     \item{gmin}{Minimum value of the modified objective gradient,
+#'                 which is used to assess convergence.}
+#'     \item{nnz}{Number of nonzeros (below \code{sptol}) in solution at
+#'                each iteration.}
+#'     \item{timing}{Elapsed time for each SQP iteration.}
+#' 
 #' @details
 #'     TO DO: Details about the algorithm go here, such as a
 #'     mathematical description of the optimization problem, and a brief
 #'     description of how the SQP algorithm works.
+#'
+#' @examples
+#' data(normmix.data)
+#' L   <- normmix.data$L
+#' k   <- ncol(L)
+#' x0  <- rep(1,k)/k
+#' out <- mixsqp(L,x0)
+#' cat("Compare SQP solution against the IP solution:\n")
+#' print(data.frame(ip = normmix.data$w,sqp = out$x))
 #' 
 #' @export
 #' @importFrom rjulia r2j
@@ -90,7 +113,7 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
                         "eps = eps,sptol = sptol,maxiter = maxiter",
                         "maxqpiter = maxqpiter,seed = seed,verbose = verbose)",
                         sep = ","))
-  
+
   # Construct the return value. It seems (though not verified) that
   # assigning the individual "dictionary" (i.e., list) entries to
   # variables within Julia helps to prevent errors about memory not

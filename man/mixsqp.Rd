@@ -30,13 +30,28 @@ numerical operations.}
 
 \item{sptol}{All entries of x below this value are treated as zero.}
 
-\item{maxiter}{}
+\item{maxiter}{Maximum number of outer loop iterations.}
 
-\item{maxqpiter}{}
+\item{maxqpiter}{Maximum number of inner loop iterations for
+solving quadratic subproblem.}
 
-\item{seed}{}
+\item{seed}{Seed for pseudorandom number generator passed to
+function \code{srand} in Julia.}
 
-\item{verbose}{}
+\item{verbose}{If \code{verbose = TRUE}, print progress of algorithm
+to console.}
+}
+\value{
+\code{mixsqp} returns a list containing the following components:
+    \item{x}{Estimated solution.}
+    \item{totaltime}{Total elapsed time to compute solution.}
+    \item{obj}{Value of objective function at each iteration of the
+               SQP algorithm.}
+    \item{gmin}{Minimum value of the modified objective gradient,
+                which is used to assess convergence.}
+    \item{nnz}{Number of nonzeros (below \code{sptol}) in solution at
+               each iteration.}
+    \item{timing}{Elapsed time for each SQP iteration.}
 }
 \description{
 Sequential quadratic programming (SQP) method with
@@ -48,4 +63,14 @@ Sequential quadratic programming (SQP) method with
 TO DO: Details about the algorithm go here, such as a
     mathematical description of the optimization problem, and a brief
     description of how the SQP algorithm works.
+}
+\examples{
+data(normmix.data)
+L   <- normmix.data$L
+k   <- ncol(L)
+x0  <- rep(1,k)/k
+out <- mixsqp(L,x0)
+cat("Compare SQP solution against the IP solution:\\n")
+print(data.frame(ip = normmix.data$w,sqp = out$x))
+
 }

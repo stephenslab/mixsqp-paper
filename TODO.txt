@@ -2,3 +2,5 @@ to do
 =====
 * Write basic roxygen2 documentation for mixopt().
 * Implement a test for mixsqp().
+* Create a package vignette.
+* Add example to mixsqp.Rd.
