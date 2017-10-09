@@ -2,7 +2,7 @@ using Plots
 include("mixsqp.jl")
 
 # Load the conditional likelihood matrix.
-L = readdlm("../../data/normlik.5000x20.txt",' ');
+L = readdlm("../../datafiles/normlik.5000x20.txt",' ');
 k = size(L,2)
 
 # Choose an initial solution.

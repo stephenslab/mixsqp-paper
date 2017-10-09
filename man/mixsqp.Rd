@@ -65,12 +65,14 @@ TO DO: Details about the algorithm go here, such as a
     description of how the SQP algorithm works.
 }
 \examples{
+# Fit mixture model to "normmix" data set, using partial QR
+# decomposition to speed up computation.
 data(normmix.data)
 L   <- normmix.data$L
 k   <- ncol(L)
 x0  <- rep(1,k)/k
-out <- mixsqp(L,x0)
+out <- mixsqp(L,x0,pqrtol = 1e-8)
 cat("Compare SQP solution against the IP solution:\\n")
-print(data.frame(ip = normmix.data$w,sqp = out$x))
+print(round(data.frame(ip = normmix.data$w,sqp = out$x),digits = 6))
 
 }
