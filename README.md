@@ -47,9 +47,18 @@ under the terms of the
    julia_init()
    ```
 
-4. Run this small example.
+4. Run this small example demonstrating the SQP algorithm for fitting
+   a mixture model to a data set with 5,000 samples.
 
-5. Check out the package documentation.
+   ```R
+   example("mixsqp")
+   ```
+
+5. Check out the package documentation for more details on the methods.
+
+   ```R
+   help(package = mixopt)
+   ```
 
 ## How to build the webpages
 
@@ -68,7 +77,7 @@ document()
 
 ```bash
 R CMD build mixopt --resave-data
-R CMD check --as-cran mixopt_0.1-0.tar.gz
+R CMD check --as-cran mixopt_0.1-5.tar.gz
 ```
 
 ## Credits
