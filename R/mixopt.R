@@ -60,7 +60,7 @@
 #' data(normmix.data)
 #' L   <- normmix.data$L
 #' k   <- ncol(L)
-#' x0  <- rep(1,k)/k
+#' x0  <- rep(1/k,k)
 #' out <- mixsqp(L,x0,pqrtol = 1e-8)
 #' cat("Compare SQP solution against the IP solution:\n")
 #' print(round(data.frame(ip = normmix.data$w,sqp = out$x),digits = 6))
