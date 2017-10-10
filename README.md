@@ -14,13 +14,18 @@ under the terms of the
 
 1. Install [Julia](http://julialang.org) version 0.6. 
 
-2. Install the Plots and LowRankApprox packages in Julia:
+2. Install the Plots and LowRankApprox packages in Julia, then
+   precompile them:
 
    ```julia
    Pkg.add("Plots")
    Pkg.add("DataFrames")
    Pkg.add("RCall")
    Pkg.add("LowRankApprox")
+   using Plots
+   using DataFrames
+   using RCall
+   using LowRankApprox
    ```
 
    The Plots package is not needed to run the core mixopt functions,
@@ -40,21 +45,21 @@ under the terms of the
    cannot use the `install_github` command here while the repository
    is private.)
 
-4.
+4. Initialize the Julia environment from inside R.
 
-   ```
+   ```R
    library(rjulia)
    julia_init()
    ```
 
-4. Run this small example demonstrating the SQP algorithm for fitting
+5. Run this small example demonstrating the SQP algorithm for fitting
    a mixture model to a data set with 5,000 samples.
 
    ```R
    example("mixsqp")
    ```
 
-5. Check out the package documentation for more details on the methods.
+6. Check out the package documentation for more details on the methods.
 
    ```R
    help(package = mixopt)
