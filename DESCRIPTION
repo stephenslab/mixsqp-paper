@@ -1,8 +1,9 @@
 Package: mixopt
 Encoding: UTF-8
 Type: Package
-Version: 0.1-0
-Date: 2017-09-28
+LazyData: true
+Version: 0.1-6
+Date: 2017-10-09
 Title: Optimization Algorithms for Mixture Distributions
 Authors@R: c(person("Youngseok","Kim",role=c("aut","cre"),
                     email="workyoungseok@gmail.com"),
@@ -16,8 +17,17 @@ Description: This package implements several algorithms for solving
     many applications; to take one example, it arises in Empirical
     Bayes mixture methods and the Kiefer-Wolfowitz procedure for
     estimating nonparametric mixtures.
-Depends: R (>= 3.4.0)
-Imports: rjulia
-License: MIT | file LICENCE
+Depends: 
+    R (>= 3.4.0),
+    rjulia (>= 0.10)
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat,
+    ggplot2,
+    cowplot
+License: MIT + file LICENSE
 NeedsCompilation: no
-
+Remotes: armgong/rjulia@julia0.6
+RoxygenNote: 6.0.1
+VignetteBuilder: knitr
