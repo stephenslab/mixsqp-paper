@@ -104,8 +104,7 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
   # systems (e.g., Windows)---in the future it would be better to
   # create a separate mixopt Julia package so that "include" calls
   # inside the julia_void_eval code are not needed.
-  mixsqp.file <- paste(system.file(package = "mixopt"),
-                       "code/julia/mixsqp.jl",sep = "/")
+  mixsqp.file <- system.file("code/julia/mixsqp.jl",package = "mixopt")
   julia_void_eval(sprintf("include(\"%s\")",mixsqp.file))
   
   # Run the SQP algorithm.
