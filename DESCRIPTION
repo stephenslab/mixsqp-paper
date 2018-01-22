@@ -21,7 +21,7 @@ Depends:
     R (>= 3.4.0),
     rjulia (>= 0.10)
 Imports:
-    RcppArmadillo
+    Rcpp (>= 0.12.15)
 Suggests: 
     knitr,
     rmarkdown,
@@ -30,7 +30,7 @@ Suggests:
     cowplot
 License: MIT + file LICENSE
 NeedsCompilation: yes
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppArmadillo
 Remotes: armgong/rjulia@julia0.6
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
