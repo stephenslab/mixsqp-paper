@@ -19,7 +19,7 @@ Description: This package implements several algorithms for solving
     estimating nonparametric mixtures.
 Depends: 
     R (>= 3.4.0),
-    rjulia (>= 0.10)
+    rjulia (>= 0.10.4)
 Imports:
     Rcpp (>= 0.12.15)
 Suggests: 
