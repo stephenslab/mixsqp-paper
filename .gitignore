@@ -4,3 +4,5 @@
 analysis/figure
 analysis/*html
 analysis/*_cache
+src/*.so
+src/*.o
