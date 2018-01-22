@@ -2,8 +2,8 @@ Package: mixopt
 Encoding: UTF-8
 Type: Package
 LazyData: true
-Version: 0.1-6
-Date: 2017-10-09
+Version: 0.1-7
+Date: 2018-01-22
 Title: Optimization Algorithms for Mixture Distributions
 Authors@R: c(person("Youngseok","Kim",role=c("aut","cre"),
                     email="workyoungseok@gmail.com"),
@@ -20,6 +20,8 @@ Description: This package implements several algorithms for solving
 Depends: 
     R (>= 3.4.0),
     rjulia (>= 0.10)
+Imports:
+    RcppArmadillo
 Suggests: 
     knitr,
     rmarkdown,
@@ -27,7 +29,8 @@ Suggests:
     ggplot2,
     cowplot
 License: MIT + file LICENSE
-NeedsCompilation: no
+NeedsCompilation: yes
+LinkingTo: Rcpp
 Remotes: armgong/rjulia@julia0.6
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
