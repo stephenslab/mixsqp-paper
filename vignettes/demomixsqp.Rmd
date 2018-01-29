@@ -42,6 +42,15 @@ under some probabilistic model.
 Here we explore the convergence properties of the SQP method applied
 to a small data set.
 
+## Set up R environment
+
+Initialize Julia from inside R.
+
+```{r setup}
+library(rjulia)
+julia_init()
+```
+
 ## Load data set
 
 Load the 5000 x 20 conditional likelhood matrix computed from a

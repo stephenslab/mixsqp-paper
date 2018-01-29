@@ -61,6 +61,7 @@
 #' @examples
 #' # Fit mixture model to "normmix" data set, using partial QR
 #' # decomposition to speed up computation.
+#' library(rjulia)
 #' data(normmix.data)
 #' L   <- normmix.data$L
 #' out <- mixsqp(L,pqrtol = 1e-8)
@@ -81,14 +82,17 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
   if (missing(x))
     x <- rep(1/k,k)
 
+  # Specify which implementation to use.
+  algorithm.version <- match.arg(algorithm.version)
+  
   # RUN OPTIMIZATION ALGORITHM
   if (algorithm.version == "Rcpp") {
     # TO DO.
   } else if (algorithm.version == "julia") {
-    # TO DO. 
-  } else
     out <- mixsqp_julia(L,x,convtol,pqrtol,eps,sptol,
                         maxiter,maxqpiter,seed,verbose)
+  } else
+    stop("Argument \"algorithm.version\" should be \"julia\" or \"Rcpp\"")
   return(out)
 }
 
