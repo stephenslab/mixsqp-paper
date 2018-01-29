@@ -12,7 +12,7 @@ under the terms of the
 
 ## Quick Start
 
-1. Install [Julia](http://julialang.org) version 0.6. 
+1. Install [Julia](http://julialang.org).
 
 2. Install the Plots and LowRankApprox packages in Julia, then
    precompile them:
@@ -82,7 +82,7 @@ document()
 
 ```bash
 R CMD build mixopt --resave-data
-R CMD check --as-cran mixopt_0.1-6.tar.gz
+R CMD check --as-cran mixopt_0.1-7.tar.gz
 ```
 
 ## Credits

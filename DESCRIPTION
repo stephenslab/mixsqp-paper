@@ -2,8 +2,8 @@ Package: mixopt
 Encoding: UTF-8
 Type: Package
 LazyData: true
-Version: 0.1-7
-Date: 2018-01-22
+Version: 0.1-8
+Date: 2018-01-29
 Title: Optimization Algorithms for Mixture Distributions
 Authors@R: c(person("Youngseok","Kim",role=c("aut","cre"),
                     email="workyoungseok@gmail.com"),
@@ -19,7 +19,7 @@ Description: This package implements several algorithms for solving
     estimating nonparametric mixtures.
 Depends: 
     R (>= 3.4.0),
-    rjulia (>= 0.10.4)
+    rjulia (>= 0.9.4)
 Imports:
     Rcpp (>= 0.12.15)
 Suggests: 

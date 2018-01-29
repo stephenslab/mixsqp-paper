@@ -65,8 +65,8 @@
 #' 
 #' @export
 #' @importFrom rjulia r2j
-#' @importFrom rjulia julia_eval
-#' @importFrom rjulia julia_void_eval
+#' @importFrom rjulia j2r
+#' @importFrom rjulia jDo
 mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
                     sptol = 1e-3, maxiter = 100, maxqpiter = 100,
                     seed = 1, verbose = TRUE) {
@@ -91,27 +91,27 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
   r2j(maxqpiter,"maxqpiter")
   r2j(seed,"seed")
   r2j(verbose,"verbose")
-  julia_eval("convtol   = convtol[1];")
-  julia_eval("pqrtol    = pqrtol[1];")
-  julia_eval("eps       = eps[1];")
-  julia_eval("sptol     = sptol[1];")
-  julia_eval("maxiter   = Integer(maxiter[1]);")
-  julia_eval("maxqpiter = Integer(maxqpiter[1]);")
-  julia_eval("seed      = Integer(seed[1]);")
-  julia_eval("verbose   = verbose[1];")
+  jDo("convtol   = convtol[1];")
+  jDo("pqrtol    = pqrtol[1];")
+  jDo("eps       = eps[1];")
+  jDo("sptol     = sptol[1];")
+  jDo("maxiter   = Integer(maxiter[1]);")
+  jDo("maxqpiter = Integer(maxqpiter[1]);")
+  jDo("seed      = Integer(seed[1]);")
+  jDo("verbose   = verbose[1];")
   
   # Load the Julia code. Note that this code may not work on all
   # systems (e.g., Windows)---in the future it would be better to
   # create a separate mixopt Julia package so that "include" calls
-  # inside the julia_void_eval code are not needed.
+  # inside the "jDo" call  are not needed.
   mixsqp.file <- system.file("code/julia/mixsqp.jl",package = "mixopt")
-  julia_void_eval(sprintf("include(\"%s\")",mixsqp.file))
+  jDo(sprintf("include(\"%s\")",mixsqp.file))
   
   # Run the SQP algorithm.
-  julia_void_eval(paste("out = mixsqp(L,x,convtol = convtol,pqrtol = pqrtol",
-                        "eps = eps,sptol = sptol,maxiter = maxiter",
-                        "maxqpiter = maxqpiter,seed = seed,verbose = verbose)",
-                        sep = ","))
+  jDo(paste("out = mixsqp(L,x,convtol = convtol,pqrtol = pqrtol",
+            "eps = eps,sptol = sptol,maxiter = maxiter",
+            "maxqpiter = maxqpiter,seed = seed,verbose = verbose)",
+            sep = ","))
 
   # Construct the return value. It seems (though not verified) that
   # assigning the individual "dictionary" (i.e., list) entries to
@@ -121,12 +121,12 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
   # TO DO: For convenience (e.g., to make it easier to draw plots),
   # the per-iteration information should be returned in a data frame.
   # 
-  return(list(x         = julia_eval("x         = out[\"x\"];"),
-              totaltime = julia_eval("totaltime = out[\"totaltime\"];"),
-              obj       = julia_eval("obj       = out[\"obj\"];"),
-              gmin      = julia_eval("gmin      = out[\"gmin\"];"),
-              nnz       = julia_eval("nqp       = out[\"nqp\"];"),
-              timing    = julia_eval("timing    = out[\"timing\"];")))
+  return(list(x         = j2r("x         = out[\"x\"];"),
+              totaltime = j2r("totaltime = out[\"totaltime\"];"),
+              obj       = j2r("obj       = out[\"obj\"];"),
+              gmin      = j2r("gmin      = out[\"gmin\"];"),
+              nnz       = j2r("nqp       = out[\"nqp\"];"),
+              timing    = j2r("timing    = out[\"timing\"];")))
 }
 
 #' @importFrom stats rnorm
