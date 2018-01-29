@@ -5,7 +5,8 @@
 \title{SQP algorithm with partial QR for optimizing mixtures.}
 \usage{
 mixsqp(L, x, convtol = 1e-08, pqrtol = 0, eps = 1e-08, sptol = 0.001,
-  maxiter = 100, maxqpiter = 100, seed = 1, verbose = TRUE)
+  maxiter = 100, maxqpiter = 100, seed = 1,
+  algorithm.version = c("julia", "Rcpp"), verbose = TRUE)
 }
 \arguments{
 \item{L}{\eqn{n x k} data matrix with positive entries. For fitting
@@ -37,6 +38,10 @@ solving quadratic subproblem.}
 
 \item{seed}{Seed for pseudorandom number generator passed to
 function \code{srand} in Julia.}
+
+\item{algorithm.version}{Which implementation to use: C++
+(\code{algorithm.version = "Rcpp"}) or Julia
+(\code{algorithm.version = "julia"}).}
 
 \item{verbose}{If \code{verbose = TRUE}, print progress of algorithm
 to console.}

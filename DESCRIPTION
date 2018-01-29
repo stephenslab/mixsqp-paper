@@ -19,7 +19,7 @@ Description: This package implements several algorithms for solving
     estimating nonparametric mixtures.
 Depends: 
     R (>= 3.4.0),
-    rjulia (>= 0.9.4)
+    rjulia (>= 0.10.4)
 Imports:
     Rcpp (>= 0.12.15)
 Suggests: 
@@ -31,6 +31,6 @@ Suggests:
 License: MIT + file LICENSE
 NeedsCompilation: yes
 LinkingTo: Rcpp, RcppArmadillo
-Remotes: armgong/rjulia@julia0.6
+Remotes: armgong/rjulia
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

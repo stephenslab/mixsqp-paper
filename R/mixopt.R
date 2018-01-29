@@ -35,6 +35,10 @@
 #' @param seed Seed for pseudorandom number generator passed to
 #'     function \code{srand} in Julia.
 #'
+#' @param algorithm.version Which implementation to use: C++
+#'     (\code{algorithm.version = "Rcpp"}) or Julia
+#'     (\code{algorithm.version = "julia"}).
+#' 
 #' @param verbose If \code{verbose = TRUE}, print progress of algorithm
 #'     to console.
 #'
@@ -64,19 +68,36 @@
 #' print(round(data.frame(ip = normmix.data$w,sqp = out$x),digits = 6))
 #' 
 #' @export
-#' @importFrom rjulia r2j
-#' @importFrom rjulia j2r
-#' @importFrom rjulia jDo
 mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
                     sptol = 1e-3, maxiter = 100, maxqpiter = 100,
-                    seed = 1, verbose = TRUE) {
+                    seed = 1, algorithm.version = c("julia","Rcpp"),
+                    verbose = TRUE) {
 
+  # CHECK INPUTS & PROCESS OPTIONS
   # Get the number of mixture components.
   k <- ncol(L)  
     
-  # Set default initial estimate for x.
+  # Set default initial estimate for x if not  provided.
   if (missing(x))
     x <- rep(1/k,k)
+
+  # RUN OPTIMIZATION ALGORITHM
+  if (algorithm.version == "Rcpp") {
+    # TO DO.
+  } else if (algorithm.version == "julia") {
+    # TO DO. 
+  } else
+    out <- mixsqp_julia(L,x,convtol,pqrtol,eps,sptol,
+                        maxiter,maxqpiter,seed,verbose)
+  return(out)
+}
+
+#' @importFrom rjulia r2j
+#' @importFrom rjulia j2r
+#' @importFrom rjulia jDo
+mixsqp_julia <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
+                          sptol = 1e-3, maxiter = 100, maxqpiter = 100,
+                          seed = 1, verbose = TRUE) {
     
   # Pass arguments from R to Julia. Since r2j treats everything as a
   # matrix, additional (somewhat painful) steps need to be taken to
