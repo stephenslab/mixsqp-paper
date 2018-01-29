@@ -158,7 +158,7 @@ mixopt_ex = function(n, m = 1.1) {
   t1 = system.time(L <- get_matrix_lik(z,m = m));
   cat(t1[3],"sec\n");
   cat("convex programming : ");
-  t2 = system.time(x <- mixopt(L));
+  t2 = system.time(x <- mixsqp(L));
   cat(t2[3],"sec\n");
   return(x)
 }
