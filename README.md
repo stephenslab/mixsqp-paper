@@ -36,30 +36,23 @@ under the terms of the
 
    ```R
    library(devtools)
-   install_local("mixopt")
+   install_local("mixopt",build_vignettes = TRUE)
    library(mixopt)
    ```
 
    This command should automatically retrieve and install the
    appropriate version of the `rjulia` package from Github. (Note that
-   cannot use the `install_github` command here while the repository
-   is private.)
+   we cannot use `devtools::install_github` while the repository is
+   private.)
 
-4. Initialize the Julia environment from inside R.
-
-   ```R
-   library(rjulia)
-   julia_init()
-   ```
-
-5. Run this small example demonstrating the SQP algorithm for fitting
+4. Run this small example demonstrating the SQP algorithm for fitting
    a mixture model to a data set with 5,000 samples.
 
    ```R
    example("mixsqp")
    ```
 
-6. Check out the package documentation for more details on the methods.
+5. Check out the package documentation for more details on the methods.
 
    ```R
    help(package = mixopt)
