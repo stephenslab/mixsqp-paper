@@ -61,12 +61,15 @@
 #' @examples
 #' # Fit mixture model to "normmix" data set, using partial QR
 #' # decomposition to speed up computation.
-#' library(rjulia)
 #' data(normmix.data)
 #' L   <- normmix.data$L
 #' out <- mixsqp(L,pqrtol = 1e-8)
 #' cat("Compare SQP solution against the IP solution:\n")
 #' print(round(data.frame(ip = normmix.data$w,sqp = out$x),digits = 6))
+#'
+#' @useDynLib mixopt
+#' @importFrom Rcpp sourceCpp
+#' @importFrom Rcpp evalCpp
 #' 
 #' @export
 mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
@@ -86,11 +89,12 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
   algorithm.version <- match.arg(algorithm.version)
   
   # RUN OPTIMIZATION ALGORITHM
-  if (algorithm.version == "Rcpp") {
-    # TO DO.
-  } else if (algorithm.version == "julia") {
-    out <- mixsqp_julia(L,x,convtol,pqrtol,eps,sptol,
-                        maxiter,maxqpiter,seed,verbose)
+  if (algorithm.version == "Rcpp")
+    out <- mixsqp_rcpp(L,x,convtol,pqrtol,eps,sptol,maxiter,maxqpiter,
+                       verbose)
+  else if (algorithm.version == "julia") {
+    out <- mixsqp_julia(L,x,convtol,pqrtol,eps,sptol,maxiter,maxqpiter,
+                        seed,verbose)
   } else
     stop("Argument \"algorithm.version\" should be \"julia\" or \"Rcpp\"")
   return(out)
@@ -99,9 +103,8 @@ mixsqp <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
 #' @importFrom rjulia r2j
 #' @importFrom rjulia j2r
 #' @importFrom rjulia jDo
-mixsqp_julia <- function (L, x, convtol = 1e-8, pqrtol = 0, eps = 1e-8,
-                          sptol = 1e-3, maxiter = 100, maxqpiter = 100,
-                          seed = 1, verbose = TRUE) {
+mixsqp_julia <- function (L, x, convtol, pqrtol, eps, sptol, maxiter,
+                          maxqpiter = 100, seed, verbose) {
     
   # Pass arguments from R to Julia. Since r2j treats everything as a
   # matrix, additional (somewhat painful) steps need to be taken to
