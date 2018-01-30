@@ -7,7 +7,7 @@
 using namespace Rcpp;
 
 // mixsqp_rcpp
-arma::vec mixsqp_rcpp(const arma::mat& L, const arma::vec& x0, double convtol, double pqrtol, double eps, double sptol, int maxiter, int maxqpiter, bool verbose);
+Rcpp::List mixsqp_rcpp(const arma::mat& L, const arma::vec& x0, double convtol, double pqrtol, double eps, double sptol, int maxiter, int maxqpiter, bool verbose);
 RcppExport SEXP _mixopt_mixsqp_rcpp(SEXP LSEXP, SEXP x0SEXP, SEXP convtolSEXP, SEXP pqrtolSEXP, SEXP epsSEXP, SEXP sptolSEXP, SEXP maxiterSEXP, SEXP maxqpiterSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
