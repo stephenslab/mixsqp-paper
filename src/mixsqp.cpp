@@ -54,6 +54,8 @@ Rcpp::List mixsqp_rcpp (const arma::mat& L, const arma::vec& x0,
   uint       ns;         // Number of variables in subproblem.
   arma::uvec indmem(k);  // Storage for nonzero indices of x.
   arma::vec  ymem(k);    // Storage for solution to subproblem.
+  arma::vec  gsmem(k);   // Storage for gradient of subproblem.
+  arma::vec  dsmem(k);   // Storage for search direction in subproblem.
   arma::mat  Hsmem(k,k); // Storage for Hessian of subproblem.
   
   // This is used in computing the Hessian matrix.
@@ -121,19 +123,21 @@ Rcpp::List mixsqp_rcpp (const arma::mat& L, const arma::vec& x0,
     arma::vec y(ymem.memptr(),ns,false,true);
     y.fill(1/(double) ns);
       
-    // Get the Hessian for the QP subproblem.
+    // Get the gradient and Hessian for the QP subproblem.
     arma::uvec ind(indmem.memptr(),k,false,true);
+    arma::vec  gs(gsmem.memptr(),k,false,true);
+    arma::vec  ds(gsmem.memptr(),k,false,true);
     arma::mat  Hs(Hsmem.memptr(),k,k,false,true);
+    
     ind = find(x > sptol);
+    gs  = g.elem(ind);
     Hs  = H.elem(ind,ind);
     
     // Run active set method to solve the QP subproblem.
     for (j = 0; j < maxqpiter; j++) {
           
       // Define the smaller QP subproblem.
-      // Hs = H[ind,ind];
-      // d  = Hs*ys + 2*gs + 1
-      // ds = d[ind];
+      ds = Hs*y + 2*gs + 1;
 
       // Solve the smaller problem.
       // p      = sparse(zeros(k));
