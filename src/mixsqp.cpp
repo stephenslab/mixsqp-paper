@@ -48,6 +48,13 @@ Rcpp::List mixsqp_rcpp (const arma::mat& L, const arma::vec& x0,
   arma::mat    Z(n,k); // n x k matrix storing  Z = diag(1/(L*x + eps))*L.
   arma::mat    I(k,k); // k x k diagonal matrix eps*I.
   arma::uvec   t(k);   // Temporary unsigned integer vector result of length k.
+
+  // Initialize storage for additional matrices and vectors used for
+  // the inner loop.
+  uint       ns;         // Number of variables in subproblem.
+  arma::uvec indmem(k);  // Storage for nonzero indices of x.
+  arma::vec  ymem(k);    // Storage for solution to subproblem.
+  arma::mat  Hsmem(k,k); // Storage for Hessian of subproblem.
   
   // This is used in computing the Hessian matrix.
   I  = arma::eye(k,k);
@@ -95,7 +102,8 @@ Rcpp::List mixsqp_rcpp (const arma::mat& L, const arma::vec& x0,
     t       = (x > sptol);
     obj[i]  = -sum(u);
     gmin[i] = 1 + min(g);
-    nnz[i]  = sum(t);
+    ns      = sum(t);
+    nnz[i]  = ns;
     nqp[i]  = j;
     if (verbose)
       Rprintf("%4d %0.8e %+0.2e %4d %3d\n",i,obj[i],-gmin[i],nnz[i],j);
@@ -108,6 +116,74 @@ Rcpp::List mixsqp_rcpp (const arma::mat& L, const arma::vec& x0,
     //
     if (gmin[i] >= 0)
       break;
+
+    // Initialize the solution to the QP subproblem (y).
+    arma::vec y(ymem.memptr(),ns,false,true);
+    y.fill(1/(double) ns);
+      
+    // Get the Hessian for the QP subproblem.
+    arma::uvec ind(indmem.memptr(),k,false,true);
+    arma::mat  Hs(Hsmem.memptr(),k,k,false,true);
+    ind = find(x > sptol);
+    Hs  = H.elem(ind,ind);
+    
+    // Run active set method to solve the QP subproblem.
+    for (j = 0; j < maxqpiter; j++) {
+          
+      // Define the smaller QP subproblem.
+      // Hs = H[ind,ind];
+      // d  = Hs*ys + 2*gs + 1
+      // ds = d[ind];
+
+      // Solve the smaller problem.
+      // p      = sparse(zeros(k));
+      // p_s    = -H_s\d_s;
+      // p[ind] = p_s;
+
+      // Check convergence.
+      //  
+      // TO DO: Why is convergence based on the norm of the search
+      // direction? Please relate to KKT conditions.
+    //   if (norm(p_s) < convtol) {
+            
+    // 	// Compute the Lagrange multiplier.
+    //     lambda = d - minimum(d_s);
+    //     if all(lambda .>= 0)
+    //       break;
+    //     else {
+            
+    //       // TO DO: Explain what ind and ind_min are for.
+    //       ind_min = findmin(lambda)[2];
+    //       ind     = sort([ind; ind_min]);
+    //     }
+    //   } else {
+          
+    //     // Find a feasible step length.
+    //     alpha     = 1;
+    //     alpha0    = -y[ind]./p_s;
+    //     ind_block = find(p_s .< 0);
+    //     alpha0    = alpha0[ind_block];
+    //     if (~isempty(ind_block)) {
+    //       v, t = findmin(alpha0);
+    //       if (v < 1) {
+
+    //         // Blocking constraint.
+    //         ind_block = ind[ind_block[t]]; 
+    //         alpha     = v;
+              
+    //         // Update working set if there is a blocking constraint.
+    //         deleteat!(ind,find(ind - ind_block .== 0));
+    //       }
+    //     }
+          
+    // 	// Move to the new "inner loop" iterate (y) along the search
+    //     // direction.
+    //     y = y + alpha * p;
+    //   }
+    }
+    
+    // Update the solution.
+    x = y;
   }
   
   return List::create(Named("g") = g,Named("H") = H);
