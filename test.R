@@ -5,10 +5,13 @@
 #   devtools::document()
 #   devtools::install_local("mixopt")
 #
-library(mixopt)
+library(Rcpp)
+sourceCpp("src/mixsqp.cpp")
+source("R/mixopt.R")
 set.seed(1)
 
 # Load the data.
+load("data/normmix.data.RData")
 L <- normmix.data$L
 k <- ncol(L)
 n <- nrow(L)
