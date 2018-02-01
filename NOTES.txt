@@ -20,7 +20,7 @@ How to debug the RcppArmadillo code
 1. Add this line to your ~/.R/Makevars file:
    CXXFLAGS = -g -O0
 2. R -d lldb
-3. run
+3. run --no-save
 4. Rcpp::sourceCpp("src/mixsqp.cpp")
 5. source("R/mixopt.R")
 5. ctrl-C
@@ -30,3 +30,4 @@ How to debug the RcppArmadillo code
 8. Run the code in test.R.
 9. e.g., Inspect the contents of arma::vec x0 when k=20:
    print *(double(*)[20])x0.mem
+10. continue
