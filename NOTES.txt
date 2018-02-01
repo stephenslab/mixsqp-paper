@@ -1,0 +1,21 @@
+Useful links
+============
+
++ Rcpp reference:
+  https://thecoatlessprofessor.com/programming/unofficial-rcpp-api-documentation
+
++ Armadillo reference:
+  http://arma.sourceforge.net/docs.html
+
++ LLDB reference:
+  https://lldb.llvm.org/lldb-gdb.html
+
++ Tutorial on debugging with LLDB:
+  https://kevinushey.github.io/blog/2015/04/13/debugging-with-lldb
+
+How to debug Rcpp code
+======================
+
++ Add this line to your ~/.R/Makevars file:
+  
+
