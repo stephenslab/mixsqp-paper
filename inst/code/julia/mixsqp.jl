@@ -1,3 +1,4 @@
+# NOTE: This is the version used for the paper.
 using LowRankApprox
 
 # TO DO: Briefly explain here in a few sentences what this function
