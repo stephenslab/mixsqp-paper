@@ -12,10 +12,10 @@ using namespace Rcpp;
 // the help and comments accompanying the "mixsqp" function in R.
 // 
 // [[Rcpp::export]]
-Rcpp::List mixsqp_rcpp (const arma::mat& L, const arma::vec& x0,
-			double convtol, double pqrtol, double eps,
-			double sptol, int maxiter, int maxqpiter,
-			bool verbose) {
+List mixsqp_rcpp (const arma::mat& L, const arma::vec& x0,
+		  double convtol, double pqrtol, double eps,
+		  double sptol, int maxiter, int maxqpiter,
+		  bool verbose) {
 
   // Get the number of rows (n) and columns (k) of the conditional
   // likelihood matrix.
@@ -32,10 +32,10 @@ Rcpp::List mixsqp_rcpp (const arma::mat& L, const arma::vec& x0,
 
   // PREPARE DATA STRUCTURES FOR OPTIMIZATION ALGORITHM
   // Initialize storage for the outputs obj, gmin, nnz and nqp.
-  NumericVector obj(maxiter);
-  NumericVector gmin(maxiter);
-  NumericVector nnz(maxiter);
-  NumericVector nqp(maxiter);
+  arma::vec obj(maxiter);
+  arma::vec gmin(maxiter);
+  arma::vec nnz(maxiter);
+  arma::vec nqp(maxiter);
   
   // Initialize the solution.
   arma::vec x = x0;
