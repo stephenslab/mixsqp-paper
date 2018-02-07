@@ -31,53 +31,6 @@ under the terms of the
    The Plots package is not needed to run the core mixopt functions,
    but is useful for running the examples.
 
-3. In R, install and load the mixopt package from a local copy of the
-   repository downloaded (or "cloned") onto your computer.
-
-   ```R
-   library(devtools)
-   install_local("mixopt",build_vignettes = TRUE)
-   library(mixopt)
-   ```
-
-   This command should automatically retrieve and install the
-   appropriate version of the `rjulia` package from Github. (Note that
-   we cannot use `devtools::install_github` while the repository is
-   private.)
-
-4. Run this small example demonstrating the SQP algorithm for fitting
-   a mixture model to a data set with 5,000 samples.
-
-   ```R
-   example("mixsqp")
-   ```
-
-5. Check out the package documentation for more details on the methods.
-
-   ```R
-   help(package = mixopt)
-   ```
-
-## How to build the webpages
-
-*Add instructions here.*
-
-## How to update the package documentation
-
-Within a local copy of this repository, run the following R commands:
-
-```R
-library(devtools)
-document()
-```
-
-## How to test the package build
-
-```bash
-R CMD build mixopt --resave-data
-R CMD check --as-cran mixopt_0.1-7.tar.gz
-```
-
 ## Credits
 
 This project was developed by
