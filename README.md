@@ -14,23 +14,39 @@ under the terms of the
 
 1. Install [Julia](http://julialang.org).
 
-2. Install the Plots and LowRankApprox packages in Julia, then
-   precompile them:
+2. Install Python 3.x and Jupyter bundled together with
+   [Anaconda](https://www.anaconda.com). Alternatively, install
+   Python 3.x and Jupyter separately; see
+   [here](https://jupyter.org/install) and [here](http://python.org)
+   for other options to install Jupyter and Python 3.x.
+
+3. Install the [Julia kernel for
+   Jupyter](https://github.com/JuliaLang/IJulia.jl).
+
+4. Install the DataFrames, PyCall and PyPlot packages in Julia:
 
    ```julia
-   Pkg.add("Plots")
    Pkg.add("DataFrames")
-   Pkg.add("RCall")
-   Pkg.add("LowRankApprox")
-   using Plots
-   using DataFrames
-   using RCall
-   using LowRankApprox
+   Pkg.add("PyCall")
+   Pkg.build("PyCall")
+   Pkg.add("PyPlot")
    ```
 
-   The Plots package is not needed to run the core mixopt functions,
-   but is useful for running the examples.
+   The `Pkg.build` step is important for installing the `PyPlot`
+   package.
 
+5. Restart Julia, then precompile the packages and load them to make
+   sure that they work:
+
+   ```julia
+   using DataFrames
+   using PyCall
+   using PyPlot
+   ```
+
+   Precompiling the PyPlot package may take some time since it may
+   download and install additional Python packages.
+   
 ## Credits
 
 This project was developed by
