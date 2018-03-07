@@ -3,7 +3,7 @@ using LowRankApprox
 # L      : likelihood matrix; design matrix
 # opttol : 
 function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
-                pqrtol = 0, eps = 1e-8, sptol = 1e-3,
+                pqrtol = 1e-8, eps = 1e-8, sptol = 1e-3,
                 maxiter = 100, maxqpiter = 100,
                 lowrank = "svd", seed = 1, verbose = true)
     
