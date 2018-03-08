@@ -25,7 +25,9 @@ under the terms of the
 3. Install the [Julia kernel for
    Jupyter](https://github.com/JuliaLang/IJulia.jl).
 
-4. Install the DataFrames, PyCall and PyPlot packages in Julia:
+4. Download and install [MOSEK](https://www.mosek.com).
+
+5. Install the DataFrames, PyCall and PyPlot packages in Julia:
 
    ```julia
    Pkg.add("DataFrames")
@@ -33,12 +35,13 @@ under the terms of the
    Pkg.add("PyCall")
    Pkg.build("PyCall")
    Pkg.add("PyPlot")
+   Pkg.add("Mosek")
    ```
 
    The `Pkg.build` step is important for installing the `PyPlot`
    package.
 
-5. Restart Julia, then precompile the packages and load them to make
+6. Restart Julia, then precompile the packages and load them to make
    sure that they work:
 
    ```julia
@@ -46,10 +49,13 @@ under the terms of the
    using CSV
    using PyCall
    using PyPlot
+   using Mosek
    ```
 
    Precompiling the PyPlot package may take some time since it may
    download and install additional Python packages.
+
+7. *Add next step here.*
 
 ## What's included
 
