@@ -1,7 +1,9 @@
 using LowRankApprox
 
-# L      : likelihood matrix; design matrix
-# opttol : 
+# L       : likelihood matrix; design matrix of size n by m
+# x       : initial point with default (1/m, 1/m, ...)
+# convtol :
+# 
 function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
                 pqrtol = 1e-8, eps = 1e-8, sptol = 1e-3,
                 maxiter = 100, maxqpiter = 100,
@@ -183,7 +185,7 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
   # iteration; (4) the number of nonzero entries in the vector at each
   # iteration; and (5) the number of inner iterations taken to solve
   # the QP subproblem at each outer iteration.
-  x[x .< sptol] = 0;
+  x[x .< sptol] = 0; x = x/sum(x);
   totaltime = lowranktime + sum(timing[1:i]);
   if verbose
     @printf("Optimization took %d iterations and %0.4f seconds.\n",i,totaltime)

@@ -27,7 +27,7 @@ function ash(x,s; mult = 1.3, lowrank = "svd")
     t1 = toq();
     
     # fit the model
-    temp = mixSQP_time(log_lik, ptol = 1e-8, lowrank = lowrank);
+    temp = mixSQP_time(log_lik, pqrtol = 1e-8, lowrank = lowrank);
     t3 = temp[3];
     t2 = temp[2];
     p = temp[1];
