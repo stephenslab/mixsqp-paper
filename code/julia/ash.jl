@@ -1,8 +1,9 @@
 using LowRankApprox
 
 include("mixSQP_time.jl")
+include("REBayes.jl")
 
-function ash(x,s; mult = 1.3, lowrank = "svd")
+function ash(x,s; method = "mixSQP", mult = 1.3, lowrank = "svd")
     tic();
     s2 = s.^2
     x2 = x.^2;
@@ -27,10 +28,18 @@ function ash(x,s; mult = 1.3, lowrank = "svd")
     t1 = toq();
     
     # fit the model
-    temp = mixSQP_time(log_lik, pqrtol = 1e-8, lowrank = lowrank);
-    t3 = temp[3];
-    t2 = temp[2];
-    p = temp[1];
+    if method == "mixSQP"
+        temp = mixSQP_time(log_lik, pqrtol = 1e-8, lowrank = lowrank);
+        t3 = temp[3];
+        t2 = temp[2];
+        p = temp[1];
+    elseif method == "REBayes"
+        temp = REBayes(log_lik);
+        t2 = temp[2];
+        p = temp[1];
+    else
+        error("Error")
+    end
     
     tic();
     # exploit sparsity
@@ -49,6 +58,10 @@ function ash(x,s; mult = 1.3, lowrank = "svd")
     t4 = toq();
     
     # return posterior first/second moments
-    return post_mean, post_mean2, log_lik, p, [t1;t2;t3;t4]
+    if method == "mixSQP"
+        return post_mean, post_mean2, log_lik, p, [t1;t2;t3;t4]
+    else
+        return post_mean, post_mean2, log_lik, p, [t1;t2;t4]
+    end
 
 end
