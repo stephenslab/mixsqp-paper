@@ -1,3 +1,6 @@
+include("mixSQP_time.jl")
+include("REBayes.jl")
+
 function ash(x,s; method = "mixSQP", mult = 1.3, lowrank = "svd")
     tic();
     s2 = s.^2

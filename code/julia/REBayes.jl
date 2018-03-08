@@ -1,3 +1,5 @@
+using RCall
+
 function REBayes(L)
     @rput L;
     R"require(REBayes);
