@@ -27,7 +27,8 @@ under the terms of the
 
 4. Download and install [MOSEK](https://www.mosek.com).
 
-5. Install the DataFrames, PyCall and PyPlot packages in Julia:
+5. Install several Julia packages, including the DataFrames, PyCall
+   and PyPlot packages:
 
    ```julia
    Pkg.add("DataFrames")
@@ -35,6 +36,7 @@ under the terms of the
    Pkg.add("PyCall")
    Pkg.build("PyCall")
    Pkg.add("PyPlot")
+   Pkg.add("JuMP")
    Pkg.add("Mosek")
    ```
 
@@ -49,6 +51,7 @@ under the terms of the
    using CSV
    using PyCall
    using PyPlot
+   using JuMP
    using Mosek
    ```
 
