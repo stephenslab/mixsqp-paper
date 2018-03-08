@@ -46,7 +46,11 @@ under the terms of the
 
    Precompiling the PyPlot package may take some time since it may
    download and install additional Python packages.
-   
+
+## What's included
+
+*Give overview of important files here.*
+
 ## Credits
 
 This project was developed by
