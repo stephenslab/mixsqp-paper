@@ -29,6 +29,7 @@ under the terms of the
 
    ```julia
    Pkg.add("DataFrames")
+   Pkg.add("CSV")
    Pkg.add("PyCall")
    Pkg.build("PyCall")
    Pkg.add("PyPlot")
@@ -42,6 +43,7 @@ under the terms of the
 
    ```julia
    using DataFrames
+   using CSV
    using PyCall
    using PyPlot
    ```

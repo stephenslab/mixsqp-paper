@@ -1,9 +1,2 @@
-.Rproj.user
-.Ruserdata
-.Rapp.history
-analysis/figure
-analysis/*html
-analysis/*_cache
-src/*.so
-src/*.o
-new/data/sample100000x100.txt
+analysis/.ipynb_checkpoints
+data/sample*.txt
