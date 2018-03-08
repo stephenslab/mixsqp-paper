@@ -6,6 +6,8 @@ overview of the problem and results of our experiments.
 
 ## License
 
+Copyright (c) 2017, Youngseok Kim.
+
 All source code and software in this repository are made available
 under the terms of the
 [MIT license](https://opensource.org/licenses/mit-license.html).
@@ -23,30 +25,43 @@ under the terms of the
 3. Install the [Julia kernel for
    Jupyter](https://github.com/JuliaLang/IJulia.jl).
 
-4. Install the DataFrames, PyCall and PyPlot packages in Julia:
+4. Download and install [MOSEK](https://www.mosek.com).
+
+5. Install several Julia packages, including the DataFrames, PyCall
+   and PyPlot packages:
 
    ```julia
-   Pkg.add("DataFrames")
+   Pkg.add("CSV")
    Pkg.add("PyCall")
    Pkg.build("PyCall")
    Pkg.add("PyPlot")
+   Pkg.add("JuMP")
+   Pkg.add("Mosek")
    ```
 
    The `Pkg.build` step is important for installing the `PyPlot`
    package.
 
-5. Restart Julia, then precompile the packages and load them to make
+6. Restart Julia, then precompile the packages and load them to make
    sure that they work:
 
    ```julia
-   using DataFrames
+   using CSV
    using PyCall
    using PyPlot
+   using JuMP
+   using Mosek
    ```
 
    Precompiling the PyPlot package may take some time since it may
    download and install additional Python packages.
-   
+
+7. *Add next step here.*
+
+## What's included
+
+*Give overview of important files here.*
+
 ## Credits
 
 This project was developed by

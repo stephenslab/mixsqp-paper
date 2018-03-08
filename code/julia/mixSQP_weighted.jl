@@ -1,6 +1,5 @@
 # NOTE: This version is not used for the paper. This implements an
 # extension to mixsqp allowing for samples with weights.
-using LowRankApprox
 
 # TO DO: Briefly explain here in a few sentences what this function
 #        does, and how to use it.
