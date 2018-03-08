@@ -31,7 +31,6 @@ under the terms of the
    and PyPlot packages:
 
    ```julia
-   Pkg.add("DataFrames")
    Pkg.add("CSV")
    Pkg.add("PyCall")
    Pkg.build("PyCall")
@@ -47,7 +46,6 @@ under the terms of the
    sure that they work:
 
    ```julia
-   using DataFrames
    using CSV
    using PyCall
    using PyPlot
