@@ -1,7 +1,3 @@
-using LowRankApprox
-
-include("mixSQP_time.jl")
-
 function ash(x,s; mult = 1.3, lowrank = "svd")
     tic();
     s2 = s.^2

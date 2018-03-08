@@ -1,8 +1,3 @@
-using CSV
-
-# load ash
-include("ash.jl")
-
 # make small data
 # set n and n_half
 n = 5 * 10^3;

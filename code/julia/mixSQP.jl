@@ -1,5 +1,3 @@
-using LowRankApprox
-
 # L       : likelihood matrix; design matrix of size n by m
 # x       : initial point with default (1/m, 1/m, ...)
 # convtol :

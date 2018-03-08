@@ -1,5 +1,3 @@
-using LowRankApprox
-
 function mixSQP_time(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3, lowrank = "svd")
   n = size(L,1); k = size(L,2);
   tic();
