@@ -1,2 +1,25 @@
-All raw and processed data used in the experiments should be stored
-here.
+All raw and processed data used in the experiments are stored here.
+Below are brief descriptions of some of the files included in this
+directory.
+
+giant_height_summary_statistics.txt.gz
+--------------------------------------
+
+The file contains summary statistics for 2,126,678 genetic markers
+(SNPs) from the GIANT study (GIANT is short for "Genetic Investigation
+of ANthropometric Traits"). These summary statistics were computed
+from a meta-anlysis of 79 genome-wide association studies of human
+height; see Wood et al (2014), "Defining the role of common variation
+in the genomic and biological architecture of adult human height,"
+Nature Genetics 46: 1173-1186. The original source file for these data
+is GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.txt.gz
+from http://portals.broadinstitute.org/collaboration/giant, the GIANT
+project Wiki site.
+
+The columns from left to right are: (1) chromosome number, (2) SNP
+base-pair position (based on human genome assembly 19, NCBI release
+37); (3) dbSNP identifier; (4) reference SNP allele; (5) alternative
+allele; (6) estimate of the coefficient (slope) in the linear
+regression; (7) standard error of the coefficient estimate; (8)
+meta-analysis p-value reported in Wood et al, 2014; and (9) number of
+observations.
