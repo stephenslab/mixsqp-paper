@@ -13,6 +13,14 @@ Useful links
 + Tutorial on debugging with LLDB:
   https://kevinushey.github.io/blog/2015/04/13/debugging-with-lldb
 
++ A few useful references on the Julia language:
+  https://juliadocs.github.io/Julia-Cheat-Sheet
+  https://github.com/bkamins/The-Julia-Express
+  https://docs.julialang.org
+
++ Good prototype for developing Julia functions:
+  https://github.com/JuliaMath/IterativeSolvers.jl
+
 How to debug the RcppArmadillo code
 ===================================
 (These are only very minimal setup instructions.)
