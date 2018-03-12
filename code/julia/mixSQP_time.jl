@@ -91,7 +91,7 @@ function mixSQP_time(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3, lowrank 
   x[x .< sptol] = 0;
   t2 = toq();
     
-  return full(x/sum(x)), t, t2
+  return full(x/sum(x)), t, t2, t+t2
 end
 
 function eval_f(L,x; eps = 1e-8)
