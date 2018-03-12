@@ -13,6 +13,9 @@ Useful links
 + Tutorial on debugging with LLDB:
   https://kevinushey.github.io/blog/2015/04/13/debugging-with-lldb
 
++ Good prototype for developing Julia functions:
+  https://github.com/JuliaMath/IterativeSolvers.jl
+
 How to debug the RcppArmadillo code
 ===================================
 (These are only very minimal setup instructions.)
