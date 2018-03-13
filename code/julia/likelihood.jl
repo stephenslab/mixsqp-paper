@@ -16,16 +16,18 @@ function autoselectmixsd(x::Array{Float64,1},
   # Check input "gridmult".
   # TO DO.
   x2 = x.^2;
+
+  # Determine the minimum and maximum sigma settings.
   s_min = sqrt(minimum(s.^2))/10;
-    if all(x2 .<= s2)
+  if all(x2 .<= s2)
 
-      # This deals with the occasional boundary case.
-      smax = 10 * smin; 
-    else
+    # This deals with the occasional boundary case.
+    smax = 10 * smin; 
+  else
 
-      # This is, roughly, the largest value you'd want to use.
-      s_max = 2 * sqrt(maximum(x2-s2)); 
-    end
+    # This is, roughly, the largest value you'd want to use.
+    smax = 2 * sqrt(maximum(x2-s2)); 
+  end
     
   # Choose the grid of sigmas.
   if gridmult == 0
