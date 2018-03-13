@@ -1,4 +1,4 @@
-include("data_gen.jl")
+include("genL.jl")
 
 # make small data
 # set n and n_half
