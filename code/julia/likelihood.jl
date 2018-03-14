@@ -7,50 +7,57 @@
 # user-specified range of mixsd.
 #
 function autoselectmixsd(x::Array{Float64,1},
-                         s::Array{Float64,1} = ones(size(x)),
+                         s::Array{Float64,1} = ones(size(x));
                          gridmult::Float64 = 1.4)
 
-  # Check input "s".
-  # TO DO.
+  # Get the number of samples.
+  n = length(x);
     
+  # Check input "s"---it should be the same length
+  if length(s) != n
+    throw(ArgumentError("Arguments \"x\" and \"s\" should have the same" *
+                        "length"))
+  elseif any(s .<= 0)
+    throw(ArgumentError("All elements of \"s\" should be positive"))
+  end
+      
   # Check input "gridmult".
-  # TO DO.
-  x2 = x.^2;
+  if gridmult < 0
+    throw(ArgumentError("Input \"gridmult\" should be non-negative"))
+  end
 
   # Determine the minimum and maximum sigma settings.
-  s_min = sqrt(minimum(s.^2))/10;
-  if all(x2 .<= s2)
+  smin = sqrt(minimum(s.^2))/10;
+  if all(x.^2 .<= s.^2)
 
     # This deals with the occasional boundary case.
     smax = 10 * smin; 
   else
 
     # This is, roughly, the largest value you'd want to use.
-    smax = 2 * sqrt(maximum(x2-s2)); 
+    smax = 2 * sqrt(maximum(x.^2 - s.^2)); 
   end
     
   # Choose the grid of sigmas.
   if gridmult == 0
-    grid = vcat(0,smax)
+    return vcat(0,smax)
   else 
-        n = ceil(Int, log2(s_max/s_min)/log2(mult));
-        grid = [0;mult.^((-n):0) * s_max];
-    end
-
+    m = ceil(Int,log2(smax/smin)/log2(gridmult));
+    return vcat(0,gridmult.^colon(-m,0) * smax)
+  end
 end
 
-
-function normlikmatrix (x::Array{Float64,1},
-                        s::Array{Float64,1} = ones(size(x)),
-                        σ::)
-    s2 = s.^2
-    x2 = x.^2;
+## function normlikmatrix(x::Array{Float64,1},
+##                        s::Array{Float64,1} = ones(size(x)),
+##                        sigma)
+##     s2 = s.^2
+##     x2 = x.^2;
     
-    # matrix likelihood
-    s_matrix = sqrt.((s2) .+ (grid.^2)') # n by m matrix of standard deviations of convolutions
-    L = -(x./s_matrix).^2/2 - log.(s_matrix) - log(2*pi)/2;
-    L = L - repmat(maximum(L,2),1,size(L,2));
-    L = exp.(L);
+##     # matrix likelihood
+##     s_matrix = sqrt.((s2) .+ (grid.^2)') # n by m matrix of standard deviations of convolutions
+##     L = -(x./s_matrix).^2/2 - log.(s_matrix) - log(2*pi)/2;
+##     L = L - repmat(maximum(L,2),1,size(L,2));
+##     L = exp.(L);
     
-    return L
-end
+##     return L
+## end

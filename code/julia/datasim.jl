@@ -7,7 +7,7 @@ function normdatasim(n::Int)
 
   # Check input "n".
   if n <= 0
-    throw(ArgumentError("Argument \"n\" must be a positive integer"))
+    throw(ArgumentError("Argument \"n\" should be a positive integer"))
   end
 
   # Generate the random numbers.
