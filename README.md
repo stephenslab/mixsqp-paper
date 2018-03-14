@@ -62,6 +62,16 @@ under the terms of the
 
 *Give overview of important files here.*
 
+## Developer notes
+
+
+
+```bash
+cd analysis
+jupyter nbconvert --template=../docs/nbconvert.tpl \
+  mixSQP_example.ipynb --output-dir=../docs
+```
+
 ## Credits
 
 This project was developed by
