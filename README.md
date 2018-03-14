@@ -64,12 +64,12 @@ under the terms of the
 
 ## Developer notes
 
-
+Run these commands in the `analysis` directory to re-build the webpsite
+from the Jupyter notebooks.
 
 ```bash
-cd analysis
 jupyter nbconvert --template=../docs/nbconvert.tpl \
-  mixSQP_example.ipynb --output-dir=../docs
+  index.ipynb mixSQP_example.ipynb --output-dir=../docs
 ```
 
 ## Credits
