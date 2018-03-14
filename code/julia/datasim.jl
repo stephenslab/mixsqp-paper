@@ -7,11 +7,30 @@ function normdatasim(n::Int)
 
   # Check input "n".
   if n <= 0
-    throw(ArgumentError("Argument \"n\" should be a positive integer"))
+    throw(ArgumentError("Argument \"n\" should be positive"))
   end
 
   # Generate the random numbers.
   n1 = round(Int,n/2);
   n2 = n - n1;
   return vcat(randn(n1),3*randn(n2))
+end
+
+# Simulate n random numbers generated as follows: 50% of the random
+# numbers are drawn from the standard univariaten normal; 20% are
+# drawn from a t-distribution with 4 degrees of freedom; and the
+# remaining 30% are drawn from a t-distribution with 6 degrees of
+# freedom. The return value is a vector of floats of length n.
+function normtmixdatasim(n::Int)
+  
+  # Check input "n".
+  if n <= 0
+    throw(ArgumentError("Argument \"n\" should be positive"))
+  end
+
+  # Generate the random numbers.
+  n1 = round(Int,0.5*n);
+  n2 = round(Int,0.2*n);
+  n3 = n - n1 - n2;
+  return vcat(randn(n1),rand(TDist(4),n2),rand(TDist(6),n3))
 end

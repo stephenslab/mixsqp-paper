@@ -1,6 +1,7 @@
 # Try to select a reasonable set of sigma values that should be used
 # for the adaptive shrinkage model based on the values of x (the noisy
-# observations) and s (the standard error in the observations).
+# observations) and s (the standard error in the observations). The
+# return value is a vector of sigma values.
 function autoselectmixsd(x::Array{Float64,1},
                          s::Array{Float64,1} = ones(size(x));
                          gridmult::Float64 = 1.4)
