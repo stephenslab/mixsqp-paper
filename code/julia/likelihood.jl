@@ -42,17 +42,54 @@ function autoselectmixsd(x::Array{Float64,1},
   end
 end
 
-## function normlikmatrix(x::Array{Float64,1},
-##                        s::Array{Float64,1} = ones(size(x)),
-##                        sigma)
-##     s2 = s.^2
-##     x2 = x.^2;
+# Compute the n x k conditional likelihood matrix, where n is the
+# number of samples and k is the number of mixture components, for the
+# case when the likelihood is univariate normal and prior is a mixture
+# of univariate normals.
+#
+# Entry (i,j) of the conditional likelihood matrix is equal to
+# N(0,s[i]^2 + sd[j]^2), the normal density with zero mean and
+# variance s[i]^2 + sd[j]^2.
+#
+# If normalize = true, each row of the likelihood matrix is divided by
+# the largest value in the row. After normalization, the largest value
+# in each row is 1.
+function normlikmatrix(x::Array{Float64,1},
+                       s::Array{Float64,1} = ones(size(x));
+                       sd::Array{Float64,1} = autoselectmixsd(x,s),
+                       normalizerows::Bool = true)
+
+  # Get the number of samples (n) and the number of prior mixture
+  # components (k).
+  n = length(x);
+  k = length(sd);
     
-##     # matrix likelihood
-##     s_matrix = sqrt.((s2) .+ (grid.^2)') # n by m matrix of standard deviations of convolutions
-##     L = -(x./s_matrix).^2/2 - log.(s_matrix) - log(2*pi)/2;
-##     L = L - repmat(maximum(L,2),1,size(L,2));
-##     L = exp.(L);
+  # Check input "s"---it should be the same length
+  if length(s) != n
+    throw(ArgumentError("Arguments \"x\" and \"s\" should have the same" *
+                        "length"))
+  elseif any(s .<= 0)
+    throw(ArgumentError("All elements of \"s\" should be positive"))
+  end
+
+  # Check input "sd".
+  if any(sd .< 0)
+    throw(ArgumentError("All elements of \"sd\" should be non-negative"))
+  end
     
-##     return L
-## end
+  # Compute the n x k matrix of standard deviations.
+  S = sqrt.((s.^2) .+ (sd.^2)');
+
+  # Compute the log-densities, and normalize the rows, if requested.
+  L = -(x./S).^2/2 - log.(S) - log(2*pi)/2;
+  if normalizerows
+
+    # This is the same as
+    #
+    #   L = L - repmat(maximum(L,2),1,k);
+    #
+    # but uses memory more efficiently to complete the operation.
+    L = broadcast(-,L,maximum(L,2));
+  end
+  return exp.(L)
+end
