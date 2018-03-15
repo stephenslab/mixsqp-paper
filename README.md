@@ -31,7 +31,7 @@ under the terms of the
    and PyPlot packages:
 
    ```julia
-   Pkg.add("CSV")
+   Pkg.add("Distributions")
    Pkg.add("PyCall")
    Pkg.build("PyCall")
    Pkg.add("PyPlot")
@@ -46,7 +46,7 @@ under the terms of the
    sure that they work:
 
    ```julia
-   using CSV
+   using Distributions
    using PyCall
    using PyPlot
    using JuMP
