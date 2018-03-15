@@ -233,7 +233,7 @@ body {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Generate-a-small-data-set">Generate a small data set<a class="anchor-link" href="#Generate-a-small-data-set">&#182;</a></h2><p>Let's start with a smaller example with 5,000 samples.</p>
+<h2 id="Generate-a-small-data-set">Generate a small data set<a class="anchor-link" href="#Generate-a-small-data-set">&#182;</a></h2><p>Let's start with a smaller example with 50,000 samples.</p>
 
 </div>
 </div>
@@ -243,7 +243,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="mi">5000</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">5e4</span><span class="p">));</span>
 </pre></div>
 
 </div>
@@ -265,7 +265,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">gridmult</span> <span class="o">=</span> <span class="mf">1.375</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">gridmult</span> <span class="o">=</span> <span class="mf">1.425</span><span class="p">);</span>
 <span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
 <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
 </pre></div>
@@ -286,7 +286,7 @@ body {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(5000, 20)</pre>
+<pre>(50000, 20)</pre>
 </div>
 
 </div>
@@ -299,7 +299,7 @@ body {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Fit-mixture-model-using-SQP-algorithm">Fit mixture model using SQP algorithm<a class="anchor-link" href="#Fit-mixture-model-using-SQP-algorithm">&#182;</a></h2><p>Observe that only a small number of iterations is needed to converge to the solution of the constrained optimization problem.</p>
+<h2 id="Fit-mixture-model-using-SQP-algorithm">Fit mixture model using SQP algorithm<a class="anchor-link" href="#Fit-mixture-model-using-SQP-algorithm">&#182;</a></h2><p>First we run the mix-SQP algorithm once to precompile the function.</p>
 
 </div>
 </div>
@@ -307,6 +307,28 @@ body {
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;svd&quot;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Observe that only a small number of iterations is needed to converge to the solution of the constrained optimization problem.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">convtol</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
@@ -330,35 +352,35 @@ body {
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Running SQP algorithm with the following settings:
-- 5000 x 20 data matrix
+- 50000 x 20 data matrix
 - convergence tolerance = 1.00e-08
 - zero threshold        = 1.00e-03
 - partial SVD tolerance  = 1.00e-10
-- partial SVD max. error = 1.73e-09
+- partial SVD max. error = 4.49e-09
 iter       objective -min(g+1) #nnz #qp
-   1 2.47539249e+03 +4.45e-01   20   0
-   2 1.75265768e+03 +3.50e+04    1  30
-   3 1.16160122e+03 +1.20e+04    1  14
-   4 1.09130438e+03 +5.22e+03    3  43
-   5 1.06636501e+03 +2.41e+03    3  28
-   6 1.04509224e+03 +1.19e+03    3  19
-   7 1.03423266e+03 +6.37e+02    3   7
-   8 1.01931434e+03 +3.15e+02    2   8
-   9 1.00587765e+03 +1.59e+02    3  21
-  10 1.00148985e+03 +8.02e+01    3   7
-  11 9.91249275e+02 +3.99e+01    3  16
-  12 9.81087089e+02 +1.98e+01    3  22
-  13 9.77327006e+02 +9.77e+00    4  24
-  14 9.72127358e+02 +4.69e+00    3  29
-  15 9.69514294e+02 +2.16e+00    4  12
-  16 9.68516666e+02 +9.48e-01    4  13
-  17 9.67920270e+02 +3.82e-01    4  10
-  18 9.67489808e+02 +1.13e-01    4   7
-  19 9.67238871e+02 +2.01e-02    5   9
-  20 9.67162974e+02 +1.40e-03    5  10
-  21 9.67157062e+02 +2.59e-06    5  10
-  22 9.67157028e+02 -6.53e-09    5  10
-Optimization took 22 iterations and 4.8686 seconds.
+   1 2.90798847e+04 +5.81e-01   20   0
+   2 2.01513705e+04 +5.61e+04    2  32
+   3 1.25759810e+04 +1.96e+04    3  55
+   4 1.11441786e+04 +8.60e+03    3   9
+   5 1.08869695e+04 +4.04e+03    3  24
+   6 1.07736291e+04 +2.01e+03    3  12
+   7 1.06041886e+04 +9.91e+02    2  13
+   8 1.04170898e+04 +5.06e+02    3  21
+   9 1.03458093e+04 +2.56e+02    3  10
+  10 1.02580490e+04 +1.28e+02    3  13
+  11 1.00593430e+04 +6.35e+01    3  21
+  12 9.97666976e+03 +3.23e+01    3   7
+  13 9.93357372e+03 +1.60e+01    3   9
+  14 9.86711011e+03 +7.82e+00    3   7
+  15 9.79793040e+03 +3.79e+00    4  20
+  16 9.76514031e+03 +1.81e+00    4   4
+  17 9.74910313e+03 +8.03e-01    4   6
+  18 9.73503631e+03 +3.31e-01    5  17
+  19 9.72756507e+03 +1.23e-01    5   9
+  20 9.72288854e+03 +2.29e-02    4   8
+  21 9.72176768e+03 +8.76e-04    4   7
+  22 9.72172860e+03 -3.17e-09    4   7
+Optimization took 22 iterations and 0.2598 seconds.
 </pre>
 </div>
 </div>
@@ -378,10 +400,10 @@ Optimization took 22 iterations and 4.8686 seconds.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="mi">100000</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e6</span><span class="p">));</span>
 </pre></div>
 
 </div>
@@ -400,10 +422,10 @@ Optimization took 22 iterations and 4.8686 seconds.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">gridmult</span> <span class="o">=</span> <span class="mf">1.0685</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">gridmult</span> <span class="o">=</span> <span class="mf">1.0705</span><span class="p">);</span>
 <span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
 <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
 </pre></div>
@@ -418,13 +440,13 @@ Optimization took 22 iterations and 4.8686 seconds.
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[7]:</div>
+<div class="prompt output_prompt">Out[8]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(100000, 100)</pre>
+<pre>(1000000, 99)</pre>
 </div>
 
 </div>
@@ -444,7 +466,7 @@ Optimization took 22 iterations and 4.8686 seconds.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">convtol</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
@@ -468,36 +490,35 @@ Optimization took 22 iterations and 4.8686 seconds.
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Running SQP algorithm with the following settings:
-- 100000 x 100 data matrix
+- 1000000 x 99 data matrix
 - convergence tolerance = 1.00e-08
 - zero threshold        = 1.00e-03
 - partial QR tolerance  = 1.00e-10
-- partial QR max. error = 2.75e-08
+- partial QR max. error = 3.18e-08
 iter       objective -min(g+1) #nnz #qp
-   1 6.82359802e+04 +7.70e-01  100   0
-   2 5.10425051e+04 +7.74e+04    1 100
-   3 2.94656541e+04 +2.72e+04    1  54
-   4 2.40476848e+04 +1.19e+04    2 100
-   5 2.30013029e+04 +5.61e+03    2  57
-   6 2.22589255e+04 +2.77e+03    2  63
-   7 2.18716099e+04 +1.38e+03    2  84
-   8 2.14881758e+04 +6.94e+02    3  71
-   9 2.11402934e+04 +3.48e+02    3  76
-  10 2.08215862e+04 +1.75e+02    2  46
-  11 2.05391373e+04 +8.81e+01    3  45
-  12 2.02560390e+04 +4.41e+01    3  40
-  13 2.00388584e+04 +2.21e+01    3  34
-  14 1.98259356e+04 +1.10e+01    3  34
-  15 1.96780269e+04 +5.42e+00    3  33
-  16 1.95582619e+04 +2.60e+00    3  48
-  17 1.94819909e+04 +1.20e+00    4  44
-  18 1.94389532e+04 +5.25e-01    4  44
-  19 1.94129151e+04 +2.01e-01    4  50
-  20 1.93980889e+04 +5.71e-02    5  49
-  21 1.93920909e+04 +8.96e-03    5  36
-  22 1.93909642e+04 +2.61e-04    4  41
-  23 1.93909218e+04 -3.09e-09    4  40
-Optimization took 23 iterations and 1.6842 seconds.
+   1 6.97208422e+05 +7.94e-01   99   0
+   2 4.83513864e+05 +3.53e+04    2 100
+   3 2.74936210e+05 +1.24e+04    3  97
+   4 2.19452875e+05 +5.48e+03    3 100
+   5 2.12324883e+05 +2.60e+03    3 100
+   6 2.09485941e+05 +1.29e+03    3  69
+   7 2.06672331e+05 +6.42e+02    2  76
+   8 2.04404957e+05 +3.22e+02    3  54
+   9 2.02563522e+05 +1.62e+02    3  37
+  10 2.00904496e+05 +8.18e+01    3  43
+  11 1.99290408e+05 +4.08e+01    2  43
+  12 1.98204985e+05 +2.03e+01    3  48
+  13 1.97444173e+05 +1.00e+01    3  27
+  14 1.96866649e+05 +4.93e+00    4  39
+  15 1.96504593e+05 +2.38e+00    4  45
+  16 1.96244381e+05 +1.12e+00    5  48
+  17 1.96041792e+05 +4.88e-01    4  35
+  18 1.95903171e+05 +1.86e-01    5  58
+  19 1.95828682e+05 +5.19e-02    5  54
+  20 1.95800434e+05 +7.85e-03    5  42
+  21 1.95796784e+05 +1.17e-04    5  24
+  22 1.95796706e+05 -3.13e-09    5  33
+Optimization took 22 iterations and 12.9290 seconds.
 </pre>
 </div>
 </div>
@@ -518,7 +539,7 @@ notebook, including the version of Julia, and the versions of the Julia packages
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;Distributions&quot;</span><span class="p">);</span>
@@ -551,7 +572,7 @@ notebook, including the version of Julia, and the versions of the Julia packages
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">versioninfo</span><span class="p">()</span>
