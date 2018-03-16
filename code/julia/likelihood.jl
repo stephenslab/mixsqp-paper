@@ -4,7 +4,8 @@
 # return value is a vector of sigma values.
 function autoselectmixsd(x::Array{Float64,1},
                          s::Array{Float64,1} = ones(size(x));
-                         gridmult::Float64 = 1.4)
+                         gridmult::Float64 = 1.4,
+                         nv::Int = 0)
 
   # Get the number of samples.
   n = length(x);
@@ -22,6 +23,11 @@ function autoselectmixsd(x::Array{Float64,1},
     throw(ArgumentError("Input \"gridmult\" should be non-negative"))
   end
 
+  # Check input "nv".
+  if !(nv == 0 || nv > 1)
+    throw(ArgumentError("Input \"nv\" should be 0, or greater than 1"))
+  end
+    
   # Determine the minimum and maximum sigma settings.
   smin = sqrt(minimum(s.^2))/10;
   if all(x.^2 .<= s.^2)
@@ -35,11 +41,13 @@ function autoselectmixsd(x::Array{Float64,1},
   end
     
   # Choose the grid of sigmas.
-  if gridmult == 0
+  if nv > 0
+    return vcat(0,logspace(log10(smin),log10(smax),nv - 1));
+  elseif gridmult == 0
     return vcat(0,smax)
   else 
     m = ceil(Int,log2(smax/smin)/log2(gridmult));
-    return vcat(0,gridmult.^colon(-m,0) * smax)
+    return vcat(0,logspace(log10(smin),log10(smax),m + 1));
   end
 end
 
