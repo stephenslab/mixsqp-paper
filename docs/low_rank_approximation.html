@@ -240,7 +240,7 @@ body {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">5e4</span><span class="p">));</span>
@@ -265,7 +265,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="mf">1.425</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">20</span><span class="p">);</span>
 <span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
 <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
 </pre></div>
@@ -352,9 +352,9 @@ body {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  0.399308 seconds (19.58 k allocations: 311.511 MiB, 12.59% gc time)
-  0.251480 seconds (21.74 k allocations: 321.207 MiB, 14.53% gc time)
-  0.279777 seconds (19.88 k allocations: 643.426 MiB, 16.34% gc time)
+<pre>  0.383886 seconds (19.00 k allocations: 312.994 MiB, 16.12% gc time)
+  0.278264 seconds (20.60 k allocations: 306.578 MiB, 12.83% gc time)
+  0.304404 seconds (18.85 k allocations: 611.273 MiB, 14.02% gc time)
 </pre>
 </div>
 </div>
@@ -396,7 +396,7 @@ body {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(8.30002733209767e-12, 0.0)</pre>
+<pre>(3.3306690738754696e-15, 5.662137425588298e-15)</pre>
 </div>
 
 </div>
@@ -419,8 +419,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">srand</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e6</span><span class="p">));</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e6</span><span class="p">));</span>
 </pre></div>
 
 </div>
@@ -442,7 +441,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="mf">1.0735</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">100</span><span class="p">);</span>
 <span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
 <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
 </pre></div>
@@ -505,9 +504,9 @@ body {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 12.198485 seconds (58.85 k allocations: 8.535 GiB, 21.69% gc time)
- 10.693275 seconds (65.11 k allocations: 8.634 GiB, 18.24% gc time)
- 66.649927 seconds (66.26 k allocations: 57.209 GiB, 9.77% gc time)
+<pre> 15.177460 seconds (182.68 k allocations: 8.617 GiB, 21.50% gc time)
+ 12.487308 seconds (69.57 k allocations: 8.739 GiB, 17.18% gc time)
+ 62.611468 seconds (57.93 k allocations: 60.218 GiB, 8.65% gc time)
 </pre>
 </div>
 </div>
