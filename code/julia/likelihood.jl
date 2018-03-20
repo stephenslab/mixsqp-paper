@@ -10,7 +10,7 @@ function autoselectmixsd(x::Array{Float64,1},
   # Get the number of samples.
   n = length(x);
     
-  # Check input "s"---it should be the same length
+  # Check input "s"---it should be the same length.
   if length(s) != n
     throw(ArgumentError("Arguments \"x\" and \"s\" should have the same" *
                         "length"))
