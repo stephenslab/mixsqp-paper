@@ -135,8 +135,8 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
       if norm(p_s) < convtol
             
         # Compute the Lagrange multiplier.
-        lambda = d - minimum(d_s);
-        if all(lambda .>= 0)
+        lambda = d
+        if all(lambda .>= -convtol)
           break;
         else
             
