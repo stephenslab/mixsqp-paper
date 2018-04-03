@@ -39,9 +39,10 @@ p1 <- ggplot(data = dat1_1[-1,]) +
        title = "MOSEK with different problem formulations") +
   theme_cowplot(font_size = 12) +
   theme(legend.position = c(0.05,0.9),
-        plot.title = element_text(face = "plain",size = 12))
+        plot.title = element_text(face = "plain",size = 12),
+        axis.line = element_blank())
 
-# TO DO: Explain here what this code does.
+# TO DO: Revise this figure.
 p2 <- ggplot(data = dat1_2[2:10,]) +
   geom_line(aes(x = log2(n), y=log2(t1),color = "S: simplex"), size = 1.2) +
   geom_line(aes(x = log2(n), y=log2(t2),color = "D: dual"), size = 1.2) +
@@ -51,9 +52,67 @@ scale_color_discrete(name = "") +
     ggtitle("formulation-SQP-O-F with m = 40")  +
   theme(legend.position = c(0.05,0.9))
 
+# TO DO: Briefly explain what these lines of code do.
+levels(dat6_1$label) <-
+  c("posterior calculations","model fitting (mix-SQP)",
+    "QR factorization","likelihood computation")
+levels(dat6_2$label) <-
+  c("posterior calculations","model fitting (REBayes/MOSEK)",
+    "likelihood computation")
+dat6_1 <- transform(dat6_1,
+                    label = factor(as.character(label),
+                      c("QR factorization",
+                        "model fitting (mix-SQP)",
+                        "posterior calculations",
+                        "likelihood computation")))
+pdat <- rbind(transform(dat6_1,
+                        x     = x - 5e3,
+                        label = as.character(label)),
+              transform(dat6_2,
+                        x     = as.numeric(as.character(x)) + 5e3,
+                        label = as.character(label)))
+pdat <- transform(pdat,
+          label = factor(label,c("QR factorization",
+                                 "model fitting (REBayes/MOSEK)",
+                                 "model fitting (mix-SQP)",
+                                 "posterior calculations",
+                                 "likelihood computation")))
+
+# TO DO: Briefly describe here what is being shown in this figure.
+p3 <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
+  geom_col(position = "stack",width = 7e3) +
+    scale_fill_manual(name = "",
+      values = c("lightskyblue","orange","orangered","aliceblue",
+                 "lightsteelblue")) +
+  scale_x_continuous(breaks = seq(5e4,25e4,5e4)) +
+  labs(x = "number of data matrix rows (n)",
+       y = "computation time (seconds)",
+       title = "computation breakdown in adaptive shrinkage") +
+  theme_cowplot(font_size = 12) +
+  theme(legend.position = c(.05,0.85),
+        plot.title = element_text(face = "plain",size = 12),
+        axis.line = element_blank(),
+        axis.ticks.x = element_blank())
+
+# TO DO: Briefly describe here what is being shown in this figure.
+p4 <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
+  geom_col(position = "stack",width = 7e3) +
+    scale_fill_manual(name = "",
+      values = c("lightskyblue","orangered","aliceblue","lightsteelblue")) +
+  scale_x_continuous(breaks = seq(5e4,25e4,5e4)) +
+  labs(x = "number of data matrix rows (n)",
+       y = "computation time (seconds)",
+       title = "adaptive shrinkage (mix-SQP only)") +
+  theme_cowplot(font_size = 12) +
+  theme(legend.position = c(.05,0.9),
+        plot.title = element_text(face = "plain",size = 12),
+        axis.line = element_blank(),
+        axis.ticks.x = element_blank())
+
 # SAVE PLOTS AS PDFs
 # ------------------
 ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
+ggsave("../output/F6.pdf",plot_grid(p3,p4),height = 4,width = 8)
 
 stop()
 
@@ -65,14 +124,15 @@ p <- ggplot(data = dat2_1) +
   geom_line(aes(x = log2(n), y=log2(t3),color = "QR"), size = 1.2)
 p <- p + xlab("log2(n)") + ylab("log2(time)")
 p1 <- p + scale_color_discrete(name = "") + ggtitle("B-SQP-A-lowrankapprox")  +
-  theme(legend.position = c(.1,.9),legend.background = element_rect(fill = "transparent"))
+  theme(legend.position = c(.1,.9))
 
 p <- ggplot(data = dat2_2) +
   geom_line(aes(x = log2(n), y=svd,color = "SVD"), size = 1.2) +
   geom_line(aes(x = log2(n), y=qr,color = "QR"), size = 1.2)
 p <- p + xlab("log2(n)") + ylab("log10(frobenius error)")
-p2 <- p + scale_color_discrete(name = "") + ggtitle("accuracy of low-rank approximation") + ylim(c(-13,-12))  +
-  theme(legend.position = c(.1,.9),legend.background = element_rect(fill = "transparent"))
+p2 <- p + scale_color_discrete(name = "") +
+    ggtitle("accuracy of low-rank approximation") + ylim(c(-13,-12))  +
+  theme(legend.position = c(.1,.9))
 multiplot(p1, p2, cols = 2)
 
 ## figure 3
@@ -132,25 +192,3 @@ fig5 <- p1 + scale_color_discrete(name = "m", breaks = c("pink","blue","turquois
   theme(legend.position = c(.1,.75),legend.background = element_rect(fill = "transparent"))
 fig5
 
-
-## figure 6
-
-#### figure 6_1
-p1 <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) + ggtitle("mixSQP comptime of each component in ASH") +
-  theme(legend.position = c(.23,.87),legend.background = element_rect(fill = "transparent")) + 
-  geom_col(position = "stack") + scale_fill_manual("", values = c("#C77CFF","#00BFC4","#7CAE00","#F8766D")) +
-  xlab("n") + ylab("time")
-
-
-#### figure 6_2
-p2 <- ggplot(dat6_2,aes(x = x,y = y,fill = label)) + ggtitle("REBayes comptime of each component in ASH") +
-  theme(legend.position = c(.23,.87),legend.background = element_rect(fill = "transparent")) + 
-  geom_col(position = "stack") + 
-  scale_fill_manual("", values = c("posterior computation" = "#C77CFF",
-                                   "convex optimization (REBayes)" = "#00BFC4",
-                                   "likelihood computation" = "#F8766D")) + xlab("n") + ylab("time")
-p1$labels$fill = ""
-p2$labels$fill = ""
-
-fig6 <- multiplot(p1, p2, cols=2)
-fig6
