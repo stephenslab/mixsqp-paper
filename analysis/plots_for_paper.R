@@ -38,20 +38,24 @@ p1 <- ggplot(data = dat1_1[-1,]) +
        y     = "computation time (seconds)",
        title = "MOSEK with different problem formulations") +
   theme_cowplot(font_size = 12) +
-  theme(legend.position = c(0.1,0.9),
+  theme(legend.position = c(0.05,0.9),
         plot.title = element_text(face = "plain",size = 12))
-ggsave("../output/F1.pdf",p1,height = 4,width = 4)
 
-p <- ggplot(data = dat1_2[2:10,]) +
+# TO DO: Explain here what this code does.
+p2 <- ggplot(data = dat1_2[2:10,]) +
   geom_line(aes(x = log2(n), y=log2(t1),color = "S: simplex"), size = 1.2) +
   geom_line(aes(x = log2(n), y=log2(t2),color = "D: dual"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=log2(t3),color = "B: box"), size = 1.2)
-p2 <- p + xlab("log2(n)") + ylab("log2(time)")
-p2 <- p2 + scale_color_discrete(name = "") +
+  geom_line(aes(x = log2(n), y=log2(t3),color = "B: box"), size = 1.2) +
+xlab("log2(n)") + ylab("log2(time)") +
+scale_color_discrete(name = "") +
     ggtitle("formulation-SQP-O-F with m = 40")  +
-  theme(legend.position = c(.1,.9),legend.background = element_rect(fill = "transparent"))
+  theme(legend.position = c(0.05,0.9))
 
-multiplot(p1, p2, cols = 2)
+# SAVE PLOTS AS PDFs
+# ------------------
+ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
+
+stop()
 
 ## figure 2
 
