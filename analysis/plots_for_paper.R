@@ -39,8 +39,8 @@ p1 <- ggplot(data = dat1_1[-1,]) +
        title = "MOSEK with different problem formulations") +
   theme_cowplot(font_size = 12) +
   theme(legend.position = c(0.05,0.9),
-        plot.title = element_text(face = "plain",size = 12),
-        axis.line = element_blank())
+        plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank())
 
 # TO DO: Revise this figure.
 p2 <- ggplot(data = dat1_2[2:10,]) +
@@ -52,7 +52,9 @@ scale_color_discrete(name = "") +
     ggtitle("formulation-SQP-O-F with m = 40")  +
   theme(legend.position = c(0.05,0.9))
 
-# TO DO: Briefly explain what these lines of code do.
+# Prepare the results for the next two plots. In particular, I merge
+# the mix-SQP and REBayes results, and change the order of the factor
+# levels for a more logical ordering in the plots below.
 levels(dat6_1$label) <-
   c("posterior calculations","model fitting (mix-SQP)",
     "QR factorization","likelihood computation")
@@ -78,8 +80,10 @@ pdat <- transform(pdat,
                                  "posterior calculations",
                                  "likelihood computation")))
 
-# TO DO: Briefly describe here what is being shown in this figure.
-p3 <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
+# Create a plot showing the computation breakdown of adaptive
+# shrinkage with the REBayes (MOSEK) and mix-SQP solvers used to
+# implement the model fitting.
+pA <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
   geom_col(position = "stack",width = 7e3) +
     scale_fill_manual(name = "",
       values = c("lightskyblue","orange","orangered","aliceblue",
@@ -87,15 +91,16 @@ p3 <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
   scale_x_continuous(breaks = seq(5e4,25e4,5e4)) +
   labs(x = "number of data matrix rows (n)",
        y = "computation time (seconds)",
-       title = "computation breakdown in adaptive shrinkage") +
+       title = "breakdown of adaptive shrinkage computation") +
   theme_cowplot(font_size = 12) +
   theme(legend.position = c(.05,0.85),
-        plot.title = element_text(face = "plain",size = 12),
-        axis.line = element_blank(),
+        plot.title   = element_text(face = "plain",size = 12),
+        axis.line    = element_blank(),
         axis.ticks.x = element_blank())
 
-# TO DO: Briefly describe here what is being shown in this figure.
-p4 <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
+# This is a zoomed-in version of the previous plot, for the mix-SQP
+# results only.
+pB <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
   geom_col(position = "stack",width = 7e3) +
     scale_fill_manual(name = "",
       values = c("lightskyblue","orangered","aliceblue","lightsteelblue")) +
@@ -105,14 +110,14 @@ p4 <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
        title = "adaptive shrinkage (mix-SQP only)") +
   theme_cowplot(font_size = 12) +
   theme(legend.position = c(.05,0.9),
-        plot.title = element_text(face = "plain",size = 12),
-        axis.line = element_blank(),
+        plot.title   = element_text(face = "plain",size = 12),
+        axis.line    = element_blank(),
         axis.ticks.x = element_blank())
 
 # SAVE PLOTS AS PDFs
 # ------------------
 ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
-ggsave("../output/F6.pdf",plot_grid(p3,p4),height = 4,width = 8)
+ggsave("../output/F6.pdf",plot_grid(pA,pB),height = 4,width = 8)
 
 stop()
 
