@@ -101,7 +101,6 @@ p3 <- ggplot(data = dat2_1) +
   theme(legend.position = c(0.1,0.9),
         plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank())
-print(p3)
 
 # Create a plot comparing the accuracy of QR and SVD reconstructions
 # of the matrix.
@@ -182,10 +181,32 @@ pB <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
         axis.line    = element_blank(),
         axis.ticks.x = element_blank())
 
+# TO DO: Explain here what this plot shows.
+pdat <- data.frame(n      = rep(2^dat5$n,8),
+                   m      = factor(rep(c(100,200,400,800),each = 20)),
+                   solver = rep(rep(c("REBayes/MOSEK","mix-SQP"),each = 10),4),
+                   time   = do.call(c,dat5[-(1:3)]))
+pC <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
+  geom_line(size = 1) +
+  geom_point(size = 3) +
+  scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
+  scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100,1e3)) +
+  scale_color_manual(values = c("lightskyblue","cornflowerblue",
+                                "mediumblue","darkblue"),
+                     name  = "number of matrix columns (m)") +
+  labs(x = "number of data matrix rows (n)",
+       y = "computation time (seconds)") +
+  theme_cowplot(font_size = 12) +
+  theme(plot.title   = element_text(face = "plain",size = 12),
+        axis.line    = element_blank(),
+        axis.ticks.x = element_blank())
+print(pC)
+
 # SAVE PLOTS AS PDFs
 # ------------------
 ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
 ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
+ggsave("../output/F5.pdf",pC,height = 4,width = 6.5)
 ggsave("../output/F6.pdf",plot_grid(pA,pB),height = 4,width = 8)
 
 stop()
@@ -229,21 +250,4 @@ p3 <- p + scale_color_discrete(name = "") + ggtitle("parameters in each iteratio
   theme(legend.position = c(.9,.9),legend.background = element_rect(fill = "transparent"))
 multiplot(p1, p2, p3, cols = 3)
 
-
-## figure 5
-
-p <- ggplot(data = dat5) +
-  geom_line(aes(x = n, y=log2(IP100),color = "pink",linetype = "D-IP-N-F"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(SQP100),color = "pink",linetype = "B-SQP-A-QR"), size = 1.2) + 
-  geom_line(aes(x = n, y=log2(IP200),color = "turquoise",linetype = "D-IP-N-F"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(SQP200),color = "turquoise",linetype = "B-SQP-A-QR"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(IP400),color = "blue",linetype = "D-IP-N-F"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(SQP400),color = "blue",linetype = "B-SQP-A-QR"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(IP800),color = "salmon",linetype = "D-IP-N-F"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(SQP800),color = "salmon",linetype = "B-SQP-A-QR"), size = 1.2)
-p1 <- p + xlab("log2(n)") + ylab("log2(time)")
-fig5 <- p1 + scale_color_discrete(name = "m", breaks = c("pink","blue","turquoise","salmon"),
-                                  labels = c("100", "200","400","800")) + ggtitle("Computation time of mixSQP versus REBayes")+
-  theme(legend.position = c(.1,.75),legend.background = element_rect(fill = "transparent"))
-fig5
 
