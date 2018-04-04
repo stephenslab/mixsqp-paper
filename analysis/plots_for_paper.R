@@ -150,7 +150,7 @@ pdat <- transform(pdat,
 # Create a plot showing the computation breakdown of adaptive
 # shrinkage with the REBayes (MOSEK) and mix-SQP solvers used to
 # implement the model fitting.
-pA <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
+p5 <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
   geom_col(position = "stack",width = 7e3) +
     scale_fill_manual(name = "",
       values = c("lightskyblue","orange","orangered","aliceblue",
@@ -167,7 +167,7 @@ pA <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
 
 # This is a zoomed-in version of the previous plot, for the mix-SQP
 # results only.
-pB <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
+p6 <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
   geom_col(position = "stack",width = 7e3) +
     scale_fill_manual(name = "",
       values = c("lightskyblue","orangered","aliceblue","lightsteelblue")) +
@@ -181,12 +181,14 @@ pB <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
         axis.line    = element_blank(),
         axis.ticks.x = element_blank())
 
-# TO DO: Explain here what this plot shows.
+# Create a plot showing the runtimes for the mix-SQP and REBayes
+# (MOSEK) methods on simulated data sets with different numbers of
+# samples (n) and different numbers of mixture components (m).
 pdat <- data.frame(n      = rep(2^dat5$n,8),
                    m      = factor(rep(c(100,200,400,800),each = 20)),
                    solver = rep(rep(c("REBayes/MOSEK","mix-SQP"),each = 10),4),
                    time   = do.call(c,dat5[-(1:3)]))
-pC <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
+p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   geom_line(size = 1) +
   geom_point(size = 3) +
   scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
@@ -200,14 +202,13 @@ pC <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   theme(plot.title   = element_text(face = "plain",size = 12),
         axis.line    = element_blank(),
         axis.ticks.x = element_blank())
-print(pC)
 
 # SAVE PLOTS AS PDFs
 # ------------------
 ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
 ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
-ggsave("../output/F5.pdf",pC,height = 4,width = 6.5)
-ggsave("../output/F6.pdf",plot_grid(pA,pB),height = 4,width = 8)
+ggsave("../output/F5.pdf",p7,height = 4,width = 6.5)
+ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 8)
 
 stop()
 
