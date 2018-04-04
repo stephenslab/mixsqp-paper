@@ -169,7 +169,22 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
         y = y + alpha * p;
       end
     end
-
+    
+    # Perform backtracking line search
+    for t = 1:10
+        if lowrank == "qr"
+            D_new = 1./(F[:Q]*(F[:R]*(P'*y)) + eps);
+        elseif lowrank == "svd"
+            D_new = 1./(F[:U]*(S*(F[:Vt]*y)) + eps);
+        else
+            D_new = 1./(L*x + eps);
+        end
+        if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
+            break;
+        end
+        y = (y-x)/2 + x;
+    end
+        
     # Update the solution to the original optimization problem.
     x = y;
 
