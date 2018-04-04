@@ -83,7 +83,7 @@ p2 <- ggplot(data = pdat[-1,]) +
         plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank())
 
-# TO DO: Explain here what this figure shows.
+# Create a plot
 p3 <- ggplot(data = dat2_1) +
   geom_line(aes(x = n,y = t1,color = "no approx."),size = 1) +
   geom_line(aes(x = n,y = t2,color = "SVD"),size = 1) +
@@ -93,7 +93,7 @@ p3 <- ggplot(data = dat2_1) +
   geom_point(aes(x = n,y = t3,color = "QR"),size = 3,shape = 20) +
   scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100)) +
-  scale_color_manual(values = colors,name = "") +
+  scale_color_manual(values = colors[c(1:2,6)],name = "") +
   labs(x     = "number of data matrix rows (n)",
        y     = "computation time (seconds)",
        title = "SQP with different low-rank approximations") +
@@ -103,15 +103,22 @@ p3 <- ggplot(data = dat2_1) +
         axis.line       = element_blank())
 print(p3)
 
-# TO DO: Explain here what this figure shows.
-p <- ggplot(data = dat2_2) +
-  geom_line(aes(x = log2(n), y=svd,color = "SVD"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=qr,color = "QR"), size = 1.2)
-p <- p + xlab("log2(n)") + ylab("log10(frobenius error)")
-p2 <- p + scale_color_discrete(name = "") +
-    ggtitle("accuracy of low-rank approximation") + ylim(c(-13,-12))  +
-  theme(legend.position = c(.1,.9))
-multiplot(p1, p2, cols = 2)
+# Create a plot comparing the accuracy of QR and SVD reconstructions
+# of the matrix.
+p4 <- ggplot(data = dat2_2) +
+  geom_point(aes(x = n,y = 10^svd,color = "SVD",shape = "SVD"),size = 2) +
+  geom_point(aes(x = n,y = 10^qr,color = "QR",shape = "QR"),size = 2) +
+  scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
+  scale_color_manual(values = colors[c(2,6)],name = "") +
+  scale_shape_manual(values = c(19,4)) +
+  labs(x = "number of data matrix rows (n)",
+       y = "norm of exact L - approx. L",
+       title = "error in low-rank approximation of L") +
+  theme_cowplot(font_size = 12) +
+  theme(legend.position = c(0.1,0.9),
+        plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank()) +
+  guides(color = FALSE,shape = FALSE)
 
 # Prepare the results for the next two plots. In particular, I merge
 # the mix-SQP and REBayes results, and change the order of the factor
@@ -178,6 +185,7 @@ pB <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
 # SAVE PLOTS AS PDFs
 # ------------------
 ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
+ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
 ggsave("../output/F6.pdf",plot_grid(pA,pB),height = 4,width = 8)
 
 stop()
