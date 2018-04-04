@@ -18,39 +18,70 @@ load("../output/results_for_plots.RData")
 # ------------
 # Create a plot comparing the computation time for solving three
 # different formulations of the maximum-likelihood estimation problem
-# with MOSEK (in JuMP): (1) the dual problem, (2) the primal problem
-# with simple constraints, and (3) the primal problem with
-# non-negativity constraints.
-p1 <- ggplot(data = dat1_1[-1,]) +
-  geom_line(aes(x = n,y = t2,color = "dual"),size = 1) +
-  geom_line(aes(x = n,y = t1,color = "primal, simplex-constrained"),size = 1) +
-  geom_line(aes(x = n,y = t3,color = "primal, non-negative-constrained"),
+# with MOSEK (in JuMP) and the SQP algorithm: (1) the dual problem,
+# (2) the primal problem with simple constraints, and (3) the primal
+# problem with non-negativity constraints.
+names(dat1_2) <- c("X","n","m","t4","t5","t6")
+pdat  <- cbind(dat1_1,dat1_2[c("t4","t5","t6")])
+p1 <- ggplot(data = pdat[-1,]) +
+  geom_line(aes(x = n,y = t1,color = "MOSEK, primal, simplex-constrained"),
             size = 1) +
-  geom_point(aes(x = n,y = t2,color = "dual"),size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t1,color = "primal, simplex-constrained"),
+  geom_line(aes(x = n,y = t2,color = "MOSEK, dual"),size = 1) +
+  geom_line(aes(x = n,y = t3,color="MOSEK, primal, non-negative-constrained"),
+            size = 1) +
+  geom_line(aes(x = n,y = t4,color = "SQP, primal, simplex-constrained"),
+            size = 1) +
+  geom_line(aes(x = n,y = t5,color = "SQP, dual"),size = 1) +
+  geom_line(aes(x = n,y = t6,color = "SQP, primal, non-negative-constrained"),
+            size = 1) +
+  geom_point(aes(x = n,y = t1,color = "MOSEK, primal, simplex-constrained"),
              size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t3,color = "primal, non-negative-constrained"),
+  geom_point(aes(x = n,y = t2,color = "MOSEK, dual"),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t3,color="MOSEK, primal, non-negative-constrained"),
+             size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t4,color = "SQP, primal, simplex-constrained"),
+             size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t5,color = "SQP, dual"),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t6,color="SQP, primal, non-negative-constrained"),
              size = 3,shape = 20) +
   scale_x_continuous(trans = "log10",breaks = c(40,100,1e3,1e4)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100)) + 
-  scale_color_manual(values = colors,name = "") +
+  scale_color_manual(values = c("lightskyblue","darkblue","royalblue",
+                                "gold","darkorange","orange"),
+                     name = "") +
   labs(x     = "number of data matrix rows (n)",
        y     = "computation time (seconds)",
-       title = "MOSEK with different problem formulations") +
+       title = "complexity of problem formulation") +
   theme_cowplot(font_size = 12) +
-  theme(legend.position = c(0.05,0.9),
+  theme(legend.position = c(0,0.85),
         plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank())
 
-# TO DO: Revise this figure.
-p2 <- ggplot(data = dat1_2[2:10,]) +
-  geom_line(aes(x = log2(n), y=log2(t1),color = "S: simplex"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=log2(t2),color = "D: dual"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=log2(t3),color = "B: box"), size = 1.2) +
-xlab("log2(n)") + ylab("log2(time)") +
-scale_color_discrete(name = "") +
-    ggtitle("formulation-SQP-O-F with m = 40")  +
-  theme(legend.position = c(0.05,0.9))
+# This is a zoomed-in version of the previous plot, for the SQP
+# results only.
+p2 <- ggplot(data = pdat[-1,]) +
+  geom_line(aes(x = n,y = t4,color = "SQP, primal, simplex-constrained"),
+            size = 1) +
+  geom_line(aes(x = n,y = t5,color = "SQP, dual"),size = 1) +
+  geom_line(aes(x = n,y = t6,color = "SQP, primal, non-negative-constrained"),
+            size = 1) +
+  geom_point(aes(x = n,y = t4,color = "SQP, primal, simplex-constrained"),
+             size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t5,color = "SQP, dual"),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t6,color="SQP, primal, non-negative-constrained"),
+             size = 3,shape = 20) +
+  scale_x_continuous(trans = "log10",breaks = c(40,100,1e3,1e4)) +
+  scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100)) + 
+  scale_color_manual(values = c("gold","darkorange","orange"),
+                     name = "") +
+  guides(color = FALSE) +
+  labs(x     = "number of data matrix rows (n)",
+       y     = "computation time (seconds)",
+       title = "complexity of problem formulation (SQP only)") +
+  theme_cowplot(font_size = 12) +
+  theme(legend.position = c(0,0.85),
+        plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank())
 
 # Prepare the results for the next two plots. In particular, I merge
 # the mix-SQP and REBayes results, and change the order of the factor
