@@ -52,9 +52,9 @@ function mixSQP_time(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3, lowrank 
       # convergence check
       if norm(p_s) < tol
         # compute the Lagrange multiplier
-        lambda = d - minimum(d_s);
+        lambda = d;
         # convergence test
-        if minimum(lambda) >= 0;
+        if minimum(lambda) >= -tol;
           break;
         else
           ind_min = findmin(lambda)[2];
@@ -81,10 +81,27 @@ function mixSQP_time(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3, lowrank 
         y = y + alpha * p;
       end
     end
+        
+    # Perform backtracking line search
+    for t = 1:10
+        if lowrank == "qr"
+            D_new = 1./(F[:Q]*(F[:R]*(P'*y)) + eps);
+        elseif lowrank == "svd"
+            D_new = 1./(F[:U]*(S*(F[:Vt]*y)) + eps);
+        else
+            D_new = 1./(L*x + eps);
+        end
+        if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
+            break;
+        end
+        y = (y-x)/2 + x;
+    end
+        
+    # Update the solution to the original optimization problem.
     x = y;
 
     # convergence check
-    if minimum(g+1) >= 0
+    if minimum(g + 1) >= -convtol
       break;
     end
   end
