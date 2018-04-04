@@ -83,6 +83,36 @@ p2 <- ggplot(data = pdat[-1,]) +
         plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank())
 
+# TO DO: Explain here what this figure shows.
+p3 <- ggplot(data = dat2_1) +
+  geom_line(aes(x = n,y = t1,color = "no approx."),size = 1) +
+  geom_line(aes(x = n,y = t2,color = "SVD"),size = 1) +
+  geom_line(aes(x = n,y = t3,color = "QR"),size = 1) +
+  geom_point(aes(x = n,y = t1,color = "no approx."),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t2,color = "SVD"),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t3,color = "QR"),size = 3,shape = 20) +
+  scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
+  scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100)) +
+  scale_color_manual(values = colors,name = "") +
+  labs(x     = "number of data matrix rows (n)",
+       y     = "computation time (seconds)",
+       title = "SQP with different low-rank approximations") +
+  theme_cowplot(font_size = 12) +
+  theme(legend.position = c(0.1,0.9),
+        plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank())
+print(p3)
+
+# TO DO: Explain here what this figure shows.
+p <- ggplot(data = dat2_2) +
+  geom_line(aes(x = log2(n), y=svd,color = "SVD"), size = 1.2) +
+  geom_line(aes(x = log2(n), y=qr,color = "QR"), size = 1.2)
+p <- p + xlab("log2(n)") + ylab("log10(frobenius error)")
+p2 <- p + scale_color_discrete(name = "") +
+    ggtitle("accuracy of low-rank approximation") + ylim(c(-13,-12))  +
+  theme(legend.position = c(.1,.9))
+multiplot(p1, p2, cols = 2)
+
 # Prepare the results for the next two plots. In particular, I merge
 # the mix-SQP and REBayes results, and change the order of the factor
 # levels for a more logical ordering in the plots below.
@@ -151,25 +181,6 @@ ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
 ggsave("../output/F6.pdf",plot_grid(pA,pB),height = 4,width = 8)
 
 stop()
-
-## figure 2
-
-p <- ggplot(data = dat2_1) +
-  geom_line(aes(x = log2(n), y=log2(t1),color = "F"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=log2(t2),color = "SVD"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=log2(t3),color = "QR"), size = 1.2)
-p <- p + xlab("log2(n)") + ylab("log2(time)")
-p1 <- p + scale_color_discrete(name = "") + ggtitle("B-SQP-A-lowrankapprox")  +
-  theme(legend.position = c(.1,.9))
-
-p <- ggplot(data = dat2_2) +
-  geom_line(aes(x = log2(n), y=svd,color = "SVD"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=qr,color = "QR"), size = 1.2)
-p <- p + xlab("log2(n)") + ylab("log10(frobenius error)")
-p2 <- p + scale_color_discrete(name = "") +
-    ggtitle("accuracy of low-rank approximation") + ylim(c(-13,-12))  +
-  theme(legend.position = c(.1,.9))
-multiplot(p1, p2, cols = 2)
 
 ## figure 3
 
