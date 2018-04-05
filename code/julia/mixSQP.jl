@@ -57,13 +57,15 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     
   # Initialize loop variables used in the loops below so that they
   # are available outside the scope of the loop.
-  i = 0;
-  j = 0;
-  D = 0;
-
+  i     = 0;
+  j     = 0;
+  D     = 0;
+  t     = 0;
+  numls = 0;
+    
   # Print the column labels for reporting the algorithm's progress.
   if verbose
-    @printf("iter       objective -min(g+1) #nnz #qp\n")
+    @printf("iter      objective -min(g+1) #nnz #qp #ls\n")
   end
 
   # QP subproblem start.
@@ -104,7 +106,8 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     nnz[i]  = sum(x .> sptol);
     nqp[i]  = j;
     if verbose
-      @printf("%4d %0.8e %+0.2e %4d %3d\n",i,obj[i],-gmin[i],nnz[i],j);
+      @printf("%4d %0.8e %+0.2e %4d %3d %3d\n",
+              i,obj[i],-gmin[i],nnz[i],j,numls);
     end
       
     # Check convergence of outer loop
@@ -184,7 +187,8 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
         end
         y = (y-x)/2 + x;
     end
-        
+    numls = t;
+      
     # Update the solution to the original optimization problem.
     x = y;
 
