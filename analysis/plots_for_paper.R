@@ -200,41 +200,46 @@ p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
        y = "computation time (seconds)") +
   theme_cowplot(font_size = 12) +
   theme(plot.title   = element_text(face = "plain",size = 12),
+        axis.line    = element_blank())
+
+# Create a plot comparing the number of columns in the data matrix (L)
+# against the "effective" rank of L.
+p8 <- ggplot(data = dat3_1) +
+  geom_line(aes(x = m,y = s,color = "synthetic"), size = 1) +
+  geom_line(aes(x = m2,y = s2,color = "GIANT"), size = 1) +
+  geom_point(aes(x = m,y = s,color = "synthetic"), size = 3,shape = 20) +
+  geom_point(aes(x = m2,y = s2,color = "GIANT"), size = 3,shape = 20) +
+  scale_x_continuous(trans = "log10",limits = c(20,1000),
+                     breaks = c(20,100,1000)) +
+  scale_y_continuous(breaks = c(20,25,30)) +
+  scale_color_manual(values = colors,name = "data") +
+  labs(x = "number of columns of L",
+       y = "numeric rank of L") +
+  theme(plot.title   = element_text(face = "plain",size = 12),
         axis.line    = element_blank(),
-        axis.ticks.x = element_blank())
+        axis.ticks.x = element_blank(),
+        legend.position = c(0.6,0.2))
+print(p8)
 
-# SAVE PLOTS AS PDFs
-# ------------------
-ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
-ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
-ggsave("../output/F5.pdf",p7,height = 4,width = 6.5)
-ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 8)
+  theme(legend.background = element_rect(fill = "transparent"))
 
-stop()
-
-## figure 3
-
-p <- ggplot(data = dat3_1) +
-  geom_line(aes(x = log2(m), y= log2(s/m),color = "synthetic"), size = 1.2) +
-  geom_line(aes(x = log2(m2), y = log2(s2/m),color = "GIANT"), size = 1.2)
-p <- p + xlab("log2(m)") + ylab("log2(r/m)")
-p <- p + scale_color_discrete(name = "") + ggtitle("log2(rank/m)") +
-  theme(legend.position = c(.8,.95),legend.background = element_rect(fill = "transparent"))
+# TO DO: Explain here what this code does.
 p2 <- ggplot(data = dat3_2) + geom_line(aes(x = log2(m), y = rel_err),color = "#00BA38", size = 1.2)
-p3 <- ggplot(data = dat3_3) + geom_line(aes(x = log2(m), y = rel_err ),color = "#619CFF", size = 1.2)
 p2 <- p2 + xlab("log2(m)") + ylab("log10(||x_IP - x_SQP||_1)") + ggtitle("difference in l1 norm") + ylim(-8,-4)
+
+# TO DO: Explain here what this code does.
+p3 <- ggplot(data = dat3_3) + geom_line(aes(x = log2(m), y = rel_err ),color = "#619CFF", size = 1.2)
 p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") + ggtitle("difference in objective") + ylim(-16,-8)
-multiplot(p, p2, p3, cols=3)
 
-## figure 4
-
-p <- ggplot(data = dat4_1) +
+# TO DO: Explain here what this code does.
+p8 <- ggplot(data = dat4_1) +
   geom_line(aes(x = log2(m), y=log2(t1),color = "IP"), size = 1.2) +
   geom_line(aes(x = log2(m), y=log2(t2),color = "Act"), size = 1.2)
 p <- p + xlab("log2(m)") + ylab("log2(time)")
 p1 <- p + scale_color_discrete(name = "") + ggtitle("comptime of solving QP in m")  +
   theme(legend.position = c(.1,.95),legend.background = element_rect(fill = "transparent"))
 
+# TO DO: Explain here what this code does.
 p <- ggplot(data = dat4_2) +
   geom_line(aes(x = log2(n), y=log2(t1),color = "IP"), size = 1.2) +
   geom_line(aes(x = log2(n), y=log2(t2),color = "Act"), size = 1.2)
@@ -242,6 +247,7 @@ p <- p + xlab("log2(n)") + ylab("log2(time)")
 p2 <- p + scale_color_discrete(name = "") + ggtitle("comptime of solving QP in n")  +
   theme(legend.position = c(.9,.6),legend.background = element_rect(fill = "transparent"))
 
+# TO DO: Explain here what this code does.
 p <- ggplot() +
   geom_line(aes(x = 1:17, y=dat4_3$q_nnz,color = "q_nnzs"), size = 1.2) +
   geom_line(aes(x = 1:17, y=dat4_3$y_nnz,color = "y_nnzs"), size = 1.2) +
@@ -251,4 +257,12 @@ p3 <- p + scale_color_discrete(name = "") + ggtitle("parameters in each iteratio
   theme(legend.position = c(.9,.9),legend.background = element_rect(fill = "transparent"))
 multiplot(p1, p2, p3, cols = 3)
 
+# SAVE PLOTS AS PDFs
+# ------------------
+ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
+ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
+ggsave("../output/F5.pdf",p7,height = 4,width = 6.5)
+ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 8)
+
+stop()
 
