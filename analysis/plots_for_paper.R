@@ -213,15 +213,29 @@ p8 <- ggplot(data = dat3_1) +
                      breaks = c(20,100,1000)) +
   scale_y_continuous(breaks = c(20,25,30)) +
   scale_color_manual(values = colors,name = "data") +
-  labs(x = "number of columns of L",
+  labs(x = "number of columns of L (m)",
        y = "numeric rank of L") +
   theme(plot.title   = element_text(face = "plain",size = 12),
         axis.line    = element_blank(),
         axis.ticks.x = element_blank(),
         legend.position = c(0.6,0.2))
-print(p8)
 
-  theme(legend.background = element_rect(fill = "transparent"))
+# TO DO: Explain here what this code does.
+p9 <- ggplot(data = dat4_1) +
+  geom_line(aes(x = m,y = t1,color = "interior point"),size = 1) +
+  geom_line(aes(x = m,y = t2,color = "active-set"),size = 1) +
+  geom_point(aes(x = m,y = t1,color = "interior point"),shape = 20,size = 3) +
+  geom_point(aes(x = m,y = t2,color = "active-set"),shape = 20,size = 3) +
+  scale_x_continuous(trans = "log10",breaks = c(10,30,100,500)) + 
+  scale_y_continuous(trans = "log10",breaks = c(0.001,0.01,0.1,0.5)) + 
+  scale_color_manual(values = colors[c(6,2)],name = "") +
+  labs(x     = "number of columns of L (m)",
+       y     = "computation time (seconds)",
+       title = "solving the QP subproblem (n = 10,000)") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(0.05,0.9))
+print(p9)
 
 # TO DO: Explain here what this code does.
 p2 <- ggplot(data = dat3_2) + geom_line(aes(x = log2(m), y = rel_err),color = "#00BA38", size = 1.2)
@@ -230,14 +244,6 @@ p2 <- p2 + xlab("log2(m)") + ylab("log10(||x_IP - x_SQP||_1)") + ggtitle("differ
 # TO DO: Explain here what this code does.
 p3 <- ggplot(data = dat3_3) + geom_line(aes(x = log2(m), y = rel_err ),color = "#619CFF", size = 1.2)
 p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") + ggtitle("difference in objective") + ylim(-16,-8)
-
-# TO DO: Explain here what this code does.
-p8 <- ggplot(data = dat4_1) +
-  geom_line(aes(x = log2(m), y=log2(t1),color = "IP"), size = 1.2) +
-  geom_line(aes(x = log2(m), y=log2(t2),color = "Act"), size = 1.2)
-p <- p + xlab("log2(m)") + ylab("log2(time)")
-p1 <- p + scale_color_discrete(name = "") + ggtitle("comptime of solving QP in m")  +
-  theme(legend.position = c(.1,.95),legend.background = element_rect(fill = "transparent"))
 
 # TO DO: Explain here what this code does.
 p <- ggplot(data = dat4_2) +
