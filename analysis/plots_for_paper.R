@@ -233,7 +233,7 @@ p10 <- ggplot(data = dat4_2) +
         legend.position = c(0.05,0.5))
 
 # Create a plot
-p11 <- ggplot(data = dat4_3) +
+p11 <- ggplot(data = dat4_3[-c(1,14),]) +
   geom_line(aes(x = iter,y = y,color = "# of nonzeros in q"),size = 1) +
   geom_line(aes(x = iter,y = q,color = "# of nonzeros in y"),size = 1) +
   geom_line(aes(x = iter,y = ls,color = "# of line search"),size = 1) +
@@ -241,28 +241,16 @@ p11 <- ggplot(data = dat4_3) +
              shape = 20,size = 3) +
   geom_point(aes(x = iter,y = q,color = "# of nonzeros in y"),shape = 20,size = 3) +
   geom_point(aes(x = iter,y = ls,color = "# of line search"),shape = 20,size = 3) +
-  scale_x_continuous(trans = "log10",breaks = c(1e3,1e4,4e5)) +
-  scale_y_continuous(breaks = c(0.001,0.002,0.003)) +
-  scale_color_manual(values = colors[c(6,2,5)],name = "") +
+  scale_x_continuous(breaks = 1:13) +
+  scale_y_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12)) +
+  scale_color_manual(values = colors[c(6,2,3)],name = "") +
   labs(x     = "number of rows in L (n)",
        y     = "runtime (seconds)",
-       title = "solving the QP subproblem (m = 40)") +
+       title = "Iterations in solving the QP subproblem (m = 100)") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
-        legend.position = c(0.05,0.5))
+        legend.position = c(0.4,0.89))
 p11
-
-# TO DO: Explain here what this code does.
-p11 <- ggplot() +
-  geom_line(aes(x = 1:17, y=dat4_3$q_nnz,color = "q_nnzs"),size = 1.2) +
-  geom_line(aes(x = 1:17, y=dat4_3$y_nnz,color = "y_nnzs"),size = 1.2) +
-  geom_line(aes(x = 1:17, y=dat4_3$linesearch,color = "# of ls"), size = 1.2) +
-  xlab("iteration") + ylab("number") +
-  scale_color_discrete(name = "") +
-  ggtitle("parameters in each iteration")  +
-  theme(legend.position = c(0.8,0.9))
-
-stop()
 
 # TO DO: Explain here what this code does.
 p2 <- ggplot(data = dat3_2) +
