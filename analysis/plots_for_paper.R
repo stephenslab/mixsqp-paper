@@ -22,38 +22,43 @@ load("../output/results_for_plots.RData")
 # (2) the primal problem with simple constraints, and (3) the primal
 # problem with non-negativity constraints.
 p1 <- ggplot(data = dat1) +
-  geom_line(aes(x = n,y = t1,color = "MOSEK, primal, simplex-constrained"),
+  geom_line(aes(x = n,y = t1,color = "JuMP/MOSEK, simplex"),
             size = 1) +
-  geom_line(aes(x = n,y = t2,color = "MOSEK, dual"),size = 1) +
-  geom_line(aes(x = n,y = t3,color="MOSEK, primal, non-negative-constrained"),
+  geom_line(aes(x = n,y = t2,color = "JuMP/MOSEK, dual"),size = 1) +
+  geom_line(aes(x = n,y = t3,color="JuMP/MOSEK, box"),
             size = 1) +
-  geom_line(aes(x = n,y = t4,color = "SQP, primal, simplex-constrained"),
+  geom_line(aes(x = n,y = t4,color = "JuMP/SQP, simplex"),
             size = 1) +
-  geom_line(aes(x = n,y = t5,color = "SQP, dual"),size = 1) +
-  geom_line(aes(x = n,y = t6,color = "SQP, primal, non-negative-constrained"),
+  geom_line(aes(x = n,y = t5,color = "JuMP/SQP, dual"),size = 1) +
+  geom_line(aes(x = n,y = t6,color = "JuMP/SQP, box"),
             size = 1) +
-  geom_point(aes(x = n,y = t1,color = "MOSEK, primal, simplex-constrained"),
+  geom_line(aes(x = n,y = t7,color = "REBayes/Mosek, dual"),
+            size = 1) +
+  geom_point(aes(x = n,y = t1,color = "JuMP/MOSEK, simplex"),
              size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t2,color = "MOSEK, dual"),size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t3,color="MOSEK, primal, non-negative-constrained"),
+  geom_point(aes(x = n,y = t2,color = "JuMP/MOSEK, dual"),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t3,color="JuMP/MOSEK, box"),
              size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t4,color = "SQP, primal, simplex-constrained"),
+  geom_point(aes(x = n,y = t4,color = "JuMP/SQP, simplex"),
              size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t5,color = "SQP, dual"),size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t6,color="SQP, primal, non-negative-constrained"),
+  geom_point(aes(x = n,y = t5,color = "JuMP/SQP, dual"),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t6,color="JuMP/SQP, box"),
+             size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t7,color="REBayes/Mosek, dual"),
              size = 3,shape = 20) +
   scale_x_continuous(trans = "log10",breaks = c(40,100,1e3,1e4)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100)) + 
   scale_color_manual(values = c("lightskyblue","darkblue","royalblue",
-                                "gold","darkorange","orange"),
+                                "darkgreen","gold","darkorange","red"),
                      name = "") +
-  labs(x     = "number of data matrix rows (n)",
+  labs(x     = "number of rows (n)",
        y     = "computation time (seconds)",
        title = "complexity of problem formulation") +
   theme_cowplot(font_size = 12) +
   theme(legend.position = c(0,0.85),
         plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank())
+p1
 
 # Create a plot
 p3 <- ggplot(data = dat2_1) +
@@ -167,8 +172,8 @@ p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100,1e3)) +
   scale_color_manual(values = c("lightskyblue","cornflowerblue",
                                 "mediumblue","darkblue"),
-                     name  = "number of matrix columns (m)") +
-  labs(x = "number of data matrix rows (n)",
+                     name  = "m (# of cols)") +
+  labs(x = "n (# of rows))",
        y = "computation time (seconds)") +
   theme_cowplot(font_size = 12) +
   theme(plot.title   = element_text(face = "plain",size = 12),
@@ -227,6 +232,26 @@ p10 <- ggplot(data = dat4_2) +
         axis.line       = element_blank(),
         legend.position = c(0.05,0.5))
 
+# Create a plot
+p11 <- ggplot(data = dat4_3) +
+  geom_line(aes(x = iter,y = y,color = "# of nonzeros in q"),size = 1) +
+  geom_line(aes(x = iter,y = q,color = "# of nonzeros in y"),size = 1) +
+  geom_line(aes(x = iter,y = ls,color = "# of line search"),size = 1) +
+  geom_point(aes(x = iter,y = y,color = "# of nonzeros in q"),
+             shape = 20,size = 3) +
+  geom_point(aes(x = iter,y = q,color = "# of nonzeros in y"),shape = 20,size = 3) +
+  geom_point(aes(x = iter,y = ls,color = "# of line search"),shape = 20,size = 3) +
+  scale_x_continuous(trans = "log10",breaks = c(1e3,1e4,4e5)) +
+  scale_y_continuous(breaks = c(0.001,0.002,0.003)) +
+  scale_color_manual(values = colors[c(6,2,5)],name = "") +
+  labs(x     = "number of rows in L (n)",
+       y     = "runtime (seconds)",
+       title = "solving the QP subproblem (m = 40)") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(0.05,0.5))
+p11
+
 # TO DO: Explain here what this code does.
 p11 <- ggplot() +
   geom_line(aes(x = 1:17, y=dat4_3$q_nnz,color = "q_nnzs"),size = 1.2) +
@@ -251,8 +276,8 @@ p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") + ggtitle("diffe
 
 # SAVE PLOTS AS PDFs
 # ------------------
-ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
+ggsave("../output/F1.pdf",p1,height = 4,width = 6)
 ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
 ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 4,width = 12)
-ggsave("../output/F5.pdf",p7,height = 4,width = 6.5)
+ggsave("../output/F5.pdf",p7,height = 4,width = 8)
 ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 8)
