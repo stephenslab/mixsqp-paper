@@ -22,26 +22,26 @@ load("../output/results_for_plots.RData")
 # (2) the primal problem with simple constraints, and (3) the primal
 # problem with non-negativity constraints.
 p1 <- ggplot(data = dat1) +
-  geom_line(aes(x = n,y = t1,color = "JuMP/MOSEK, simplex"),
+  geom_line(aes(x = n,y = t1,color = "JuMP/MOSEK, dual"),
             size = 1) +
-  geom_line(aes(x = n,y = t2,color = "JuMP/MOSEK, dual"),size = 1) +
+  geom_line(aes(x = n,y = t2,color = "JuMP/MOSEK, simplex"),size = 1) +
   geom_line(aes(x = n,y = t3,color="JuMP/MOSEK, box"),
             size = 1) +
-  geom_line(aes(x = n,y = t4,color = "JuMP/SQP, simplex"),
+  geom_line(aes(x = n,y = t4,color = "JuMP/SQP, dual"),
             size = 1) +
-  geom_line(aes(x = n,y = t5,color = "JuMP/SQP, dual"),size = 1) +
+  geom_line(aes(x = n,y = t5,color = "JuMP/SQP, simplex"),size = 1) +
   geom_line(aes(x = n,y = t6,color = "JuMP/SQP, box"),
             size = 1) +
   geom_line(aes(x = n,y = t7,color = "REBayes/Mosek, dual"),
             size = 1) +
-  geom_point(aes(x = n,y = t1,color = "JuMP/MOSEK, simplex"),
+  geom_point(aes(x = n,y = t1,color = "JuMP/MOSEK, dual"),
              size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t2,color = "JuMP/MOSEK, dual"),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t2,color = "JuMP/MOSEK, simplex"),size = 3,shape = 20) +
   geom_point(aes(x = n,y = t3,color="JuMP/MOSEK, box"),
              size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t4,color = "JuMP/SQP, simplex"),
+  geom_point(aes(x = n,y = t4,color = "JuMP/SQP, dual"),
              size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t5,color = "JuMP/SQP, dual"),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t5,color = "JuMP/SQP, simplex"),size = 3,shape = 20) +
   geom_point(aes(x = n,y = t6,color="JuMP/SQP, box"),
              size = 3,shape = 20) +
   geom_point(aes(x = n,y = t7,color="REBayes/Mosek, dual"),
