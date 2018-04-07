@@ -246,11 +246,63 @@ p11 <- ggplot(data = dat4_3[-c(1,14),]) +
   scale_color_manual(values = colors[c(6,2,3)],name = "") +
   labs(x     = "number of rows in L (n)",
        y     = "runtime (seconds)",
-       title = "Iterations in solving the QP subproblem (m = 100)") +
+       title = "Iterations in QP subproblem (m = 100)") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(0.4,0.89))
-p11
+
+
+# Create a plot comparing the runtime 
+p13 <- ggplot(data = dat3_1) +
+  geom_line(aes(x = m,y = s/m,color = "GIANT data"),size = 1) +
+  geom_line(aes(x = m,y = s2/m,color = "Synthetic data"),size = 1) +
+  geom_point(aes(x = m,y = s/m, color = "GIANT data"),
+             shape = 20,size = 3) +
+  geom_point(aes(x = m,y = s2/m,color = "Synthetic data"),shape = 20,size = 3) +
+  scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
+  scale_y_continuous(trans = "log2",breaks = c(0.5,0.25,0.125,0.0625,0.03125,1)) +
+  scale_color_manual(values = colors[c(6,2)],name = "") +
+  labs(x     = "number of cols in L (m)",
+       y     = "effective rank/true rank (rank/m)",
+       title = "ratio of effective rank to true rank") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(0.05,0.3))
+
+# Create a plot
+p14 <- ggplot(data = dat3_2) +
+  geom_line(aes(x = m,y = rel_err,color = "||x_IP - x_SQP||_1"),size = 1) +
+  geom_point(aes(x = m,y = rel_err,color = "||x_IP - x_SQP||_1"),
+             shape = 20,size = 3) +
+  scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
+  scale_y_continuous(breaks = c(-8,-7,-6,-5)) +
+  scale_color_manual(values = colors[3],name = "") +
+  ylim(-8,-4) +
+  labs(x     = "number of cols in L (m)",
+       y     = "log10 of l1 difference (log10(diff))",
+       title = "l1 difference between solutions") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(.1,.9))
+
+# Create a plot
+p15 <- ggplot(data = dat3_3) +
+  geom_line(aes(x = m,y = rel_err,color = "|f(x_IP) - f(x_SQP)| / |f(x_IP)|"),size = 1) +
+  geom_point(aes(x = m,y = rel_err,color = "|f(x_IP) - f(x_SQP)| / |f(x_IP)|"),
+             shape = 20,size = 3) +
+  scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
+  scale_y_continuous(breaks = c(-16,-14,-12,-10,-8,-6)) +
+  scale_color_manual(values = colors[5],name = "") +
+  ylim(-16,-6) +
+  labs(x     = "number of cols in L (m)",
+       y     = "log10 of relative difference (log10(diff))",
+       title = "relative difference between objective values") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(.1,.9))
+
+
+
 
 # TO DO: Explain here what this code does.
 p2 <- ggplot(data = dat3_2) +
@@ -264,8 +316,9 @@ p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") + ggtitle("diffe
 
 # SAVE PLOTS AS PDFs
 # ------------------
-ggsave("../output/F1.pdf",p1,height = 4,width = 6)
+ggsave("../output/F1.pdf",p1,height = 6,width = 8)
 ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
+ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),height = 4,width = 12)
 ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 4,width = 12)
 ggsave("../output/F5.pdf",p7,height = 4,width = 8)
 ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 8)
