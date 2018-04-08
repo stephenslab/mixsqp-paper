@@ -62,9 +62,7 @@ p1 <- ggplot(data = pdat,aes(x = n,y = runtime,color = method,
         axis.line       = element_blank(),
         legend.text     = element_text(size = 10))
 
-stop()
-
-# Create a plot
+# Create a plot.
 p3 <- ggplot(data = dat2_1) +
   geom_line(aes(x = n,y = t1,color = "no approx."),size = 1) +
   geom_line(aes(x = n,y = t2,color = "SVD"),size = 1) +
@@ -176,9 +174,9 @@ p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100,1e3)) +
   scale_color_manual(values = c("lightskyblue","cornflowerblue",
                                 "mediumblue","darkblue"),
-                     name  = "m (# of cols)") +
-  labs(x = "n (# of rows))",
-       y = "computation time (seconds)") +
+                     name  = "m (num. cols)") +
+  labs(x = "n (number of rows in L)",
+       y = "runtime (seconds)") +
   theme_cowplot(font_size = 12) +
   theme(plot.title   = element_text(face = "plain",size = 12),
         axis.line    = element_blank())
@@ -237,34 +235,37 @@ p10 <- ggplot(data = dat4_2) +
         legend.position = c(0.05,0.5))
 
 # Create a plot
-p11 <- ggplot(data = dat4_3[-c(1,14),]) +
-  geom_line(aes(x = iter,y = y,color = "# of nonzeros in q"),size = 1) +
-  geom_line(aes(x = iter,y = q,color = "# of nonzeros in y"),size = 1) +
-  geom_line(aes(x = iter,y = ls,color = "# of line search"),size = 1) +
-  geom_point(aes(x = iter,y = y,color = "# of nonzeros in q"),
+p11 <- ggplot(data = dat4_3[-14,]) +
+  geom_line(aes(x = iter,y = y,color = "nonzeros in q"),size = 1) +
+  geom_line(aes(x = iter,y = q,color = "nonzeros in y"),size = 1) +
+  geom_line(aes(x = iter,y = ls,color = "line search iterations"),size = 1) +
+  geom_point(aes(x = iter,y = y,color = "nonzeros in q"),
              shape = 20,size = 3) +
-  geom_point(aes(x = iter,y = q,color = "# of nonzeros in y"),shape = 20,size = 3) +
-  geom_point(aes(x = iter,y = ls,color = "# of line search"),shape = 20,size = 3) +
-  scale_x_continuous(breaks = 1:13) +
-  scale_y_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12)) +
-  scale_color_manual(values = colors[c(6,2,3)],name = "") +
-  labs(x     = "number of rows in L (n)",
-       y     = "runtime (seconds)",
-       title = "Iterations in QP subproblem (m = 100)") +
+  geom_point(aes(x = iter,y = q,color = "nonzeros in y"),
+             shape = 20,size = 3) +
+  geom_point(aes(x = iter,y = ls,color = "line search iterations"),
+             shape = 20,size = 3) +
+  scale_x_continuous(breaks = c(1,5,10,13)) +
+  scale_y_continuous(breaks = c(0,5,10)) +
+  scale_color_manual(values = c("limegreen","darkblue","skyblue"),
+                     name = "") +
+  labs(x     = "SQP iteration",
+       y     = "count",
+       title = "title goes here") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(0.4,0.89))
 
-
-# Create a plot comparing the runtime 
+# Create a plot comparing the runtime.
 p13 <- ggplot(data = dat3_1) +
   geom_line(aes(x = m,y = s/m,color = "GIANT data"),size = 1) +
   geom_line(aes(x = m,y = s2/m,color = "Synthetic data"),size = 1) +
   geom_point(aes(x = m,y = s/m, color = "GIANT data"),
              shape = 20,size = 3) +
-  geom_point(aes(x = m,y = s2/m,color = "Synthetic data"),shape = 20,size = 3) +
+  geom_point(aes(x = m,y = s2/m,color = "Synthetic data"),
+             shape = 20,size = 3) +
   scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
-  scale_y_continuous(trans = "log2",breaks = c(0.5,0.25,0.125,0.0625,0.03125,1)) +
+  scale_y_continuous(trans="log2",breaks=c(0.5,0.25,0.125,0.0625,0.03125,1)) +
   scale_color_manual(values = colors[c(6,2)],name = "") +
   labs(x     = "number of cols in L (m)",
        y     = "effective rank/true rank (rank/m)",
@@ -273,7 +274,7 @@ p13 <- ggplot(data = dat3_1) +
         axis.line       = element_blank(),
         legend.position = c(0.05,0.3))
 
-# Create a plot
+# Create a plot.
 p14 <- ggplot(data = dat3_2) +
   geom_line(aes(x = m,y = rel_err,color = "||x_IP - x_SQP||_1"),size = 1) +
   geom_point(aes(x = m,y = rel_err,color = "||x_IP - x_SQP||_1"),
@@ -289,10 +290,11 @@ p14 <- ggplot(data = dat3_2) +
         axis.line       = element_blank(),
         legend.position = c(.1,.9))
 
-# Create a plot
+# Create a plot.
 p15 <- ggplot(data = dat3_3) +
-  geom_line(aes(x = m,y = rel_err,color = "|f(x_IP) - f(x_SQP)| / |f(x_IP)|"),size = 1) +
-  geom_point(aes(x = m,y = rel_err,color = "|f(x_IP) - f(x_SQP)| / |f(x_IP)|"),
+  geom_line(aes(x = m,y = rel_err,color = "|f(x_IP) - f(x_SQP)|/|f(x_IP)|"),
+            size = 1) +
+  geom_point(aes(x = m,y = rel_err,color = "|f(x_IP) - f(x_SQP)|/|f(x_IP)|"),
              shape = 20,size = 3) +
   scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
   scale_y_continuous(breaks = c(-16,-14,-12,-10,-8,-6)) +
@@ -306,14 +308,18 @@ p15 <- ggplot(data = dat3_3) +
         legend.position = c(.1,.9))
 
 # TO DO: Explain here what this code does.
-p3 <- ggplot(data = dat3_3) + geom_line(aes(x = log2(m), y = rel_err ),color = "#619CFF", size = 1.2)
-p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") + ggtitle("difference in objective") + ylim(-16,-8)
+p3 <- ggplot(data = dat3_3) + geom_line(aes(x = log2(m),y = rel_err),
+             color = "#619CFF", size = 1.2)
+p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") +
+      ggtitle("difference in objective") + ylim(-16,-8)
 
 # SAVE PLOTS AS PDFs
 # ------------------
 ggsave("../output/F1.pdf",p1,height = 5,width = 5.5)
 ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
-ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),height = 4,width = 12)
-ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 4,width = 12)
-ggsave("../output/F5.pdf",p7,height = 4,width = 8)
+ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),
+       height = 4,width = 12)
+ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 3.5,
+       width = 10.5)
+ggsave("../output/F5.pdf",p7,height = 4,width = 6)
 ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 8)
