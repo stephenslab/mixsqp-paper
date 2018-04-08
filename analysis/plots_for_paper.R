@@ -51,7 +51,7 @@ p1 <- ggplot(data = pdat,aes(x = n,y = runtime,color = method,
   geom_point(size = 3) +
   scale_x_continuous(trans = "log10",breaks = c(40,100,1e3,1e4)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100)) + 
-  scale_color_manual(values = colors) +
+  scale_color_manual(values = c(colors[1:2],"darkblue")) +
   scale_shape_manual(values = c(8,1,19)) +
   labs(x     = "number of rows (n)",
        y     = "runtime (seconds)",
@@ -311,7 +311,7 @@ p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") + ggtitle("diffe
 
 # SAVE PLOTS AS PDFs
 # ------------------
-ggsave("../output/F1.pdf",p1,height = 6,width = 6.5)
+ggsave("../output/F1.pdf",p1,height = 5,width = 5.5)
 ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
 ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),height = 4,width = 12)
 ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 4,width = 12)
