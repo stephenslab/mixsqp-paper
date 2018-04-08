@@ -247,7 +247,7 @@ p11 <- ggplot(data = dat4_3[-14,]) +
              shape = 20,size = 3) +
   scale_x_continuous(breaks = c(1,5,10,13)) +
   scale_y_continuous(breaks = c(0,5,10)) +
-  scale_color_manual(values = c("limegreen","darkblue","skyblue"),
+  scale_color_manual(values = c("limegreen","darkblue","orange"),
                      name = "") +
   labs(x     = "SQP iteration",
        y     = "count",
