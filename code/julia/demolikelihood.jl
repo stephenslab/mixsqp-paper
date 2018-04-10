@@ -1,4 +1,6 @@
-# TO DO: Explain here what this script is for.
+# The aim of this script is to get a more detailed understanding of
+# the likelihood computations involved in adaptive shrinkage (with
+# normal likelihood and a mixture-of-normals prior).
 using Distributions
 using LowRankApprox
 include("datasim.jl")
