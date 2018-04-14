@@ -55,9 +55,9 @@ p1 <- ggplot(data = pdat,aes(x = n,y = runtime,color = method,
   scale_shape_manual(values = c(8,1,19)) +
   labs(x     = "number of rows (n)",
        y     = "runtime (seconds)",
-       title = "complexity of solving different problem formulations") +
+       title = "Complexity of solving different problem formulations") +
   theme_cowplot(font_size = 12) +
-  theme(legend.position = c(0,0.75),
+  theme(#legend.position = c(0,0.75),
         plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.text     = element_text(size = 10))
@@ -176,7 +176,8 @@ p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
                                 "mediumblue","darkblue"),
                      name  = "m (num. cols)") +
   labs(x = "n (number of rows in L)",
-       y = "runtime (seconds)") +
+       y = "runtime (seconds)",
+       title = "Computation time of mix-SQP versue REBayes") +
   theme_cowplot(font_size = 12) +
   theme(plot.title   = element_text(face = "plain",size = 12),
         axis.line    = element_blank())
@@ -292,17 +293,17 @@ p14 <- ggplot(data = dat3_2) +
 
 # Create a plot.
 p15 <- ggplot(data = dat3_3) +
-  geom_line(aes(x = m,y = rel_err,color = "|f(x_IP) - f(x_SQP)|/|f(x_IP)|"),
+  geom_line(aes(x = m,y = err,color = "|f(x_REBayes) - f(x_SQP)|"),
             size = 1) +
-  geom_point(aes(x = m,y = rel_err,color = "|f(x_IP) - f(x_SQP)|/|f(x_IP)|"),
+  geom_point(aes(x = m,y = err,color = "|f(x_REBayes) - f(x_SQP)|"),
              shape = 20,size = 3) +
   scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
   scale_y_continuous(breaks = c(-16,-14,-12,-10,-8,-6)) +
   scale_color_manual(values = colors[5],name = "") +
   ylim(-16,-6) +
   labs(x     = "number of cols in L (m)",
-       y     = "log10 of relative difference (log10(diff))",
-       title = "relative difference between objective values") +
+       y     = "log10 of difference (log10(diff))",
+       title = "Difference between two objective values from") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(.1,.9))
@@ -315,11 +316,11 @@ p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") +
 
 # SAVE PLOTS AS PDFs
 # ------------------
-ggsave("../output/F1.pdf",p1,height = 5,width = 5.5)
+ggsave("../output/F1.pdf",p1,height = 4,width = 8)
 ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
 ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),
        height = 4,width = 12)
 ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 3.5,
        width = 10.5)
-ggsave("../output/F5.pdf",p7,height = 4,width = 6)
+ggsave("../output/F5.pdf",p7,height = 4,width = 7)
 ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 8)
