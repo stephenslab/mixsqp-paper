@@ -37,7 +37,7 @@ pdat <- with(dat1,
                    method      = "JuMP/SQP",
                    n = n,runtime = t6),
         data.frame(formulation = "dual",
-                   method      = "REBayes/MOSEK",
+                   method      = "REBayes/KWDual/Rmosek",
                    n = n,runtime = t7)))
 
 # Create a plot comparing the computation time for solving three
@@ -105,7 +105,7 @@ levels(dat6_1$label) <-
   c("posterior calculations","model fitting (mix-SQP)",
     "QR factorization","likelihood computation")
 levels(dat6_2$label) <-
-  c("posterior calculations","model fitting (REBayes/MOSEK)",
+  c("posterior calculations","model fitting (REBayes)",
     "likelihood computation")
 dat6_1 <- transform(dat6_1,
                     label = factor(as.character(label),
@@ -121,7 +121,7 @@ pdat <- rbind(transform(dat6_1,
                         label = as.character(label)))
 pdat <- transform(pdat,
           label = factor(label,c("QR factorization",
-                                 "model fitting (REBayes/MOSEK)",
+                                 "model fitting (REBayes)",
                                  "model fitting (mix-SQP)",
                                  "posterior calculations",
                                  "likelihood computation")))
@@ -165,7 +165,7 @@ p6 <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
 # samples (n) and different numbers of mixture components (m).
 pdat <- data.frame(n      = rep(2^dat5$n,8),
                    m      = factor(rep(c(100,200,400,800),each = 20)),
-                   solver = rep(rep(c("REBayes/MOSEK","mix-SQP"),each = 10),4),
+                   solver = rep(rep(c("REBayes/KWDual/Rmosek","mix-SQP"),each = 10),4),
                    time   = do.call(c,dat5[-(1:3)]))
 p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   geom_line(size = 1) +
