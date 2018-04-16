@@ -101,7 +101,7 @@ function mixSQP_time(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3, lowrank 
     x = y;
 
     # convergence check
-    if minimum(g + 1) >= -convtol
+    if minimum(g + 1) >= -tol
       break;
     end
   end

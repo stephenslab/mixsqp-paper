@@ -4,6 +4,7 @@ function ash(x,s; method = "mixSQP", mult = 1.3, lowrank = "svd")
     tic();
     sd      = autoselectmixsd(x,s,gridmult = mult);
     log_lik = normlikmatrix(x,s,sd = sd);
+    s2      = s.^2;
     t1      = toq();
     
     # Fit the model.
@@ -24,7 +25,7 @@ function ash(x,s; method = "mixSQP", mult = 1.3, lowrank = "svd")
     
     # Exploit sparsity.
     ind = find(p .> 0);
-    ps2 = grid[ind].^2;
+    ps2 = sd[ind].^2;
     
     # Posterior calculations.
     temp = s2 .+ ps2';
