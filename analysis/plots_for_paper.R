@@ -252,7 +252,7 @@ p11 <- ggplot(data = dat4_3[-14,]) +
                      name = "") +
   labs(x     = "SQP iteration",
        y     = "count",
-       title = "title goes here") +
+       title = "Important numbers in each iteration") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(0.4,0.89))
