@@ -17,7 +17,7 @@ x = normtmixdatasim(round(Int,1e5));
 @printf "Determine variance parameters for mixture components.\n"
 @time sd = autoselectmixsd(x,nv = 100);
 @printf "Compute likelihood matrix, L.\n"
-@time log_lik = normlikmatrix(x,sd = sd);
+@time L = normlikmatrix(x,sd = sd);
 
 # Compute partial QR factorization of the likelihood matrix.
 @printf "Compute partial QR factorization of L.\n"
@@ -38,3 +38,5 @@ s = ones(size(x));
 @time L = L - log(2*pi)/2;
 @printf "L = broadcast(-,L,maximum(L,2)) \n"
 @time L = broadcast(-,L,maximum(L,2));
+@printf "L = exp.(L) \n"
+@time L = exp.(L);
