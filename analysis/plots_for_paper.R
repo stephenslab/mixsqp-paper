@@ -19,25 +19,25 @@ load("../output/results_for_plots.RData")
 # Prepare the results for the first plot.
 pdat <- with(dat1,
   rbind(data.frame(formulation = "dual",
-                   method      = "JuMP/MOSEK",
+                   method      = "IP (JuMP/MOSEK)",
                    n = n,runtime = t1),
-        data.frame(formulation = "primal, simplex-constrained",
-                   method      = "JuMP/MOSEK",
+        data.frame(formulation = "simplex-constrained",
+                   method      = "IP (JuMP/MOSEK)",
                    n = n,runtime = t2),
-        data.frame(formulation = "primal, non-negatively-constrained",
-                   method      = "JuMP/MOSEK",
+        data.frame(formulation = "non-negatively-constrained",
+                   method      = "IP (JuMP/MOSEK)",
                    n = n,runtime = t3),
         data.frame(formulation = "dual",
-                   method      = "JuMP/SQP",
+                   method      = "SQP (JuMP/MOSEK)",
                    n = n,runtime = t4),
-        data.frame(formulation = "primal, simplex-constrained",
-                   method      = "JuMP/SQP",
+        data.frame(formulation = "simplex-constrained",
+                   method      = "SQP (JuMP/MOSEK)",
                    n = n,runtime = t5),
-        data.frame(formulation = "primal, non-negatively-constrained",
-                   method      = "JuMP/SQP",
+        data.frame(formulation = "non-negatively-constrained",
+                   method      = "SQP (JuMP/MOSEK)",
                    n = n,runtime = t6),
         data.frame(formulation = "dual",
-                   method      = "REBayes/KWDual/Rmosek",
+                   method      = "REBayes (KWDual/Rmosek)",
                    n = n,runtime = t7)))
 
 # Create a plot comparing the computation time for solving three
@@ -209,7 +209,7 @@ p9 <- ggplot(data = dat4_1) +
              shape = 20,size = 3) +
   geom_point(aes(x = m,y = t2,color = "active-set"),shape = 20,size = 3) +
   scale_x_continuous(trans = "log10",breaks = c(10,30,100,500)) + 
-  scale_y_continuous(trans = "log10",breaks = c(0.001,0.01,0.1,0.5)) + 
+  scale_y_continuous(trans = "log10",breaks = c(0.0002,0.001,0.005,0.025,0.125,0.625)) +
   scale_color_manual(values = colors[c(6,2)],name = "") +
   labs(x     = "number of columns in L (m)",
        y     = "runtime (seconds)",
@@ -226,7 +226,7 @@ p10 <- ggplot(data = dat4_2) +
              shape = 20,size = 3) +
   geom_point(aes(x = n,y = t2,color = "active-set"),shape = 20,size = 3) +
   scale_x_continuous(trans = "log10",breaks = c(1e3,1e4,4e5)) +
-  scale_y_continuous(breaks = c(0.001,0.002,0.003)) +
+  scale_y_continuous(trans = "log10",breaks = c(0.0005,0.001,0.002,0.004),limits=c(0.0004,0.004)) +
   scale_color_manual(values = colors[c(6,2)],name = "") +
   labs(x     = "number of rows in L (n)",
        y     = "runtime (seconds)",
@@ -316,7 +316,7 @@ p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") +
 
 # SAVE PLOTS AS PDFs
 # ------------------
-ggsave("../output/F1.pdf",p1,height = 4,width = 8)
+ggsave("../output/F1.pdf",p1,height = 4,width = 7)
 ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
 ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),
        height = 4,width = 12)
