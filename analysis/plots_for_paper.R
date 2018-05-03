@@ -18,26 +18,26 @@ load("../output/results_for_plots.RData")
 # ------------
 # Prepare the results for the first plot.
 pdat <- with(dat1,
-  rbind(data.frame(formulation = "dual",
+  rbind(data.frame(formulation = "Dual(linear constraint)",
                    method      = "IP (JuMP/MOSEK)",
                    n = n,runtime = t1),
-        data.frame(formulation = "simplex-constrained",
+        data.frame(formulation = "Primal(simplex constraint)",
                    method      = "IP (JuMP/MOSEK)",
                    n = n,runtime = t2),
-        data.frame(formulation = "non-negatively-constrained",
+        data.frame(formulation = "Primal(nonnegative constraint)",
                    method      = "IP (JuMP/MOSEK)",
                    n = n,runtime = t3),
-        data.frame(formulation = "dual",
+        data.frame(formulation = "Dual(linear constraint)",
                    method      = "SQP (JuMP/MOSEK)",
                    n = n,runtime = t4),
-        data.frame(formulation = "simplex-constrained",
+        data.frame(formulation = "Primal(simplex constraint)",
                    method      = "SQP (JuMP/MOSEK)",
                    n = n,runtime = t5),
-        data.frame(formulation = "non-negatively-constrained",
+        data.frame(formulation = "Primal(nonnegative constraint)",
                    method      = "SQP (JuMP/MOSEK)",
                    n = n,runtime = t6),
-        data.frame(formulation = "dual",
-                   method      = "REBayes (KWDual/Rmosek)",
+        data.frame(formulation = "Dual(linear constraint)",
+                   method      = "IP (KWDual/Rmosek)",
                    n = n,runtime = t7)))
 
 # Create a plot comparing the computation time for solving three
@@ -47,12 +47,12 @@ pdat <- with(dat1,
 # problem with non-negativity constraints.
 p1 <- ggplot(data = pdat,aes(x = n,y = runtime,color = method,
                              shape = formulation)) +
-  geom_line(size = 1) +
-  geom_point(size = 3) +
+  geom_line(size = 0.5) +
+  geom_point(size = 1.5) +
   scale_x_continuous(trans = "log10",breaks = c(40,100,1e3,1e4)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100)) + 
   scale_color_manual(values = c(colors[1:2],"darkblue")) +
-  scale_shape_manual(values = c(8,1,19)) +
+  scale_shape_manual(values = c(2,5,19)) +
   labs(x     = "number of rows (n)",
        y     = "runtime (seconds)",
        title = "Complexity of solving different problem formulations") +
@@ -64,12 +64,12 @@ p1 <- ggplot(data = pdat,aes(x = n,y = runtime,color = method,
 
 # Create a plot.
 p3 <- ggplot(data = dat2_1) +
-  geom_line(aes(x = n,y = t1,color = "no approx."),size = 1) +
-  geom_line(aes(x = n,y = t2,color = "SVD"),size = 1) +
-  geom_line(aes(x = n,y = t3,color = "QR"),size = 1) +
-  geom_point(aes(x = n,y = t1,color = "no approx."),size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t2,color = "SVD"),size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t3,color = "QR"),size = 3,shape = 20) +
+  geom_line(aes(x = n,y = t1,color = "No approx."),size = 1) +
+  geom_line(aes(x = n,y = t2,color = "tSVD"),size = 1) +
+  geom_line(aes(x = n,y = t3,color = "RRQR"),size = 1) +
+  geom_point(aes(x = n,y = t1,color = "No approx."),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t2,color = "tSVD"),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t3,color = "RRQR"),size = 3,shape = 20) +
   scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100)) +
   scale_color_manual(values = colors[c(1:2,6)],name = "") +
@@ -91,7 +91,7 @@ p4 <- ggplot(data = dat2_2) +
   scale_shape_manual(values = c(19,4)) +
   labs(x = "number of data matrix rows (n)",
        y = "norm of exact L - approx. L",
-       title = "error in low-rank approximation of L") +
+       title = "Error in low-rank approximation of L") +
   theme_cowplot(font_size = 12) +
   theme(legend.position = c(0.1,0.9),
         plot.title      = element_text(face = "plain",size = 12),
@@ -137,7 +137,7 @@ p5 <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
   scale_x_continuous(breaks = seq(5e4,25e4,5e4)) +
   labs(x = "number of data matrix rows (n)",
        y = "computation time (seconds)",
-       title = "breakdown of adaptive shrinkage computation") +
+       title = "Breakdown of adaptive shrinkage computation") +
   theme_cowplot(font_size = 12) +
   theme(legend.position = c(.05,0.85),
         plot.title   = element_text(face = "plain",size = 12),
@@ -153,7 +153,7 @@ p6 <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
   scale_x_continuous(breaks = seq(5e4,25e4,5e4)) +
   labs(x = "number of data matrix rows (n)",
        y = "computation time (seconds)",
-       title = "adaptive shrinkage (mix-SQP only)") +
+       title = "Zoomed version: mix-SQP only") +
   theme_cowplot(font_size = 12) +
   theme(legend.position = c(.05,0.9),
         plot.title   = element_text(face = "plain",size = 12),
@@ -165,11 +165,11 @@ p6 <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
 # samples (n) and different numbers of mixture components (m).
 pdat <- data.frame(n      = rep(2^dat5$n,8),
                    m      = factor(rep(c(100,200,400,800),each = 20)),
-                   solver = rep(rep(c("REBayes/KWDual/Rmosek","mix-SQP"),each = 10),4),
+                   solver = rep(rep(c("REBayes","mix-SQP"),each = 10),4),
                    time   = do.call(c,dat5[-(1:3)]))
 p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
-  geom_line(size = 1) +
-  geom_point(size = 3) +
+  geom_line(size = 0.5) +
+  geom_point(size = 2) +
   scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100,1e3)) +
   scale_color_manual(values = c("lightskyblue","cornflowerblue",
@@ -186,15 +186,16 @@ p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
 # against the "effective" rank of L.
 p8 <- ggplot(data = dat3_1) +
   geom_line(aes(x = m,y = s,color = "synthetic"), size = 1) +
-  geom_line(aes(x = m2,y = s2,color = "GIANT"), size = 1) +
+  geom_line(aes(x = m,y = s2,color = "GIANT"), size = 1) +
   geom_point(aes(x = m,y = s,color = "synthetic"), size = 3,shape = 20) +
-  geom_point(aes(x = m2,y = s2,color = "GIANT"), size = 3,shape = 20) +
+  geom_point(aes(x = m,y = s2,color = "GIANT"), size = 3,shape = 20) +
   scale_x_continuous(trans = "log10",limits = c(20,1000),
                      breaks = c(20,100,1000)) +
-  scale_y_continuous(breaks = c(20,25,30)) +
+  scale_y_continuous(breaks = c(0,10,20,30),limits = c(0,31)) +
   scale_color_manual(values = colors,name = "data") +
   labs(x = "number of columns of L (m)",
-       y = "numeric rank of L") +
+       y = "numeric rank of L",
+       title = "Effective numeric rank of L") +
   theme(plot.title   = element_text(face = "plain",size = 12),
         axis.line    = element_blank(),
         axis.ticks.x = element_blank(),
@@ -213,7 +214,7 @@ p9 <- ggplot(data = dat4_1) +
   scale_color_manual(values = colors[c(6,2)],name = "") +
   labs(x     = "number of columns in L (m)",
        y     = "runtime (seconds)",
-       title = "solving the QP subproblem (n = 10,000)") +
+       title = "Average time solving the QP subproblem in m") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(0.05,0.9))
@@ -230,7 +231,7 @@ p10 <- ggplot(data = dat4_2) +
   scale_color_manual(values = colors[c(6,2)],name = "") +
   labs(x     = "number of rows in L (n)",
        y     = "runtime (seconds)",
-       title = "solving the QP subproblem (m = 40)") +
+       title = "Average time solving the QP subproblem in n") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(0.05,0.5))
@@ -270,7 +271,7 @@ p13 <- ggplot(data = dat3_1) +
   scale_color_manual(values = colors[c(6,2)],name = "") +
   labs(x     = "number of cols in L (m)",
        y     = "effective rank/true rank (rank/m)",
-       title = "ratio of effective rank to true rank") +
+       title = "Ratio of effective rank to true rank") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(0.05,0.3))
@@ -286,7 +287,7 @@ p14 <- ggplot(data = dat3_2) +
   ylim(-8,-4) +
   labs(x     = "number of cols in L (m)",
        y     = "log10 of l1 difference (log10(diff))",
-       title = "l1 difference between solutions") +
+       title = "L1 difference between solutions") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(.1,.9))
@@ -303,16 +304,10 @@ p15 <- ggplot(data = dat3_3) +
   ylim(-16,-6) +
   labs(x     = "number of cols in L (m)",
        y     = "log10 of difference (log10(diff))",
-       title = "Difference between two objective values from") +
+       title = "Difference between two objective values") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(.1,.9))
-
-# TO DO: Explain here what this code does.
-p3 <- ggplot(data = dat3_3) + geom_line(aes(x = log2(m),y = rel_err),
-             color = "#619CFF", size = 1.2)
-p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") +
-      ggtitle("difference in objective") + ylim(-16,-8)
 
 # SAVE PLOTS AS PDFs
 # ------------------
