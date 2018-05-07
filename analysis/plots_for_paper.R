@@ -5,7 +5,7 @@
 library(ggplot2)
 library(cowplot)
 
-# Colors used in the plots below.
+# Colors used in some of the plots below.
 colors <- c("#E69F00","#56B4E9","#009E73","#F0E442",
             "#0072B2","#D55E00","#CC79A7")
 
@@ -16,41 +16,87 @@ load("../output/results_for_plots.RData")
 
 # CREATE PLOTS
 # ------------
+# Prepare the results for the first plot.
+pdat <- with(dat1,
+  rbind(data.frame(formulation = "dual",
+                   method      = "JuMP/MOSEK",
+                   n = n,runtime = t1),
+        data.frame(formulation = "primal, simplex-constrained",
+                   method      = "JuMP/MOSEK",
+                   n = n,runtime = t2),
+        data.frame(formulation = "primal, non-negatively-constrained",
+                   method      = "JuMP/MOSEK",
+                   n = n,runtime = t3),
+        data.frame(formulation = "dual",
+                   method      = "JuMP/SQP",
+                   n = n,runtime = t4),
+        data.frame(formulation = "primal, simplex-constrained",
+                   method      = "JuMP/SQP",
+                   n = n,runtime = t5),
+        data.frame(formulation = "primal, non-negatively-constrained",
+                   method      = "JuMP/SQP",
+                   n = n,runtime = t6),
+        data.frame(formulation = "dual",
+                   method      = "REBayes/KWDual/Rmosek",
+                   n = n,runtime = t7)))
+
 # Create a plot comparing the computation time for solving three
 # different formulations of the maximum-likelihood estimation problem
-# with MOSEK (in JuMP): (1) the dual problem, (2) the primal problem
-# with simple constraints, and (3) the primal problem with
-# non-negativity constraints.
-p1 <- ggplot(data = dat1_1[-1,]) +
-  geom_line(aes(x = n,y = t2,color = "dual"),size = 1) +
-  geom_line(aes(x = n,y = t1,color = "primal, simplex-constrained"),size = 1) +
-  geom_line(aes(x = n,y = t3,color = "primal, non-negative-constrained"),
-            size = 1) +
-  geom_point(aes(x = n,y = t2,color = "dual"),size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t1,color = "primal, simplex-constrained"),
-             size = 3,shape = 20) +
-  geom_point(aes(x = n,y = t3,color = "primal, non-negative-constrained"),
-             size = 3,shape = 20) +
+# with MOSEK (in JuMP) and the SQP algorithm: (1) the dual problem,
+# (2) the primal problem with simple constraints, and (3) the primal
+# problem with non-negativity constraints.
+p1 <- ggplot(data = pdat,aes(x = n,y = runtime,color = method,
+                             shape = formulation)) +
+  geom_line(size = 1) +
+  geom_point(size = 3) +
   scale_x_continuous(trans = "log10",breaks = c(40,100,1e3,1e4)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100)) + 
-  scale_color_manual(values = colors,name = "") +
+  scale_color_manual(values = c(colors[1:2],"darkblue")) +
+  scale_shape_manual(values = c(8,1,19)) +
+  labs(x     = "number of rows (n)",
+       y     = "runtime (seconds)",
+       title = "Complexity of solving different problem formulations") +
+  theme_cowplot(font_size = 12) +
+  theme(#legend.position = c(0,0.75),
+        plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.text     = element_text(size = 10))
+
+# Create a plot.
+p3 <- ggplot(data = dat2_1) +
+  geom_line(aes(x = n,y = t1,color = "no approx."),size = 1) +
+  geom_line(aes(x = n,y = t2,color = "SVD"),size = 1) +
+  geom_line(aes(x = n,y = t3,color = "QR"),size = 1) +
+  geom_point(aes(x = n,y = t1,color = "no approx."),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t2,color = "SVD"),size = 3,shape = 20) +
+  geom_point(aes(x = n,y = t3,color = "QR"),size = 3,shape = 20) +
+  scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
+  scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100)) +
+  scale_color_manual(values = colors[c(1:2,6)],name = "") +
   labs(x     = "number of data matrix rows (n)",
        y     = "computation time (seconds)",
-       title = "MOSEK with different problem formulations") +
+       title = "SQP with different low-rank approximations") +
   theme_cowplot(font_size = 12) +
-  theme(legend.position = c(0.05,0.9),
+  theme(legend.position = c(0.1,0.9),
         plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank())
 
-# TO DO: Revise this figure.
-p2 <- ggplot(data = dat1_2[2:10,]) +
-  geom_line(aes(x = log2(n), y=log2(t1),color = "S: simplex"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=log2(t2),color = "D: dual"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=log2(t3),color = "B: box"), size = 1.2) +
-xlab("log2(n)") + ylab("log2(time)") +
-scale_color_discrete(name = "") +
-    ggtitle("formulation-SQP-O-F with m = 40")  +
-  theme(legend.position = c(0.05,0.9))
+# Create a plot comparing the accuracy of QR and SVD reconstructions
+# of the matrix.
+p4 <- ggplot(data = dat2_2) +
+  geom_point(aes(x = n,y = 10^svd,color = "SVD",shape = "SVD"),size = 2) +
+  geom_point(aes(x = n,y = 10^qr,color = "QR",shape = "QR"),size = 2) +
+  scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
+  scale_color_manual(values = colors[c(2,6)],name = "") +
+  scale_shape_manual(values = c(19,4)) +
+  labs(x = "number of data matrix rows (n)",
+       y = "norm of exact L - approx. L",
+       title = "error in low-rank approximation of L") +
+  theme_cowplot(font_size = 12) +
+  theme(legend.position = c(0.1,0.9),
+        plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank()) +
+  guides(color = FALSE,shape = FALSE)
 
 # Prepare the results for the next two plots. In particular, I merge
 # the mix-SQP and REBayes results, and change the order of the factor
@@ -59,7 +105,7 @@ levels(dat6_1$label) <-
   c("posterior calculations","model fitting (mix-SQP)",
     "QR factorization","likelihood computation")
 levels(dat6_2$label) <-
-  c("posterior calculations","model fitting (REBayes/MOSEK)",
+  c("posterior calculations","model fitting (REBayes)",
     "likelihood computation")
 dat6_1 <- transform(dat6_1,
                     label = factor(as.character(label),
@@ -75,7 +121,7 @@ pdat <- rbind(transform(dat6_1,
                         label = as.character(label)))
 pdat <- transform(pdat,
           label = factor(label,c("QR factorization",
-                                 "model fitting (REBayes/MOSEK)",
+                                 "model fitting (REBayes)",
                                  "model fitting (mix-SQP)",
                                  "posterior calculations",
                                  "likelihood computation")))
@@ -83,7 +129,7 @@ pdat <- transform(pdat,
 # Create a plot showing the computation breakdown of adaptive
 # shrinkage with the REBayes (MOSEK) and mix-SQP solvers used to
 # implement the model fitting.
-pA <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
+p5 <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
   geom_col(position = "stack",width = 7e3) +
     scale_fill_manual(name = "",
       values = c("lightskyblue","orange","orangered","aliceblue",
@@ -100,7 +146,7 @@ pA <- ggplot(pdat,aes(x = x,y = y,fill = label)) +
 
 # This is a zoomed-in version of the previous plot, for the mix-SQP
 # results only.
-pB <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
+p6 <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
   geom_col(position = "stack",width = 7e3) +
     scale_fill_manual(name = "",
       values = c("lightskyblue","orangered","aliceblue","lightsteelblue")) +
@@ -114,86 +160,167 @@ pB <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
         axis.line    = element_blank(),
         axis.ticks.x = element_blank())
 
+# Create a plot showing the runtimes for the mix-SQP and REBayes
+# (MOSEK) methods on simulated data sets with different numbers of
+# samples (n) and different numbers of mixture components (m).
+pdat <- data.frame(n      = rep(2^dat5$n,8),
+                   m      = factor(rep(c(100,200,400,800),each = 20)),
+                   solver = rep(rep(c("REBayes/KWDual/Rmosek","mix-SQP"),each = 10),4),
+                   time   = do.call(c,dat5[-(1:3)]))
+p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
+  geom_line(size = 1) +
+  geom_point(size = 3) +
+  scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
+  scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100,1e3)) +
+  scale_color_manual(values = c("lightskyblue","cornflowerblue",
+                                "mediumblue","darkblue"),
+                     name  = "m (num. cols)") +
+  labs(x = "n (number of rows in L)",
+       y = "runtime (seconds)",
+       title = "Computation time of mix-SQP versue REBayes") +
+  theme_cowplot(font_size = 12) +
+  theme(plot.title   = element_text(face = "plain",size = 12),
+        axis.line    = element_blank())
+
+# Create a plot comparing the number of columns in the data matrix (L)
+# against the "effective" rank of L.
+p8 <- ggplot(data = dat3_1) +
+  geom_line(aes(x = m,y = s,color = "synthetic"), size = 1) +
+  geom_line(aes(x = m2,y = s2,color = "GIANT"), size = 1) +
+  geom_point(aes(x = m,y = s,color = "synthetic"), size = 3,shape = 20) +
+  geom_point(aes(x = m2,y = s2,color = "GIANT"), size = 3,shape = 20) +
+  scale_x_continuous(trans = "log10",limits = c(20,1000),
+                     breaks = c(20,100,1000)) +
+  scale_y_continuous(breaks = c(20,25,30)) +
+  scale_color_manual(values = colors,name = "data") +
+  labs(x = "number of columns of L (m)",
+       y = "numeric rank of L") +
+  theme(plot.title   = element_text(face = "plain",size = 12),
+        axis.line    = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = c(0.6,0.2))
+
+# Create a plot comparing the runtime of the interior-point (MOSEK)
+# and active-set methods for solving the QP subproblem.
+p9 <- ggplot(data = dat4_1) +
+  geom_line(aes(x = m,y = t1,color = "interior point (MOSEK)"),size = 1) +
+  geom_line(aes(x = m,y = t2,color = "active-set"),size = 1) +
+  geom_point(aes(x = m,y = t1,color = "interior point (MOSEK)"),
+             shape = 20,size = 3) +
+  geom_point(aes(x = m,y = t2,color = "active-set"),shape = 20,size = 3) +
+  scale_x_continuous(trans = "log10",breaks = c(10,30,100,500)) + 
+  scale_y_continuous(trans = "log10",breaks = c(0.001,0.01,0.1,0.5)) + 
+  scale_color_manual(values = colors[c(6,2)],name = "") +
+  labs(x     = "number of columns in L (m)",
+       y     = "runtime (seconds)",
+       title = "solving the QP subproblem (n = 10,000)") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(0.05,0.9))
+
+# Create a plot comparing the runtime 
+p10 <- ggplot(data = dat4_2) +
+  geom_line(aes(x = n,y = t1,color = "interior point (MOSEK)"),size = 1) +
+  geom_line(aes(x = n,y = t2,color = "active-set"),size = 1) +
+  geom_point(aes(x = n,y = t1,color = "interior point (MOSEK)"),
+             shape = 20,size = 3) +
+  geom_point(aes(x = n,y = t2,color = "active-set"),shape = 20,size = 3) +
+  scale_x_continuous(trans = "log10",breaks = c(1e3,1e4,4e5)) +
+  scale_y_continuous(breaks = c(0.001,0.002,0.003)) +
+  scale_color_manual(values = colors[c(6,2)],name = "") +
+  labs(x     = "number of rows in L (n)",
+       y     = "runtime (seconds)",
+       title = "solving the QP subproblem (m = 40)") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(0.05,0.5))
+
+# Create a plot
+p11 <- ggplot(data = dat4_3[-14,]) +
+  geom_line(aes(x = iter,y = y,color = "nonzeros in q"),size = 1) +
+  geom_line(aes(x = iter,y = q,color = "nonzeros in y"),size = 1) +
+  geom_line(aes(x = iter,y = ls,color = "line search iterations"),size = 1) +
+  geom_point(aes(x = iter,y = y,color = "nonzeros in q"),
+             shape = 20,size = 3) +
+  geom_point(aes(x = iter,y = q,color = "nonzeros in y"),
+             shape = 20,size = 3) +
+  geom_point(aes(x = iter,y = ls,color = "line search iterations"),
+             shape = 20,size = 3) +
+  scale_x_continuous(breaks = c(1,5,10,13)) +
+  scale_y_continuous(breaks = c(0,5,10)) +
+  scale_color_manual(values = c("limegreen","darkblue","skyblue"),
+                     name = "") +
+  labs(x     = "SQP iteration",
+       y     = "count",
+       title = "title goes here") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(0.4,0.89))
+
+# Create a plot comparing the runtime.
+p13 <- ggplot(data = dat3_1) +
+  geom_line(aes(x = m,y = s/m,color = "GIANT data"),size = 1) +
+  geom_line(aes(x = m,y = s2/m,color = "Synthetic data"),size = 1) +
+  geom_point(aes(x = m,y = s/m, color = "GIANT data"),
+             shape = 20,size = 3) +
+  geom_point(aes(x = m,y = s2/m,color = "Synthetic data"),
+             shape = 20,size = 3) +
+  scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
+  scale_y_continuous(trans="log2",breaks=c(0.5,0.25,0.125,0.0625,0.03125,1)) +
+  scale_color_manual(values = colors[c(6,2)],name = "") +
+  labs(x     = "number of cols in L (m)",
+       y     = "effective rank/true rank (rank/m)",
+       title = "ratio of effective rank to true rank") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(0.05,0.3))
+
+# Create a plot.
+p14 <- ggplot(data = dat3_2) +
+  geom_line(aes(x = m,y = rel_err,color = "||x_IP - x_SQP||_1"),size = 1) +
+  geom_point(aes(x = m,y = rel_err,color = "||x_IP - x_SQP||_1"),
+             shape = 20,size = 3) +
+  scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
+  scale_y_continuous(breaks = c(-8,-7,-6,-5)) +
+  scale_color_manual(values = colors[3],name = "") +
+  ylim(-8,-4) +
+  labs(x     = "number of cols in L (m)",
+       y     = "log10 of l1 difference (log10(diff))",
+       title = "l1 difference between solutions") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(.1,.9))
+
+# Create a plot.
+p15 <- ggplot(data = dat3_3) +
+  geom_line(aes(x = m,y = err,color = "|f(x_REBayes) - f(x_SQP)|"),
+            size = 1) +
+  geom_point(aes(x = m,y = err,color = "|f(x_REBayes) - f(x_SQP)|"),
+             shape = 20,size = 3) +
+  scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
+  scale_y_continuous(breaks = c(-16,-14,-12,-10,-8,-6)) +
+  scale_color_manual(values = colors[5],name = "") +
+  ylim(-16,-6) +
+  labs(x     = "number of cols in L (m)",
+       y     = "log10 of difference (log10(diff))",
+       title = "Difference between two objective values from") +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank(),
+        legend.position = c(.1,.9))
+
+# TO DO: Explain here what this code does.
+p3 <- ggplot(data = dat3_3) + geom_line(aes(x = log2(m),y = rel_err),
+             color = "#619CFF", size = 1.2)
+p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") +
+      ggtitle("difference in objective") + ylim(-16,-8)
+
 # SAVE PLOTS AS PDFs
 # ------------------
-ggsave("../output/F1.pdf",plot_grid(p1,p2),height = 4,width = 8)
-ggsave("../output/F6.pdf",plot_grid(pA,pB),height = 4,width = 8)
-
-stop()
-
-## figure 2
-
-p <- ggplot(data = dat2_1) +
-  geom_line(aes(x = log2(n), y=log2(t1),color = "F"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=log2(t2),color = "SVD"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=log2(t3),color = "QR"), size = 1.2)
-p <- p + xlab("log2(n)") + ylab("log2(time)")
-p1 <- p + scale_color_discrete(name = "") + ggtitle("B-SQP-A-lowrankapprox")  +
-  theme(legend.position = c(.1,.9))
-
-p <- ggplot(data = dat2_2) +
-  geom_line(aes(x = log2(n), y=svd,color = "SVD"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=qr,color = "QR"), size = 1.2)
-p <- p + xlab("log2(n)") + ylab("log10(frobenius error)")
-p2 <- p + scale_color_discrete(name = "") +
-    ggtitle("accuracy of low-rank approximation") + ylim(c(-13,-12))  +
-  theme(legend.position = c(.1,.9))
-multiplot(p1, p2, cols = 2)
-
-## figure 3
-
-p <- ggplot(data = dat3_1) +
-  geom_line(aes(x = log2(m), y= log2(s/m),color = "synthetic"), size = 1.2) +
-  geom_line(aes(x = log2(m2), y = log2(s2/m),color = "GIANT"), size = 1.2)
-p <- p + xlab("log2(m)") + ylab("log2(r/m)")
-p <- p + scale_color_discrete(name = "") + ggtitle("log2(rank/m)") +
-  theme(legend.position = c(.8,.95),legend.background = element_rect(fill = "transparent"))
-p2 <- ggplot(data = dat3_2) + geom_line(aes(x = log2(m), y = rel_err),color = "#00BA38", size = 1.2)
-p3 <- ggplot(data = dat3_3) + geom_line(aes(x = log2(m), y = rel_err ),color = "#619CFF", size = 1.2)
-p2 <- p2 + xlab("log2(m)") + ylab("log10(||x_IP - x_SQP||_1)") + ggtitle("difference in l1 norm") + ylim(-8,-4)
-p3 <- p3 + xlab("log2(m)") + ylab("log10(|f_IP-f_SQP|/|f_IP|)") + ggtitle("difference in objective") + ylim(-16,-8)
-multiplot(p, p2, p3, cols=3)
-
-## figure 4
-
-p <- ggplot(data = dat4_1) +
-  geom_line(aes(x = log2(m), y=log2(t1),color = "IP"), size = 1.2) +
-  geom_line(aes(x = log2(m), y=log2(t2),color = "Act"), size = 1.2)
-p <- p + xlab("log2(m)") + ylab("log2(time)")
-p1 <- p + scale_color_discrete(name = "") + ggtitle("comptime of solving QP in m")  +
-  theme(legend.position = c(.1,.95),legend.background = element_rect(fill = "transparent"))
-
-p <- ggplot(data = dat4_2) +
-  geom_line(aes(x = log2(n), y=log2(t1),color = "IP"), size = 1.2) +
-  geom_line(aes(x = log2(n), y=log2(t2),color = "Act"), size = 1.2)
-p <- p + xlab("log2(n)") + ylab("log2(time)")
-p2 <- p + scale_color_discrete(name = "") + ggtitle("comptime of solving QP in n")  +
-  theme(legend.position = c(.9,.6),legend.background = element_rect(fill = "transparent"))
-
-p <- ggplot() +
-  geom_line(aes(x = 1:17, y=dat4_3$q_nnz,color = "q_nnzs"), size = 1.2) +
-  geom_line(aes(x = 1:17, y=dat4_3$y_nnz,color = "y_nnzs"), size = 1.2) +
-  geom_line(aes(x = 1:17, y=dat4_3$linesearch,color = "# of ls"), size = 1.2) 
-p <- p + xlab("iteration") + ylab("number")
-p3 <- p + scale_color_discrete(name = "") + ggtitle("parameters in each iteration")  +
-  theme(legend.position = c(.9,.9),legend.background = element_rect(fill = "transparent"))
-multiplot(p1, p2, p3, cols = 3)
-
-
-## figure 5
-
-p <- ggplot(data = dat5) +
-  geom_line(aes(x = n, y=log2(IP100),color = "pink",linetype = "D-IP-N-F"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(SQP100),color = "pink",linetype = "B-SQP-A-QR"), size = 1.2) + 
-  geom_line(aes(x = n, y=log2(IP200),color = "turquoise",linetype = "D-IP-N-F"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(SQP200),color = "turquoise",linetype = "B-SQP-A-QR"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(IP400),color = "blue",linetype = "D-IP-N-F"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(SQP400),color = "blue",linetype = "B-SQP-A-QR"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(IP800),color = "salmon",linetype = "D-IP-N-F"), size = 1.2) +
-  geom_line(aes(x = n, y=log2(SQP800),color = "salmon",linetype = "B-SQP-A-QR"), size = 1.2)
-p1 <- p + xlab("log2(n)") + ylab("log2(time)")
-fig5 <- p1 + scale_color_discrete(name = "m", breaks = c("pink","blue","turquoise","salmon"),
-                                  labels = c("100", "200","400","800")) + ggtitle("Computation time of mixSQP versus REBayes")+
-  theme(legend.position = c(.1,.75),legend.background = element_rect(fill = "transparent"))
-fig5
-
+ggsave("../output/F1.pdf",p1,height = 4,width = 8)
+ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
+ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),
+       height = 4,width = 12)
+ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 3.5,
+       width = 10.5)
+ggsave("../output/F5.pdf",p7,height = 4,width = 7)
+ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 8)

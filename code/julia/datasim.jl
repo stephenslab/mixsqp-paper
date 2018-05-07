@@ -11,9 +11,10 @@ function normdatasim(n::Int)
   end
 
   # Generate the random numbers.
-  n1 = round(Int,n/2);
-  n2 = n - n1;
-  return vcat(randn(n1),3*randn(n2))
+  n1 = round(Int,0.5*n);
+  n2 = round(Int,0.2*n);
+  n3 = n - n1 - n2;
+  return vcat(randn(n1),4*randn(n2),6*randn(n3))
 end
 
 # Simulate n random numbers generated as follows: 50% of the random
