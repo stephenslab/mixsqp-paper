@@ -116,9 +116,14 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     end
       
     # Initialize the solution to the QP subproblem (y).
-    ind    = find(x .> sptol);
     y      = sparse(zeros(k));
-    y[ind] = 1/length(ind);
+    if i > 1
+        ind    = find(x .> sptol);
+        y[ind] = 1/length(ind);
+    else
+        ind    = [1;k];
+        y[ind] = 1/length(ind);
+    end
 
     # Run active set method to solve the QP subproblem.
     for j = 1:maxqpiter
@@ -180,7 +185,7 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
         elseif lowrank == "svd"
             D_new = 1./(F[:U]*(S*(F[:Vt]*y)) + eps);
         else
-            D_new = 1./(L*x + eps);
+            D_new = 1./(L*y + eps);
         end
         if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
             break;
@@ -188,7 +193,7 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
         y = (y-x)/2 + x;
     end
     numls = t;
-      
+
     # Update the solution to the original optimization problem.
     x = y;
 
