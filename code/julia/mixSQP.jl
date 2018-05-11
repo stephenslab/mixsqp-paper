@@ -187,8 +187,10 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
         else
             D_new = 1./(L*y + eps);
         end
-        if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
+        if all(D_new .> 0)
+          if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
             break;
+          end
         end
         y = (y-x)/2 + x;
     end
