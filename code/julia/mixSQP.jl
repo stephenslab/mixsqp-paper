@@ -127,7 +127,7 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
 
     # Run active set method to solve the QP subproblem.
     for j = 1:maxqpiter
-          
+        
       # Define the smaller QP subproblem.
       s   = length(ind);
       H_s = H[ind,ind];
@@ -143,13 +143,14 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
       if norm(p_s) < convtol
             
         # Compute the Lagrange multiplier.
-        lambda = d
+        lambda = d;
         if all(lambda .>= -convtol)
           break;
-        else
+        elseif length(ind) < k
             
           # TO DO: Explain what ind and ind_min are for.
-          ind_min = findmin(lambda)[2];
+          notind  = setdiff(1:k,ind);
+          ind_min = notind[findmin(lambda[notind])[2]];
           ind     = sort([ind; ind_min]);
         end
       else
