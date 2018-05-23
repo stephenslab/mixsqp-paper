@@ -51,14 +51,16 @@ function mixSQP_time(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3, lowrank 
 
       # convergence check
       if norm(p_s) < tol
-        # compute the Lagrange multiplier
+        ## Compute the Lagrange multiplier.
         lambda = d;
-        # convergence test
-        if minimum(lambda) >= -tol;
+        if all(lambda .>= -convtol)
           break;
-        else
-          ind_min = findmin(lambda)[2];
-          ind = sort([ind;ind_min]);
+        elseif length(ind) < k
+            
+          # TO DO: Explain what ind and ind_min are for.
+          notind  = setdiff(1:k,ind);
+          ind_min = notind[findmin(lambda[notind])[2]];
+          ind     = sort([ind; ind_min]);
         end
 
       # do update otherwise
