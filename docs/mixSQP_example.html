@@ -330,22 +330,9 @@ body {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">F</span> <span class="o">=</span> <span class="n">pqrfact</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">rtol</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">);</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">k</span>   <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
 <span class="n">x0</span>  <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">/</span><span class="n">k</span><span class="p">;</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span><span class="p">,</span><span class="n">pqrtol</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">);</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -366,33 +353,33 @@ body {
 - 50000 x 20 data matrix
 - convergence tolerance = 1.00e-08
 - zero threshold        = 1.00e-03
-- partial SVD tolerance  = 1.00e-10
-- partial SVD max. error = 1.40e-09
-iter       objective -min(g+1) #nnz #qp
-   1 3.03733620e+04 +6.30e-01   20   0
-   2 2.09533189e+04 +5.80e+04    1  27
-   3 1.28052235e+04 +2.01e+04    3  54
-   4 1.11157460e+04 +8.72e+03    3  31
-   5 1.09368736e+04 +4.16e+03    3   9
-   6 1.07219448e+04 +2.01e+03    3  18
-   7 1.05948304e+04 +1.03e+03    3  12
-   8 1.05171906e+04 +5.08e+02    3  10
-   9 1.03014356e+04 +2.50e+02    2  22
-  10 1.01823391e+04 +1.28e+02    3  21
-  11 1.01284988e+04 +6.46e+01    3  12
-  12 1.00402287e+04 +3.20e+01    3   9
-  13 9.89728597e+03 +1.61e+01    3  18
-  14 9.85080002e+03 +8.00e+00    3   7
-  15 9.81499312e+03 +3.85e+00    3   6
-  16 9.77433654e+03 +1.81e+00    3  12
-  17 9.75246378e+03 +8.28e-01    4  12
-  18 9.74082690e+03 +3.51e-01    4   6
-  19 9.73160828e+03 +1.06e-01    4  18
-  20 9.72785007e+03 +2.17e-02    5  18
-  21 9.72698821e+03 +1.59e-03    5   7
-  22 9.72691638e+03 +1.03e-06    5   7
-  23 9.72691593e+03 -3.18e-09    5   7
-Optimization took 23 iterations and 0.4133 seconds.
+- partial SVD tolerance  = 1.00e-08
+- partial SVD max. error = 4.18e-07
+iter      objective -min(g+1) #nnz #qp #ls
+   1 3.03733620e+04 +6.30e-01   20   0   0
+   2 2.09533189e+04 +5.80e+04    1  12   1
+   3 1.28101641e+04 +2.01e+04    4  60   1
+   4 1.11158863e+04 +8.72e+03    4  51   1
+   5 1.09376388e+04 +4.16e+03    4  12   1
+   6 1.07215837e+04 +2.02e+03    3  22   1
+   7 1.05948783e+04 +1.03e+03    3  10   1
+   8 1.05175827e+04 +5.10e+02    3  10   1
+   9 1.03021156e+04 +2.51e+02    2  22   1
+  10 1.01826126e+04 +1.28e+02    3  21   1
+  11 1.01288446e+04 +6.49e+01    3  12   1
+  12 1.00408173e+04 +3.21e+01    3  10   1
+  13 9.89770711e+03 +1.61e+01    3  18   1
+  14 9.85096785e+03 +8.03e+00    3   7   1
+  15 9.81522511e+03 +3.86e+00    3   6   1
+  16 9.77452162e+03 +1.82e+00    3  12   1
+  17 9.75253943e+03 +8.31e-01    4  12   1
+  18 9.74088818e+03 +3.52e-01    4   6   1
+  19 9.73164452e+03 +1.07e-01    4  18   1
+  20 9.72786027e+03 +2.19e-02    5  18   1
+  21 9.72698970e+03 +1.62e-03    5   7   1
+  22 9.72691640e+03 +1.11e-06    5   7   1
+  23 9.72691593e+03 -3.18e-09    5   7   1
+Optimization took 23 iterations and 0.4113 seconds.
 </pre>
 </div>
 </div>
@@ -412,10 +399,11 @@ Optimization took 23 iterations and 0.4133 seconds.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e6</span><span class="p">));</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">srand</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e5</span><span class="p">));</span>
 </pre></div>
 
 </div>
@@ -427,17 +415,17 @@ Optimization took 23 iterations and 0.4133 seconds.
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Compute-the-likelihood-matrix">Compute the likelihood matrix<a class="anchor-link" href="#Compute-the-likelihood-matrix">&#182;</a></h2><p>As before, we compute the $n \times k$ likelihood matrix for a mixture of zero-centered normals. This time, we use a finer grid of $k = 100$ normal densities.</p>
+<h2 id="Compute-the-likelihood-matrix">Compute the likelihood matrix<a class="anchor-link" href="#Compute-the-likelihood-matrix">&#182;</a></h2><p>As before, we compute the $n \times k$ likelihood matrix for a mixture of zero-centered normals. This time, we use a finer grid of $k = 40$ normal densities.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">100</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">40</span><span class="p">);</span>
 <span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
 <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
 </pre></div>
@@ -452,13 +440,13 @@ Optimization took 23 iterations and 0.4133 seconds.
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[9]:</div>
+<div class="prompt output_prompt">Out[8]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(1000000, 100)</pre>
+<pre>(100000, 40)</pre>
 </div>
 
 </div>
@@ -478,12 +466,12 @@ Optimization took 23 iterations and 0.4133 seconds.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">k</span>   <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
 <span class="n">x0</span>  <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">/</span><span class="n">k</span><span class="p">;</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span><span class="p">,</span><span class="n">pqrtol</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">);</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -501,34 +489,117 @@ Optimization took 23 iterations and 0.4133 seconds.
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Running SQP algorithm with the following settings:
-- 1000000 x 100 data matrix
+- 100000 x 40 data matrix
 - convergence tolerance = 1.00e-08
 - zero threshold        = 1.00e-03
-- partial SVD tolerance  = 1.00e-10
-- partial SVD max. error = 3.52e-08
-iter       objective -min(g+1) #nnz #qp
-   1 7.00907581e+05 +8.02e-01  100   0
-   2 4.68009504e+05 +1.87e+04    2 100
-   3 2.60982445e+05 +6.57e+03    3 100
-   4 2.09623970e+05 +2.85e+03    3  62
-   5 2.04474816e+05 +1.36e+03    3  90
-   6 2.02491333e+05 +6.70e+02    2  66
-   7 2.00599453e+05 +3.30e+02    3  54
-   8 1.99393417e+05 +1.64e+02    3  19
-   9 1.98446578e+05 +8.16e+01    3  16
-  10 1.97713280e+05 +4.05e+01    3  18
-  11 1.97150964e+05 +2.01e+01    3  12
-  12 1.96760965e+05 +9.98e+00    4  48
-  13 1.96488688e+05 +4.92e+00    4  46
-  14 1.96252124e+05 +2.38e+00    5  38
-  15 1.96075686e+05 +1.11e+00    4  31
-  16 1.95940602e+05 +4.85e-01    5  41
-  17 1.95857390e+05 +1.82e-01    4  57
-  18 1.95813182e+05 +5.15e-02    4  38
-  19 1.95799181e+05 +7.26e-03    4  38
-  20 1.95797589e+05 +8.44e-05    4  35
-  21 1.95797556e+05 -3.16e-09    4  35
-Optimization took 21 iterations and 14.3891 seconds.
+- partial SVD tolerance  = 1.00e-08
+- partial SVD max. error = 1.08e-06
+iter      objective -min(g+1) #nnz #qp #ls
+   1 6.21694207e+04 +6.60e-01   40   0   0
+   2 4.83207935e+04 +3.93e-01   40  17   2
+   3 3.75596759e+04 +2.25e-01   40  52   2
+   4 2.99843229e+04 +1.23e-01   40  51   2
+   5 2.13835266e+04 +7.20e+03    3  48   1
+   6 1.98795117e+04 +2.53e+03    4  65   1
+   7 1.97777586e+04 +1.12e+03    3  11   1
+   8 1.97192133e+04 +5.22e+02    3  12   1
+   9 1.96312101e+04 +2.54e+02    3  28   1
+  10 1.95996264e+04 +1.25e+02    4  12   1
+  11 1.95641472e+04 +6.16e+01    4  28   1
+  12 1.95418605e+04 +3.09e+01    5  12   1
+  13 1.95188575e+04 +1.54e+01    5  28   1
+  14 1.95042420e+04 +7.72e+00    4   8   1
+  15 1.94888493e+04 +3.80e+00    4  21   1
+  16 1.94788434e+04 +1.87e+00    5   6   1
+  17 1.94701551e+04 +8.57e-01    5  22   1
+  18 1.94655347e+04 +3.33e-01    4  10   1
+  19 1.94621395e+04 +9.24e-02    4  14   1
+  20 1.94610868e+04 +1.37e-02    4  15   1
+  21 1.94608952e+04 +5.47e-04    4  18   1
+  22 1.94608878e+04 -3.13e-09    4  15   1
+Optimization took 22 iterations and 0.7094 seconds.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With no low-rank approximation (<code>lowrank = "none"</code>), the algorithm still converges even when using a very small correction factor <code>eps = 1e-12</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">,</span><span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-12</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Running SQP algorithm with the following settings:
+- 100000 x 40 data matrix
+- convergence tolerance = 1.00e-08
+- zero threshold        = 1.00e-03
+- Exact derivative computation (partial QR not used).
+iter      objective -min(g+1) #nnz #qp #ls
+   1 6.21694226e+04 +6.60e-01   40   0   0
+   2 4.35976361e+04 +2.74e+08    2  17   1
+   3 2.63754248e+04 +9.42e+07    3 100   1
+   4 2.26716550e+04 +4.11e+07    3  33   1
+   5 2.22369707e+04 +1.93e+07    3  18   1
+   6 2.20822494e+04 +9.86e+06    3  10   1
+   7 2.17850756e+04 +4.96e+06    3  43   1
+   8 2.15686849e+04 +2.48e+06    2  11   1
+   9 2.13181589e+04 +1.28e+06    3  39   1
+  10 2.11397369e+04 +6.40e+05    2  11   1
+  11 2.08812795e+04 +3.39e+05    3  39   1
+  12 2.07941248e+04 +1.75e+05    3  10   1
+  13 2.04915356e+04 +8.97e+04    3  37   1
+  14 2.03990501e+04 +4.57e+04    3  10   1
+  15 2.01797507e+04 +2.27e+04    3  16   1
+  16 2.00663424e+04 +1.17e+04    3  10   1
+  17 2.00068966e+04 +5.91e+03    3  10   1
+  18 1.98269277e+04 +3.06e+03    3  31   1
+  19 1.97740158e+04 +1.56e+03    3  10   1
+  20 1.97130109e+04 +7.79e+02    3  10   1
+  21 1.96283745e+04 +3.99e+02    3  31   1
+  22 1.96010421e+04 +2.00e+02    4  12   1
+  23 1.95654206e+04 +9.97e+01    4  31   1
+  24 1.95444434e+04 +5.02e+01    5  12   1
+  25 1.95216090e+04 +2.51e+01    4  27   1
+  26 1.95072602e+04 +1.28e+01    4  28   1
+  27 1.94925787e+04 +6.33e+00    3  18   1
+  28 1.94817429e+04 +3.17e+00    5  29   1
+  29 1.94728348e+04 +1.50e+00    4  22   1
+  30 1.94676911e+04 +6.57e-01    5  24   1
+  31 1.94635123e+04 +2.27e-01    4  13   1
+  32 1.94615349e+04 +5.42e-02    4  15   1
+  33 1.94609587e+04 +5.31e-03    4  18   1
+  34 1.94608908e+04 +1.44e-04    4  18   1
+  35 1.94608893e+04 +1.36e-07    4  15   1
+  36 1.94608893e+04 -3.14e-13    4  15   1
+Optimization took 36 iterations and 5.4638 seconds.
 </pre>
 </div>
 </div>
@@ -554,6 +625,7 @@ notebook, including the version of Julia, and the versions of the Julia packages
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;Distributions&quot;</span><span class="p">);</span>
 <span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;LowRankApprox&quot;</span><span class="p">);</span>
+<span class="n">versioninfo</span><span class="p">();</span>
 </pre></div>
 
 </div>
@@ -571,38 +643,8 @@ notebook, including the version of Julia, and the versions of the Julia packages
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> - Distributions                 0.15.0
- - LowRankApprox                 0.1.0
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">versioninfo</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Julia Version 0.6.2
+ - LowRankApprox                 0.1.1
+Julia Version 0.6.2
 Commit d386e40c17 (2017-12-13 18:08 UTC)
 Platform Info:
   OS: macOS (x86_64-apple-darwin14.5.0)
