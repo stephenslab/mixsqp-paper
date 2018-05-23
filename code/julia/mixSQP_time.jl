@@ -53,7 +53,7 @@ function mixSQP_time(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3, lowrank 
       if norm(p_s) < tol
         ## Compute the Lagrange multiplier.
         lambda = d;
-        if all(lambda .>= -convtol)
+        if all(lambda .>= -tol)
           break;
         elseif length(ind) < k
             
