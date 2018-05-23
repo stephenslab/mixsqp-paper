@@ -1,3 +1,7 @@
+function mixobjective(L, x, eps = 0)
+  return -sum(log.(L * x + eps))
+end
+          
 # L       : likelihood matrix; design matrix of size n by m
 # x       : initial point with default (1/m, 1/m, ...)
 # convtol :
@@ -101,7 +105,7 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     # make sure that this objective function operation is not included
     # in the timing.
     #
-    obj[i]  = -sum(log.(L * x + eps));
+    obj[i]  = mixobjective(L,x,eps);
     gmin[i] = minimum(g + 1);
     nnz[i]  = sum(x .> sptol);
     nqp[i]  = j;
