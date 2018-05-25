@@ -1,3 +1,6 @@
+# Small script to show how the MOSEK interior-point solver runtime can
+# be assessed more precisely using the output from Rmosek::mosek.
+# 
 # To use this script, the KWDual function in the REBayes package needs
 # to be modified to output the Rmosek problem specification. This can
 # be done by changing the last line of the KWDual function definition
@@ -5,7 +8,7 @@
 #
 #   list(P = P,f = f, g = g, status = status)
 #
-# then re-installing REBayes locally from source, e.g.,
+# then installing REBayes locally from source, e.g.,
 #
 #   devtools::install_local("REBayes")
 #

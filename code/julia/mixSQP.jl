@@ -105,7 +105,13 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     # make sure that this objective function operation is not included
     # in the timing.
     #
-    obj[i]  = mixobjective(L,x,eps);
+    if lowrank == "qr"
+      obj[i] = -sum(log.(F[:Q]*(F[:R]*(P'*x)) + eps));
+    elseif lowrank == "svd"
+      obj[i] = -sum(log.(F[:U]*(S*(F[:Vt]*x)) + eps));
+    else
+      obj[i] = mixobjective(L,x,eps);
+    end
     gmin[i] = minimum(g + 1);
     nnz[i]  = sum(x .> sptol);
     nqp[i]  = j;

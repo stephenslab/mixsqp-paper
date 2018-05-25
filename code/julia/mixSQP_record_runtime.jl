@@ -1,4 +1,9 @@
-function mixSQP_time(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3, lowrank = "svd")
+# NOTE: This is a slight variant of the mix-SQP algorithm that was
+# used in some of the numerical experiments for the paper to obtain a
+# more fine-grained assessment of the mix-SQP algorithm's computational
+# complexity.
+
+function mixSQP_record_runtime(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3, lowrank = "svd")
   n = size(L,1); k = size(L,2);
   tic();
   if lowrank == "qr"
