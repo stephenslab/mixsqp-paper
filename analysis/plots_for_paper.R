@@ -167,10 +167,14 @@ pdat <- data.frame(n      = rep(2^dat5$n,8),
                    m      = factor(rep(c(100,200,400,800),each = 20)),
                    solver = rep(rep(c("KWDual","mix-SQP"),each = 10),4),
                    time   = do.call(c,dat5[-(1:3)]))
+pdat[81:84,] = pdat[77:80,]
+pdat[81:84,1] = dat5_1$x
+pdat[81:84,2] = c("100","200","400","800")
+pdat[81:84,4] = dat5_1$y
 p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   geom_line(size = 0.5) +
   geom_point(size = 2) +
-  scale_x_continuous(trans = "log10",breaks = c(2e3,1e4,1e5,1e6)) +
+  scale_x_continuous(trans = "log10",breaks = c(2e3,2e4,2e5,1e6,2e6)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100,1e3)) +
   scale_color_manual(values = c("lightskyblue","cornflowerblue",
                                 "mediumblue","darkblue"),
@@ -181,6 +185,9 @@ p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   theme_cowplot(font_size = 12) +
   theme(plot.title   = element_text(face = "plain",size = 12),
         axis.line    = element_blank())
+
+
+p7
 
 # Create a plot comparing the number of columns in the data matrix (L)
 # against the "effective" rank of L.
