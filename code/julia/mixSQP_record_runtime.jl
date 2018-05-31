@@ -5,7 +5,6 @@
 
 function mixSQP_record_runtime(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3, lowrank = "svd")
   n = size(L,1); k = size(L,2);
-  tic();
   if lowrank == "qr"
       F = pqrfact(L, rtol=pqrtol);
       P = sparse(F[:P]);
@@ -14,13 +13,11 @@ function mixSQP_record_runtime(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3
       S = Diagonal(F[:S]);
   else
   end
-  t = toq();
     
   iter = 100;
   # initialize
   x = zeros(k); x[1] = 1/2; x[k] = 1/2;
 
-  tic();
   # QP subproblem start
   for i = 1:iter
     # gradient and Hessian computation -- Rank reduction method
@@ -88,22 +85,7 @@ function mixSQP_record_runtime(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3
         y = y + alpha * p;
       end
     end
-        
-    # Perform backtracking line search
-    for t = 1:10
-        if lowrank == "qr"
-            D_new = 1./(F[:Q]*(F[:R]*(P'*y)) + eps);
-        elseif lowrank == "svd"
-            D_new = 1./(F[:U]*(S*(F[:Vt]*y)) + eps);
-        else
-            D_new = 1./(L*x + eps);
-        end
-        if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
-            break;
-        end
-        y = (y-x)/2 + x;
-    end
-        
+
     # Update the solution to the original optimization problem.
     x = y;
 
@@ -112,10 +94,9 @@ function mixSQP_record_runtime(L; eps=1e-8, tol=1e-8, pqrtol = 1e-10, sptol=1e-3
       break;
     end
   end
-  x[x .< sptol] = 0;
-  t2 = toq();
+
     
-  return full(x/sum(x)), t, t2, t+t2
+  return full(x/sum(x))
 end
 
 function eval_f(L,x; eps = 1e-8)
