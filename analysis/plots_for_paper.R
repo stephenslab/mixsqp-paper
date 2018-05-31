@@ -160,12 +160,12 @@ p6 <- ggplot(dat6_1,aes(x = x,y = y,fill = label)) +
         axis.line    = element_blank(),
         axis.ticks.x = element_blank())
 
-# Create a plot showing the runtimes for the mix-SQP and REBayes
+# Create a plot showing the runtimes for the mix-SQP and KWDual
 # (MOSEK) methods on simulated data sets with different numbers of
 # samples (n) and different numbers of mixture components (m).
 pdat <- data.frame(n      = rep(2^dat5$n,8),
                    m      = factor(rep(c(100,200,400,800),each = 20)),
-                   solver = rep(rep(c("REBayes","mix-SQP"),each = 10),4),
+                   solver = rep(rep(c("KWDual","mix-SQP"),each = 10),4),
                    time   = do.call(c,dat5[-(1:3)]))
 p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   geom_line(size = 0.5) +
