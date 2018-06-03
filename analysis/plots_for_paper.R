@@ -168,9 +168,11 @@ pdat <- data.frame(n      = rep(2^dat5$n,8),
                    solver = rep(rep(c("KWDual","mix-SQP"),each = 10),4),
                    time   = do.call(c,dat5[-(1:3)]))
 pdat[81:84,] = pdat[77:80,]
-pdat[81:84,1] = dat5_1$x
-pdat[81:84,2] = c("100","200","400","800")
+pdat[85:88,] = pdat[67:70,]
+pdat[81:88,1] = dat5_1$x
+pdat[81:88,2] = c("100","200","400","800")
 pdat[81:84,4] = dat5_1$y
+pdat[85:88,4] = dat5_1$y2
 p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   geom_line(size = 0.5) +
   geom_point(size = 2) +
