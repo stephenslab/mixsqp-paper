@@ -121,7 +121,7 @@ pdat <- rbind(transform(dat6_1,
                         label = as.character(label)))
 pdat <- transform(pdat,
           label = factor(label,c("QR factorization",
-                                 "model fitting (REBayes)",
+                                 "model fitting (KWDual)",
                                  "model fitting (mix-SQP)",
                                  "posterior calculations",
                                  "likelihood computation")))
