@@ -167,29 +167,25 @@ pdat <- data.frame(n      = rep(2^dat5$n,8),
                    m      = factor(rep(c(100,200,400,800),each = 20)),
                    solver = rep(rep(c("KWDual","mix-SQP"),each = 10),4),
                    time   = do.call(c,dat5[-(1:3)]))
-pdat[81:84,] = pdat[77:80,]
-pdat[85:88,] = pdat[67:70,]
-pdat[81:88,1] = dat5_1$x
-pdat[81:88,2] = c("100","200","400","800")
-pdat[81:84,4] = dat5_1$y
-pdat[85:88,4] = dat5_1$y2
+pdat2 <- data.frame(n      = rep(dat5_1$n,2),
+                    m      = factor(rep(c(100,200,400,800),2)),
+                    solver = rep(c("KWDual","mix-SQP"),each = 4),
+                    time   = c(dat5_1$rebayes,dat5_1$mixsqp))
+pdat <- rbind(pdat,pdat2)
 p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   geom_line(size = 0.5) +
   geom_point(size = 2) +
-  scale_x_continuous(trans = "log10",breaks = c(2e3,2e4,2e5,1e6,2e6)) +
+  scale_x_continuous(trans = "log10",breaks = c(2e3,2e4,2e5,2e6)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100,1e3)) +
   scale_color_manual(values = c("lightskyblue","cornflowerblue",
                                 "mediumblue","darkblue"),
                      name  = "m (num. cols)") +
   labs(x = "n (number of rows in L)",
        y = "runtime (seconds)",
-       title = "Computation time of mix-SQP versue REBayes") +
+       title = "Comparison of mix-SQP and KWdual performance") +
   theme_cowplot(font_size = 12) +
   theme(plot.title   = element_text(face = "plain",size = 12),
         axis.line    = element_blank())
-
-
-p7
 
 # Create a plot comparing the number of columns in the data matrix (L)
 # against the "effective" rank of L.
@@ -326,5 +322,5 @@ ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),
        height = 4,width = 12)
 ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 3.5,
        width = 10.5)
-ggsave("../output/F5.pdf",p7,height = 4,width = 7)
+ggsave("../output/F5.pdf",p7,height = 4,width = 5)
 ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 8)
