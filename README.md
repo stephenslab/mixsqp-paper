@@ -64,7 +64,7 @@ under the terms of the
 
 ## Developer notes
 
-Run these commands to re-build the webpsite from the Jupyter
+Run these commands to re-build the website from the Jupyter
 notebooks.
 
 ```bash

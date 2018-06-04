@@ -5,6 +5,8 @@ to do
 
 * Revise all Jupyter notebooks.
 
+* Verify and wrap up plots_for_paper.R.
+
 * Generate website from Jupyter notebooks using nbconvert.
 
 * Use BFG Repo-Cleaner to remove any large files in the git history.
