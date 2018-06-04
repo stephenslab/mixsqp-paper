@@ -3,7 +3,9 @@ to do
 
 * Complete README.md.
 
-* Revise all Jupyter notebooks.
+* Revise setup instructions in README.
+
+* Revise all Jupyter notebooks, and re-generate website.
 
 * Verify and wrap up plots_for_paper.R.
 
