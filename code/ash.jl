@@ -1,5 +1,5 @@
-# Basic Julia implementation of adaptive shrinkage with a normal
-# likelihood and normal mixture components.
+# Basic Julia implementation of adaptive shrinkage with normal
+# likelihood and mixture-of-centered-normals prior.
 function ash(x, s; method = "mixSQP", gridmult = 1.3, lowrank = "svd")
 
   # Compute the n x m conditional likelihood matrix.
