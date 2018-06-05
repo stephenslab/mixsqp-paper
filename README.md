@@ -13,10 +13,13 @@ maximum-likelihood estimation of mixture proportions, including a fast
 algorithm based on sequential quadratic programming, which we call
 "mix-SQP".
 
-All methods and demonstrations are implemented in [Julia][julia],
+All methods and demonsstrations are implemented in [Julia][julia],
 aside from the interior point solver based on [MOSEK][mosek], which is
 implemented in R. For an R package implementing some of these methods,
 please see the [mixsqp repository][mixsqp]
+
+For demos of the mix-SQP algorithm and comparisons with other
+optimization approaches, see [here][github-site].
 
 If you find a bug, or you have a question or feedback on our work,
 please post an [issue][issues].
@@ -36,9 +39,9 @@ If you find any of the source code in this repository useful for your
 work, please cite our manuscript, Kim *et al* (2018). The full
 citation is given above.
 
-## Quick Start
+## Setup instructions
 
-To try the examples, follow these steps:
+To work through the [demos][github-site], follow these steps:
 
 1. Install [Julia](http://julialang.org).
 
@@ -147,6 +150,7 @@ This project was developed by [Youngseok Kim][youngseok],
 [Mihai Anitescu][mihai] at the
 [University of Chicago](https://www.uchicago.edu).
 
+[github-site]: https://stephenslab.github.io/mixsqp-paper
 [mixsqp]: https://github.com/youngseok-kim/mixsqp
 [issues]: https://github.com/stephenslab/mixsqp-paper/issues
 [mit-license]: https://opensource.org/licenses/mit-license.html
