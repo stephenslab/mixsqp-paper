@@ -85,9 +85,26 @@ about the setup used to run the Julia code.
 ## Setup instructions (more complicated)
 
 The simple setup instructions above will allow you to run the first
-two examples. If you have successfully run the first two examples, and you would Follow these setup instructions if you would The other examples compare performance of different
+two examples. If you have successfully run the first two examples, and
+you would work through more examples, follow these additional setup
+instructions. The other examples compare performance of different
 methods, and require additional programs and Julia packages to
-run. For example,
+run.
+
+1. Install [R][R].
+
+2. Install [MOSEK][mosek].
+
+3. Install [Rmosek][rmosek] package for R (see [here][mosek-docs] for
+   installation instructions).
+
+2. Install the [JuMP][jump-julia], [Mosek][mosek-julia] and
+   [RCall][rcall-julia] Julia packages:
+
+   ```
+   Pkg.add("RCall")
+   Pkg.add("JuMP")
+   ```
 
 Download and install [MOSEK](https://www.mosek.com).
 
@@ -161,10 +178,14 @@ This project was developed by [Youngseok Kim][youngseok],
 [peter]: https://pcarbo.github.io
 [matthew]: http://stephenslab.uchicago.edu
 [mihai]: http://www.mcs.anl.gov/~anitescu
+[R]: https://www.r-project.org
 [julia]: http://julialang.org
 [mosek]: http://mosek.com
+[mosek-docs]: https://www.mosek.com/documentation
 [jupyter]: http://jupyter.org
 [ijulia]: https://github.com/JuliaLang/IJulia.jl
+[rmosek]: https://CRAN.R-project.org/package=Rmosek
 [distributions-julia]: https://github.com/JuliaStats/Distributions.jl
 [lowrankapprox-julia]: https://github.com/klho/LowRankApprox.jl
-
+[jump-julia]: https://github.com/JuliaOpt/JuMP.jl
+[rcall-julia]: https://github.com/JuliaInterop/RCall.jl
