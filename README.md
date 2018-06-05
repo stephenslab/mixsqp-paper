@@ -7,30 +7,17 @@ paper,
 > (2018). *A fast algorithm for maximum likelihood estimation of
 > mixture proportions using sequential quadratic programming.*
 
-We provide code implementating optimization algorithms for
+We provide code implementing optimization algorithms for
 maximum-likelihood estimation of mixture proportions, including a fast
 approach based on sequential quadratic programming, which we call
 **mix-SQP**.
 
 All methods and examples are implemented in Julia, aside from the
 interior point solver based on [MOSEK][mosek], which is implemented in
-R. For an R package implementing some of these methods, see the
+R. For an R package implementing some of these methods, please see the
 [mixsqp repository][mixsqp]
 
-
-and data to reproduce some of the
-empirical results presented in
-[Xing & Stephens (2016)][smashr-preprint]. For additional source code,
-see the [dscr-smash][dscr-smash]
-repository. The new methods can be found in the
-[smashr package][smashr].
-
 If you find a bug, please post an [issue][issues].
-
-
-Algorithms for solving the "mixture distribution" optimization
-problem. See [here](https://stephenslab.github.io/mixopt) for an
-overview of the problem and results of our experiments.
 
 ## License
 
@@ -111,6 +98,7 @@ This project was developed by [Youngseok Kim][youngseok],
 [Mihai Anitescu][mihai] at the
 [University of Chicago](https://www.uchicago.edu).
 
+[mixsqp]: https://github.com/youngseok-kim/mixsqp
 [youngseok]: https://github.com/youngseok-kim
 [peter]: https://pcarbo.github.io
 [matthew]: http://stephenslab.uchicago.edu
