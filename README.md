@@ -81,12 +81,12 @@ about the setup used to run the Julia code.
    inside Jupyter. This requires that you have already installed the
    [Jupyter kernel for Julia][ijulia].
 
-**Old instructions:**
+6. *Add additional steps here.*
 
-4. Download and install [MOSEK](https://www.mosek.com).
+Download and install [MOSEK](https://www.mosek.com).
 
-5. Install several Julia packages, including the DataFrames, PyCall
-   and PyPlot packages:
+Install several Julia packages, including the DataFrames, PyCall
+and PyPlot packages:
 
    ```julia
    Pkg.add("PyCall")
@@ -96,13 +96,11 @@ about the setup used to run the Julia code.
    Pkg.add("Mosek")
    ```
 
-   The `Pkg.build` step is important for installing the `PyPlot`
-   package.
+The `Pkg.build` step is important for installing the `PyPlot`
+package.
 
-   Precompiling the PyPlot package may take some time since it may
-   download and install additional Python packages.
-
-7. *Add next step here.*
+Precompiling the PyPlot package may take some time since it may
+download and install additional Python packages.
 
 ## What's included
 
@@ -160,6 +158,6 @@ This project was developed by [Youngseok Kim][youngseok],
 [mosek]: http://mosek.com
 [jupyter]: http://jupyter.org
 [ijulia]: https://github.com/JuliaLang/IJulia.jl
-[distrbutions-julia]: https://github.com/JuliaStats/Distributions.jl
+[distributions-julia]: https://github.com/JuliaStats/Distributions.jl
 [lowrankapprox-julia]: https://github.com/klho/LowRankApprox.jl
 [mixsqp-example]: https://stephenslab.github.io/mixsqp-paper/mixSQP_example.html

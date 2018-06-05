@@ -185,7 +185,8 @@ body {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="mix-SQP-demo-with-different-low-rank-matrix-approximations">mix-SQP demo with different low-rank matrix approximations<a class="anchor-link" href="#mix-SQP-demo-with-different-low-rank-matrix-approximations">&#182;</a></h1><p>In this example, we illustrate how the QR and singular value decompositions of the likelihood matrix can be used to speed up the SQP algorithm.</p>
-<h2 id="Analysis-setup">Analysis setup<a class="anchor-link" href="#Analysis-setup">&#182;</a></h2><p>We begin by loading the Distributions and LowRankApprox Julia packages, as well as some function definitions used in the code chunks below.</p>
+<h2 id="Analysis-setup">Analysis setup<a class="anchor-link" href="#Analysis-setup">&#182;</a></h2><p><em>Before attempting to run this Julia code, make sure your computer is properly set up to run this code by following the "Quick Start" instructions in the README of the <a href="https://github.com/stephenslab/mixsqp-paper">git repository</a>.</em></p>
+<p>We begin by loading the Distributions and LowRankApprox Julia packages, as well as some function definitions used in the code chunks below.</p>
 
 </div>
 </div>
@@ -197,9 +198,9 @@ body {
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
 <span class="k">using</span> <span class="n">LowRankApprox</span>
-<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/julia/datasim.jl&quot;</span><span class="p">);</span>
-<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/julia/likelihood.jl&quot;</span><span class="p">);</span>
-<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/julia/mixSQP.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/datasim.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/likelihood.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/mixSQP.jl&quot;</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -352,9 +353,9 @@ body {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  0.313823 seconds (35.48 k allocations: 441.590 MiB, 14.56% gc time)
-  0.310487 seconds (39.94 k allocations: 435.277 MiB, 12.97% gc time)
-  0.389180 seconds (35.54 k allocations: 810.007 MiB, 17.14% gc time)
+<pre>  0.321007 seconds (35.48 k allocations: 441.590 MiB, 13.88% gc time)
+  0.309034 seconds (39.94 k allocations: 435.277 MiB, 11.91% gc time)
+  0.433803 seconds (35.54 k allocations: 810.007 MiB, 16.98% gc time)
 </pre>
 </div>
 </div>
@@ -505,9 +506,9 @@ body {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 12.987450 seconds (223.43 k allocations: 10.769 GiB, 22.41% gc time)
- 12.594028 seconds (131.66 k allocations: 11.294 GiB, 17.12% gc time)
- 77.625848 seconds (113.08 k allocations: 70.595 GiB, 9.70% gc time)
+<pre> 13.629924 seconds (223.43 k allocations: 10.769 GiB, 21.09% gc time)
+ 16.522665 seconds (131.66 k allocations: 11.294 GiB, 16.18% gc time)
+ 74.820512 seconds (113.08 k allocations: 70.595 GiB, 9.41% gc time)
 </pre>
 </div>
 </div>
