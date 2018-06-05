@@ -38,7 +38,27 @@ citation is given above.
 
 ## Quick Start
 
+To try the examples, follow these steps:
+
 1. Install [Julia](http://julialang.org).
+
+2. Install the Distributions and LowRankApprox Julia packages:
+
+   ```
+   Pkg.add("Distributions")
+   ```
+
+3. Restart Julia, then precompile the packages and load them to make
+   sure that they work:
+
+   ```julia
+   using Distributions
+   using LowRankApprox
+   ```
+
+3. Clone or download this git repository on your computer.
+
+2. Install the Julia packages used 
 
 2. Install Python 3.x and Jupyter bundled together with
    [Anaconda](https://www.anaconda.com). Alternatively, install
@@ -55,7 +75,6 @@ citation is given above.
    and PyPlot packages:
 
    ```julia
-   Pkg.add("Distributions")
    Pkg.add("PyCall")
    Pkg.build("PyCall")
    Pkg.add("PyPlot")
@@ -81,6 +100,8 @@ citation is given above.
    download and install additional Python packages.
 
 7. *Add next step here.*
+
+Mention versions of Julia and R used---refer to webpages.
 
 ## What's included
 

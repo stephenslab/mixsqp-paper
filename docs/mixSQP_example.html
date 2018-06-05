@@ -184,7 +184,8 @@ body {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Illustration-of-mix-SQP-solver-applied-to-a-small-data-set,-and-a-large-one">Illustration of mix-SQP solver applied to a small data set, and a large one<a class="anchor-link" href="#Illustration-of-mix-SQP-solver-applied-to-a-small-data-set,-and-a-large-one">&#182;</a></h1><h2 id="Analysis-setup">Analysis setup<a class="anchor-link" href="#Analysis-setup">&#182;</a></h2><p>We begin by loading the Distributions and LowRankApprox Julia packages, as well as some function definitions used in the code chunks below.</p>
+<h1 id="Illustration-of-mix-SQP-solver-applied-to-a-small-data-set,-and-a-large-one">Illustration of mix-SQP solver applied to a small data set, and a large one<a class="anchor-link" href="#Illustration-of-mix-SQP-solver-applied-to-a-small-data-set,-and-a-large-one">&#182;</a></h1><h2 id="Analysis-setup">Analysis setup<a class="anchor-link" href="#Analysis-setup">&#182;</a></h2><p>Before running this code, follow the "Quick Start" instructions in the README of the git repository.</p>
+<p>We begin by loading the Distributions and LowRankApprox Julia packages, as well as some function definitions used in the code chunks below.</p>
 
 </div>
 </div>
@@ -196,9 +197,9 @@ body {
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
 <span class="k">using</span> <span class="n">LowRankApprox</span>
-<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/julia/datasim.jl&quot;</span><span class="p">);</span>
-<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/julia/likelihood.jl&quot;</span><span class="p">);</span>
-<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/julia/mixSQP.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/datasim.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/likelihood.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/mixSQP.jl&quot;</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -379,7 +380,7 @@ iter      objective -min(g+1) #nnz #qp #ls
   21 9.72698970e+03 +1.62e-03    5   7   1
   22 9.72691640e+03 +1.11e-06    5   7   1
   23 9.72691593e+03 -3.18e-09    5   7   1
-Optimization took 23 iterations and 0.4027 seconds.
+Optimization took 23 iterations and 0.4091 seconds.
 </pre>
 </div>
 </div>
@@ -517,7 +518,7 @@ iter      objective -min(g+1) #nnz #qp #ls
   20 1.94610868e+04 +1.37e-02    4  15   1
   21 1.94608952e+04 +5.47e-04    4  18   1
   22 1.94608878e+04 -3.13e-09    4  15   1
-Optimization took 22 iterations and 0.6960 seconds.
+Optimization took 22 iterations and 0.6650 seconds.
 </pre>
 </div>
 </div>
@@ -599,7 +600,7 @@ iter      objective -min(g+1) #nnz #qp #ls
   34 1.94608908e+04 +1.44e-04    4  18   1
   35 1.94608893e+04 +1.36e-07    4  15   1
   36 1.94608893e+04 -3.14e-13    4  15   1
-Optimization took 36 iterations and 5.5862 seconds.
+Optimization took 36 iterations and 5.4945 seconds.
 </pre>
 </div>
 </div>
