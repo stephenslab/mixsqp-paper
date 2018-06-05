@@ -1,16 +1,30 @@
 # mixopt
 
+This repository contains source code implementing. All methods and  are implemented
+
+and data to reproduce some of the
+empirical results presented in
+[Xing & Stephens (2016)][smashr-preprint]. For additional source code,
+see the [dscr-smash][dscr-smash]
+repository. The new methods can be found in the
+[smashr package][smashr].
+
+If you find a bug, please post an [issue][issues].
+
+
 Algorithms for solving the "mixture distribution" optimization
 problem. See [here](https://stephenslab.github.io/mixopt) for an
 overview of the problem and results of our experiments.
 
 ## License
 
-Copyright (c) 2017, Youngseok Kim.
+Copyright (c) 2017-2018, Youngseok Kim, Peter Carbonetto, Matthew
+Stephens and Mihai Anitescu.
 
 All source code and software in this repository are made available
 under the terms of the
-[MIT license](https://opensource.org/licenses/mit-license.html).
+[MIT license](https://opensource.org/licenses/mit-license.html). See
+the [LICENSE](LICENSE) file for the full text of the license.
 
 ## Quick Start
 
