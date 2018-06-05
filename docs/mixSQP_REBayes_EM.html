@@ -1,0 +1,702 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="ipynb_website:version" content="0.9.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="stylesheet" type="text/css" href="css/jt.css">
+<link rel="stylesheet" type="text/css" href="css/readable.css">
+<link rel="stylesheet" type="text/css" href="css/toc2.css">
+
+<link href="site_libs/jqueryui-1.11.4/jquery-ui.css">
+<link rel="stylesheet" href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<link rel="stylesheet"
+      href="site_libs/highlightjs-1.1/textmate.css"
+      type="text/css" />
+
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+<script src="../js/doc_toc.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+        },
+        "HTML-CSS": {
+            preferredFont: "TeX",
+            availableFonts: ["TeX"],
+            styles: {
+                scale: 110,
+                ".MathJax_Display": {
+                    "font-size": "110%",
+                }
+            }
+        }
+    });
+</script>
+<script>
+function filterDataFrame(id) {
+    var input = document.getElementById("search_" + id);
+    var filter = input.value.toUpperCase();
+    var table = document.getElementById("dataframe_" + id);
+    var tr = table.getElementsByTagName("tr");
+    // Loop through all table rows, and hide those who don't match the search query
+    for (var i = 1; i < tr.length; i++) {
+        for (var j = 0; j < tr[i].cells.length; ++j) {
+            var matched = false;
+            if (tr[i].cells[j].innerHTML.toUpperCase().indexOf(filter) != -1) {
+                tr[i].style.display = "";
+                matched = true
+                break;
+            }
+            if (!matched)
+                tr[i].style.display = "none";
+        }
+    }
+}
+function sortDataFrame(id, n, dtype) {
+    var table = document.getElementById("dataframe_" + id);
+    var tb = table.tBodies[0]; // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+    var tr = Array.prototype.slice.call(tb.rows, 0); // put rows into array
+    if (dtype === 'numeric') {
+        var fn = function(a, b) { 
+            return parseFloat(a.cells[n].textContent) <= parseFloat(b.cells[n].textContent) ? -1 : 1;
+        }
+    } else {
+        var fn = function(a, b) {
+            var c = a.cells[n].textContent.trim().localeCompare(b.cells[n].textContent.trim()); 
+            return c > 0 ? 1 : (c < 0 ? -1 : 0) }
+    }
+    var isSorted = function(array, fn) {
+        if (array.length < 2)
+            return 1;
+        var direction = fn(array[0], array[1]); 
+        for (var i = 1; i < array.length - 1; ++i) {
+            var d = fn(array[i], array[i+1]);
+            if (d == 0)
+                continue;
+            else if (direction == 0)
+                direction = d;
+            else if (direction != d)
+                return 0;
+            }
+        return direction;
+    }
+    var sorted = isSorted(tr, fn);
+    if (sorted == 1 || sorted == -1) {
+        // if sorted already, reverse it
+        for(var i = tr.length - 1; i >= 0; --i)
+            tb.appendChild(tr[i]); // append each row in order
+    } else {
+        tr = tr.sort(fn);
+        for(var i = 0; i < tr.length; ++i)
+            tb.appendChild(tr[i]); // append each row in order
+    }
+}
+</script>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+  // mark it active
+  menuAnchor.parent().addClass('active');
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+<div class="container-fluid main-container">
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<title>mix-SQP experiments</title>
+
+<style type = "text/css">
+body {
+  
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+</style>
+</head>
+
+<body>
+<div tabindex="-1" id="notebook" class="border-box-sizing">
+<div class="container" id="notebook-container">
+
+<!-- code folding -->
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">mix-SQP experiments</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+        
+<ul class="nav navbar-nav navbar-right">
+<li>
+   <a href="http://github.com/stephenslab/mixopt-paper">source</a>
+</li>
+</ul>
+        
+      </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Compare-performance-and-accuracy-of-EM,-IP-and-mix-SQP-algorithms">Compare performance and accuracy of EM, IP and mix-SQP algorithms<a class="anchor-link" href="#Compare-performance-and-accuracy-of-EM,-IP-and-mix-SQP-algorithms">&#182;</a></h1><p>In this example, we compare the runtime and accuracy of the EM algorithm, the mix-SQP algorithm, and the interior-point method implemented by the MOSEK commercial solver (and called via the <code>KWDual</code> function in the R package <code>REBayes</code>).</p>
+<h2 id="Analysis-setup">Analysis setup<a class="anchor-link" href="#Analysis-setup">&#182;</a></h2><p><em>Before attempting to run this Julia code, make sure your computer is properly set up to run this code by following the "Quick Start" instructions in the README of the <a href="https://github.com/stephenslab/mixsqp-paper">git repository</a>.</em></p>
+<p>We begin by loading the Distributions, LowRankApprox and RCall Julia packages, as well as some function definitions used in the code chunks below.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
+<span class="k">using</span> <span class="n">LowRankApprox</span>
+<span class="k">using</span> <span class="n">RCall</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/datasim.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/likelihood.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/mixEM.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/mixSQP.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/REBayes.jl&quot;</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, initialize the sequence of pseudorandom numbers.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">srand</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Generate-a-small-data-set">Generate a small data set<a class="anchor-link" href="#Generate-a-small-data-set">&#182;</a></h2><p>Let's begin with a smaller example with 50,000 samples.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">5e4</span><span class="p">));</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Compute-the-likelihood-matrix">Compute the likelihood matrix<a class="anchor-link" href="#Compute-the-likelihood-matrix">&#182;</a></h2><p>Compute the $n \times k$ likelihood matrix for a mixture of zero-centered normals, with $k = 20$. Note that the rows of the likelihood matrix are normalized by default.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">20</span><span class="p">);</span>
+<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
+<span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(50000, 20)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Fit-mixture-model">Fit mixture model<a class="anchor-link" href="#Fit-mixture-model">&#182;</a></h2><p>First we run each of the optimization algorithms once to precompile the relevant functions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">outem</span>  <span class="o">=</span> <span class="n">mixEM</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">100</span><span class="p">);</span>
+<span class="n">outip</span>  <span class="o">=</span> <span class="n">REBayes</span><span class="p">(</span><span class="n">L</span><span class="p">);</span>
+<span class="n">outsqp</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, let's fit the model using the three algorithms.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="nd">@time</span> <span class="n">xem</span><span class="p">,</span> <span class="n">tem</span> <span class="o">=</span> <span class="n">mixEM</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="nd">@time</span> <span class="n">xip</span><span class="p">,</span> <span class="n">tip</span> <span class="o">=</span> <span class="n">REBayes</span><span class="p">(</span><span class="n">L</span><span class="p">);</span>
+<span class="nd">@time</span> <span class="n">outsqp</span>   <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>  3.628140 seconds (25.40 k allocations: 7.243 GiB, 21.76% gc time)
+  1.172980 seconds (543 allocations: 29.710 KiB)
+  0.291933 seconds (38.45 k allocations: 404.573 MiB, 15.81% gc time)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The mix-SQP algorithm algorithm is much faster than the other two methods, with the EM being the slowest.</p>
+<p>Further, the quality of the IP and SQP solutions is very similar, whereas the EM solution is much worse:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">fem</span>  <span class="o">=</span> <span class="n">mixobjective</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">xem</span><span class="p">);</span>
+<span class="n">fip</span>  <span class="o">=</span> <span class="n">mixobjective</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">xip</span><span class="p">);</span>
+<span class="n">fsqp</span> <span class="o">=</span> <span class="n">mixobjective</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">outsqp</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]);</span>
+<span class="n">fbest</span> <span class="o">=</span> <span class="n">minimum</span><span class="p">([</span><span class="n">fem</span> <span class="n">fip</span> <span class="n">fsqp</span><span class="p">]);</span>
+<span class="nd">@printf</span> <span class="s">&quot;Difference between EM and best solutions:  </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fem</span> <span class="o">-</span> <span class="n">fbest</span>
+<span class="nd">@printf</span> <span class="s">&quot;Difference between IP and best solutions:  </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fip</span> <span class="o">-</span> <span class="n">fbest</span>
+<span class="nd">@printf</span> <span class="s">&quot;Difference between SQP and best solutions: </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fsqp</span> <span class="o">-</span> <span class="n">fbest</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Difference between EM and best solutions:  7.97e+00
+Difference between IP and best solutions:  0.00e+00
+Difference between SQP and best solutions: 2.21e-06
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Comparison-using-a-larger-data-set">Comparison using a larger data set<a class="anchor-link" href="#Comparison-using-a-larger-data-set">&#182;</a></h2><p>Next, let's see what happens when we apply these three algorithms to a larger data set.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e5</span><span class="p">));</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As before, we compute the $n \times k$ likelihood matrix for a mixture of zero-centered normals. This time, we use a finer grid of $k = 100$ normal densities.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">100</span><span class="p">);</span>
+<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
+<span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(100000, 100)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we fit the model using the three approaches.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="nd">@time</span> <span class="n">xem</span><span class="p">,</span> <span class="n">tem</span> <span class="o">=</span> <span class="n">mixEM</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="nd">@time</span> <span class="n">xip</span><span class="p">,</span> <span class="n">tip</span> <span class="o">=</span> <span class="n">REBayes</span><span class="p">(</span><span class="n">L</span><span class="p">);</span>
+<span class="nd">@time</span> <span class="n">outsqp</span>   <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 14.255779 seconds (12.22 k allocations: 11.365 GiB, 53.15% gc time)
+ 13.337100 seconds (279 allocations: 14.984 KiB)
+  1.127895 seconds (166.05 k allocations: 1.232 GiB, 14.85% gc time)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this example, the mix-SQP algorithm reaches a solution much faster than the both EM and IP approaches.</p>
+<p>As before, the quality of the IP and SQP solutions is similar, whereas the EM solution is much worse.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">fem</span>  <span class="o">=</span> <span class="n">mixobjective</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">xem</span><span class="p">);</span>
+<span class="n">fip</span>  <span class="o">=</span> <span class="n">mixobjective</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">xip</span><span class="p">);</span>
+<span class="n">fsqp</span> <span class="o">=</span> <span class="n">mixobjective</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">outsqp</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]);</span>
+<span class="n">fbest</span> <span class="o">=</span> <span class="n">minimum</span><span class="p">([</span><span class="n">fem</span> <span class="n">fip</span> <span class="n">fsqp</span><span class="p">]);</span>
+<span class="nd">@printf</span> <span class="s">&quot;Difference between EM and best solutions:  </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fem</span> <span class="o">-</span> <span class="n">fbest</span>
+<span class="nd">@printf</span> <span class="s">&quot;Difference between IP and best solutions:  </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fip</span> <span class="o">-</span> <span class="n">fbest</span>
+<span class="nd">@printf</span> <span class="s">&quot;Difference between SQP and best solutions: </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fsqp</span> <span class="o">-</span> <span class="n">fbest</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Difference between EM and best solutions:  1.10e+02
+Difference between IP and best solutions:  2.83e-03
+Difference between SQP and best solutions: 0.00e+00
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Session-information">Session information<a class="anchor-link" href="#Session-information">&#182;</a></h2><p>The section gives information about the computing environment used to generate the results contained in this
+notebook, including the version of Julia, R and the packages used.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;Distributions&quot;</span><span class="p">)</span>
+<span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;LowRankApprox&quot;</span><span class="p">)</span>
+<span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;RCall&quot;</span><span class="p">)</span>
+<span class="n">versioninfo</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> - Distributions                 0.15.0
+ - LowRankApprox                 0.1.1
+ - RCall                         0.10.2
+Julia Version 0.6.2
+Commit d386e40c17 (2017-12-13 18:08 UTC)
+Platform Info:
+  OS: macOS (x86_64-apple-darwin14.5.0)
+  CPU: Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz
+  WORD_SIZE: 64
+  BLAS: libopenblas (USE64BITINT DYNAMIC_ARCH NO_AFFINITY Prescott)
+  LAPACK: libopenblas64_
+  LIBM: libopenlibm
+  LLVM: libLLVM-3.9.1 (ORCJIT, broadwell)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since we called the <code>KWDual</code> function in R, it is also useful to record information about R.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">R</span><span class="s">&quot;sessionInfo()&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>RCall.RObject{RCall.VecSxp}
+R version 3.4.3 (2017-11-30)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS High Sierra 10.13.4
+
+Matrix products: default
+BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] REBayes_1.3   Matrix_1.2-12
+
+loaded via a namespace (and not attached):
+[1] compiler_3.4.3  Rmosek_8.0.69   grid_3.4.3      lattice_0.20-35
+</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<hr>
+&copy; 2017-2018 Youngseok Kim, Peter Carbonetto, Matthew Stephens &amp;
+  Mihai Anitescu.
+</div>
+</div>
+</body>
+</html>
