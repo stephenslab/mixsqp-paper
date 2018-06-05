@@ -56,12 +56,13 @@ p1 <- ggplot(data = pdat,aes(x = n,y = runtime,color = method,
        y     = "runtime (seconds)",
        title = "Complexity of solving different problem formulations") +
   theme_cowplot(font_size = 12) +
-  theme(#legend.position = c(0,0.75),
-        plot.title      = element_text(face = "plain",size = 12),
-        axis.line       = element_blank(),
-        legend.text     = element_text(size = 10))
+  theme(plot.title  = element_text(face = "plain",size = 12),
+        axis.line   = element_blank(),
+        legend.text = element_text(size = 10))
 
-# Create a plot.
+# Create a plot comparing the runtime of the SQP solver using the full
+# matrix L against the same SQP solver using low-rank approximations
+# based on RRQR and tSVD factorizations of L.
 p3 <- ggplot(data = dat2_1) +
   geom_line(aes(x = n,y = t1,color = "No approx."),size = 1) +
   geom_line(aes(x = n,y = t2,color = "tSVD"),size = 1) +
@@ -100,18 +101,16 @@ p4 <- ggplot(data = dat2_2) +
 # Prepare the results for the next two plots. In particular, I merge
 # the mix-SQP and REBayes results, and change the order of the factor
 # levels for a more logical ordering in the plots below.
-levels(dat6_1$label) <-
-  c("posterior calculations","model fitting (mix-SQP)",
-    "QR factorization","likelihood computation")
-levels(dat6_2$label) <-
-  c("posterior calculations","model fitting (REBayes)",
-    "likelihood computation")
+dat6_1 <- transform(dat6_1,label = as.character(label))
+dat6_2 <- transform(dat6_2,label = as.character(label))
 dat6_1 <- transform(dat6_1,
-                    label = factor(as.character(label),
+                    label = factor(label,
                       c("QR factorization",
                         "model fitting (mix-SQP)",
                         "posterior calculations",
                         "likelihood computation")))
+rows <- which(dat6_2$label == "model fitting (REBayes)")
+dat6_2[rows,"label"] <- "model fitting (KWDual)"
 pdat <- rbind(transform(dat6_1,
                         x     = x - 5e3,
                         label = as.character(label)),
@@ -178,7 +177,7 @@ p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
   scale_y_continuous(trans = "log10",breaks = c(0.01,0.1,1,10,100,1e3)) +
   scale_color_manual(values = c("lightskyblue","cornflowerblue",
                                 "mediumblue","darkblue"),
-                     name  = "m (num. cols)") +
+                     name = "m (num. cols)") +
   labs(x = "n (number of rows in L)",
        y = "runtime (seconds)",
        title = "Comparison of mix-SQP and KWdual performance") +
@@ -206,7 +205,8 @@ p8 <- ggplot(data = dat3_1) +
         legend.position = c(0.6,0.2))
 
 # Create a plot comparing the runtime of the interior-point (MOSEK)
-# and active-set methods for solving the QP subproblem.
+# and active-set methods for solving the QP subproblem, for different
+# settings of m (the number of columns in matrix L).
 p9 <- ggplot(data = dat4_1) +
   geom_line(aes(x = m,y = t1,color = "interior point (MOSEK)"),size = 1) +
   geom_line(aes(x = m,y = t2,color = "active-set"),size = 1) +
@@ -214,7 +214,8 @@ p9 <- ggplot(data = dat4_1) +
              shape = 20,size = 3) +
   geom_point(aes(x = m,y = t2,color = "active-set"),shape = 20,size = 3) +
   scale_x_continuous(trans = "log10",breaks = c(10,30,100,500)) + 
-  scale_y_continuous(trans = "log10",breaks = c(0.0002,0.001,0.005,0.025,0.125,0.625)) +
+  scale_y_continuous(trans = "log10",
+                     breaks = c(0.0002,0.001,0.005,0.025,0.125,0.625)) +
   scale_color_manual(values = colors[c(6,2)],name = "") +
   labs(x     = "number of columns in L (m)",
        y     = "runtime (seconds)",
@@ -223,7 +224,9 @@ p9 <- ggplot(data = dat4_1) +
         axis.line       = element_blank(),
         legend.position = c(0.05,0.9))
 
-# Create a plot comparing the runtime 
+# Create a plot comparing the runtime of the interior-point (MOSEK)
+# and active-st methods for solving the QP subproblem, for different
+# settings of n (the number of rows in L).
 p10 <- ggplot(data = dat4_2) +
   geom_line(aes(x = n,y = t1,color = "interior point (MOSEK)"),size = 1) +
   geom_line(aes(x = n,y = t2,color = "active-set"),size = 1) +
@@ -231,7 +234,8 @@ p10 <- ggplot(data = dat4_2) +
              shape = 20,size = 3) +
   geom_point(aes(x = n,y = t2,color = "active-set"),shape = 20,size = 3) +
   scale_x_continuous(trans = "log10",breaks = c(1e3,1e4,4e5)) +
-  scale_y_continuous(trans = "log10",breaks = c(0.0005,0.001,0.002,0.004),limits=c(0.0004,0.004)) +
+  scale_y_continuous(trans = "log10",breaks = c(0.0005,0.001,0.002,0.004),
+                     limits = c(0.0004,0.004)) +
   scale_color_manual(values = colors[c(6,2)],name = "") +
   labs(x     = "number of rows in L (n)",
        y     = "runtime (seconds)",
@@ -240,7 +244,9 @@ p10 <- ggplot(data = dat4_2) +
         axis.line       = element_blank(),
         legend.position = c(0.05,0.5))
 
-# Create a plot
+# Create a plot showing the number of backtracking line searches, and
+# the number of nonzeros in q and y on convergence of the active set
+# method, to illustrate behaviour of the SQP method.
 p11 <- ggplot(data = dat4_3[-14,]) +
   geom_line(aes(x = iter,y = y,color = "nonzeros in q"),size = 1) +
   geom_line(aes(x = iter,y = q,color = "nonzeros in y"),size = 1) +
