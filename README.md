@@ -1,4 +1,4 @@
-# mix-SQP: sequentional quadratic programming for fast maximum-likelihood estimation of mixture proportions
+# mix-SQP: Sequentional Quadratic Programming for fast maximum-likelihood estimation of mixture proportions
 
 This repository contains code resources to accompany our research
 paper,

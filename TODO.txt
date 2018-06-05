@@ -7,12 +7,8 @@ to do
 
 * Add arXiv citation to README.
 
-* Complete README.md.
-
 * Revise setup instructions in README.
 
-* Revise all Jupyter notebooks, and re-generate website.
-
-* Generate website from Jupyter notebooks using nbconvert.
+* Revise all Jupyter notebooks and webpages.
 
 * Use BFG Repo-Cleaner to remove any large files in the git history.
