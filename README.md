@@ -41,14 +41,22 @@ citation is given above.
 
 ## Setup instructions
 
-To work through the [demos][github-site], follow these steps:
+To work through the [demos][github-site], follow these steps.
+
+**Note:** If you encounter a problem running the demos, or installing
+any of the programs, you want to try replicating our computing setup
+as closely as possible. At the bottom of each Jupyter notebook and
+webpage included [here][github-site], we have recorded information
+about the setup used to run the Julia code.
 
 1. Install [Julia](http://julialang.org).
 
-2. Install the Distributions and LowRankApprox Julia packages:
+2. Install the [Distributions][distributions-julia] and
+   [LowRankApprox][lowrankapprox-julia] Julia packages:
 
    ```
    Pkg.add("Distributions")
+   Pkg.add("LowRankApprox")
    ```
 
 3. Restart Julia, then precompile the packages and load them to make
@@ -59,18 +67,21 @@ To work through the [demos][github-site], follow these steps:
    using LowRankApprox
    ```
 
-3. Clone or download this git repository on your computer.
+4. Clone or download this git repository on your computer.
 
-2. Install the Julia packages used 
+5. Work through the [first demo][mixsqp-example]. To do this, start up
+   Julia, making sure that the working directory is set to the
+   `analysis` directory inside the git repository. To verify, run
+   `pwd()` in Julia; it should return a directory with
+   `mixsqp-paper/analysis` at the end.
 
-2. Install Python 3.x and Jupyter bundled together with
-   [Anaconda](https://www.anaconda.com). Alternatively, install
-   Python 3.x and Jupyter separately; see
-   [here](https://jupyter.org/install) and [here](http://python.org)
-   for other options to install Jupyter and Python 3.x.
+   Alternatively, you may open the
+   [mixsqp_example notebook](analysis/mixSQP_example.ipynb) in
+   [Jupyter][jupyter] (e.g., Jupyter notebook), and run the code
+   inside Jupyter. This requires that you have already installed the
+   [Jupyter kernel for Julia][ijulia].
 
-3. Install the [Julia kernel for
-   Jupyter](https://github.com/JuliaLang/IJulia.jl).
+**Old instructions:**
 
 4. Download and install [MOSEK](https://www.mosek.com).
 
@@ -88,23 +99,10 @@ To work through the [demos][github-site], follow these steps:
    The `Pkg.build` step is important for installing the `PyPlot`
    package.
 
-6. Restart Julia, then precompile the packages and load them to make
-   sure that they work:
-
-   ```julia
-   using Distributions
-   using PyCall
-   using PyPlot
-   using JuMP
-   using Mosek
-   ```
-
    Precompiling the PyPlot package may take some time since it may
    download and install additional Python packages.
 
 7. *Add next step here.*
-
-Mention versions of Julia and R used---refer to webpages.
 
 ## What's included
 
@@ -160,3 +158,8 @@ This project was developed by [Youngseok Kim][youngseok],
 [mihai]: http://www.mcs.anl.gov/~anitescu
 [julia]: http://julialang.org
 [mosek]: http://mosek.com
+[jupyter]: http://jupyter.org
+[ijulia]: https://github.com/JuliaLang/IJulia.jl
+[distrbutions-julia]: https://github.com/JuliaStats/Distributions.jl
+[lowrankapprox-julia]: https://github.com/klho/LowRankApprox.jl
+[mixsqp-example]: https://stephenslab.github.io/mixsqp-paper/mixSQP_example.html

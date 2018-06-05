@@ -3,6 +3,8 @@ to do
 
 * Create a new branch, "more-code".
 
+* Recruit a "peer reviewer".
+
 * Add arXiv citation to README.
 
 * Complete README.md.
