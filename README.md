@@ -39,9 +39,10 @@ If you find any of the source code in this repository useful for your
 work, please cite our manuscript, Kim *et al* (2018). The full
 citation is given above.
 
-## Setup instructions
+## Setup instructions (simple)
 
-To work through the [demos][github-site], follow these steps.
+To try the first and second demos [here][github-site], follow these
+steps.
 
 **Note:** If you encounter a problem running the demos, or installing
 any of the programs, you want to try replicating our computing setup
@@ -69,10 +70,10 @@ about the setup used to run the Julia code.
 
 4. Clone or download this git repository on your computer.
 
-5. Work through the [first demo][mixsqp-example]. To do this, start up
-   Julia, making sure that the working directory is set to the
-   `analysis` directory inside the git repository. To verify, run
-   `pwd()` in Julia; it should return a directory with
+5. Work through the first and second demos [here][github-site]. To do
+   this, start up Julia, making sure that the working directory is set
+   to the `analysis` directory inside the git repository. To verify,
+   run `pwd()` in Julia; it should return a directory with
    `mixsqp-paper/analysis` at the end.
 
    Alternatively, you may open the
@@ -81,7 +82,12 @@ about the setup used to run the Julia code.
    inside Jupyter. This requires that you have already installed the
    [Jupyter kernel for Julia][ijulia].
 
-6. *Add additional steps here.*
+## Setup instructions (more complicated)
+
+The simple setup instructions above will allow you to run the first
+two examples. If you have successfully run the first two examples, and you would Follow these setup instructions if you would The other examples compare performance of different
+methods, and require additional programs and Julia packages to
+run. For example,
 
 Download and install [MOSEK](https://www.mosek.com).
 
@@ -161,4 +167,4 @@ This project was developed by [Youngseok Kim][youngseok],
 [ijulia]: https://github.com/JuliaLang/IJulia.jl
 [distributions-julia]: https://github.com/JuliaStats/Distributions.jl
 [lowrankapprox-julia]: https://github.com/klho/LowRankApprox.jl
-[mixsqp-example]: https://stephenslab.github.io/mixsqp-paper/mixSQP_example.html
+
