@@ -27,9 +27,14 @@ Copyright (c) 2017-2018, Youngseok Kim, Peter Carbonetto, Matthew
 Stephens and Mihai Anitescu.
 
 All source code and software in this repository are made available
-under the terms of the
-[MIT license](https://opensource.org/licenses/mit-license.html). See
-the [LICENSE](LICENSE) file for the full text of the license.
+under the terms of the [MIT license][mit-license]. See the
+[LICENSE](LICENSE) file for the full text of the license.
+
+## Citing this work
+
+If you find any of the source code in this repository useful for your
+work, please cite our manuscript, Kim *et al* (2018). The full
+citation is given above.
 
 ## Quick Start
 
@@ -99,22 +104,19 @@ the [LICENSE](LICENSE) file for the full text of the license.
 + The `data` directory is where all raw and processed data are stored.
 
 + The `docs` directory contains webpages generated from the Jupyter
-  notebooks in the analysis directory.
+  notebooks.
 
 + Results of the demos and numerical experiments are stored in the
   `output` directory.
 
 ## Developer notes
 
-Run these commands from the `analysis` directory to re-build the
+Run these commands from the `analysis` directory to rebuild the
 website from the Jupyter notebooks.
 
 ```bash
-jupyter nbconvert --template=../docs/nbconvert.tpl \
-  index.ipynb \
-  mixSQP_example.ipynb \
-  low_rank_approximation.ipynb \
-  --output-dir=../docs
+jupyter nbconvert --template=../docs/nbconvert.tpl index.ipynb \
+  mixSQP_example.ipynb low_rank_approximation.ipynb --output-dir=../docs
 ```
 
 ## Credits
@@ -126,6 +128,7 @@ This project was developed by [Youngseok Kim][youngseok],
 
 [mixsqp]: https://github.com/youngseok-kim/mixsqp
 [issues]: https://github.com/stephenslab/mixsqp-paper/issues
+[mit-license]: https://opensource.org/licenses/mit-license.html
 [youngseok]: https://github.com/youngseok-kim
 [peter]: https://pcarbo.github.io
 [matthew]: http://stephenslab.uchicago.edu
