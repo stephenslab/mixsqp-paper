@@ -95,8 +95,17 @@ run.
 
 2. Install [MOSEK][mosek].
 
-3. Install [Rmosek][rmosek] package for R (see [here][mosek-docs] for
+3. Install the [Rmosek][rmosek] package in R (see [here][mosek-docs] for
    installation instructions).
+
+4. Run [this example](code/test.rmosek.R) to verify that Rmosek is
+   correctly installed.
+
+5. Install the R package [REBayes][rebayes] from CRAN:
+
+   ```R
+   install.packages("REBayes")
+   ```
 
 2. Install the [JuMP][jump-julia], [Mosek][mosek-julia] and
    [RCall][rcall-julia] Julia packages:
@@ -185,6 +194,7 @@ This project was developed by [Youngseok Kim][youngseok],
 [jupyter]: http://jupyter.org
 [ijulia]: https://github.com/JuliaLang/IJulia.jl
 [rmosek]: https://CRAN.R-project.org/package=Rmosek
+[rebayes]: https://cran.r-project.org/package=REBayes
 [distributions-julia]: https://github.com/JuliaStats/Distributions.jl
 [lowrankapprox-julia]: https://github.com/klho/LowRankApprox.jl
 [jump-julia]: https://github.com/JuliaOpt/JuMP.jl
