@@ -13,10 +13,10 @@ maximum-likelihood estimation of mixture proportions, including a fast
 algorithm based on sequential quadratic programming, which we call
 "mix-SQP".
 
-All methods and demonstrations are implemented in Julia, aside from the
-interior point solver based on [MOSEK][mosek], which is implemented in
-R. For an R package implementing some of these methods, please see the
-[mixsqp repository][mixsqp]
+All methods and demonstrations are implemented in [Julia][julia],
+aside from the interior point solver based on [MOSEK][mosek], which is
+implemented in R. For an R package implementing some of these methods,
+please see the [mixsqp repository][mixsqp]
 
 If you find a bug, or you have a question or feedback on our work,
 please post an [issue][issues].
@@ -88,21 +88,21 @@ the [LICENSE](LICENSE) file for the full text of the license.
 └── output
 ```
 
-+ The **analysis** directory contains Jupyter notebooks illustrating
++ The `analysis` directory contains Jupyter notebooks illustrating
   the optimization methods in simulated data sets, and R code to
   generate the plots for the manuscript.
 
-+ The **code** directory contains Julia code implementing the
++ The `code` directory contains Julia code implementing the
   optimization algorithms, as well as other code used in the numerical
   experiments.
 
-+ The **data** directory is where all raw and processed data are stored.
++ The `data` directory is where all raw and processed data are stored.
 
-+ The **docs** directory contains webpages generated from the Jupyter
++ The `docs` directory contains webpages generated from the Jupyter
   notebooks in the analysis directory.
 
 + Results of the demos and numerical experiments are stored in the
-  **output** directory.
+  `output` directory.
 
 ## Developer notes
 
@@ -130,4 +130,5 @@ This project was developed by [Youngseok Kim][youngseok],
 [peter]: https://pcarbo.github.io
 [matthew]: http://stephenslab.uchicago.edu
 [mihai]: http://www.mcs.anl.gov/~anitescu
+[julia]: http://julialang.org
 [mosek]: http://mosek.com
