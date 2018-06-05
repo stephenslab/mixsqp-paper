@@ -1,6 +1,8 @@
 to do
 =====
 
+* Add arXiv citation to README.
+
 * Complete README.md.
 
 * Revise setup instructions in README.

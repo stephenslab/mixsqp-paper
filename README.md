@@ -1,6 +1,22 @@
-# mixopt
+# mix-SQP: sequentional quadratic programming for maximum-likelihood estimation of mixture proportions
 
-This repository contains source code implementing. All methods and  are implemented
+This repository contains code resources to accompany our research
+paper,
+
+> Youngseok Kim, Peter Carbonetto, Matthew Stephens and Mihai Anitescu
+> (2018). *A fast algorithm for maximum likelihood estimation of
+> mixture proportions using sequential quadratic programming.*
+
+We provide code implementating optimization algorithms for
+maximum-likelihood estimation of mixture proportions, including a fast
+approach based on sequential quadratic programming, which we call
+**mix-SQP**.
+
+All methods and examples are implemented in Julia, aside from the
+interior point solver based on [MOSEK][mosek], which is implemented in
+R. For an R package implementing some of these methods, see the
+[mixsqp repository][mixsqp]
+
 
 and data to reproduce some of the
 empirical results presented in
@@ -90,11 +106,13 @@ jupyter nbconvert --template=../docs/nbconvert.tpl \
 
 ## Credits
 
-This project was developed by
-[Youngseok Kim](https://github.com/youngseok-kim)
-at the [University of Chicago](https://www.uchicago.edu),
-with contributions from
-[Peter Carbonetto](https://pcarbo.github.io),
-[Matthew Stephens](http://stephenslab.uchicago.edu) and
-[Mihai Anitescu](http://www.mcs.anl.gov/~anitescu).
+This project was developed by [Youngseok Kim][youngseok],
+[Peter Carbonetto][peter], [Matthew Stephens][matthew] and
+[Mihai Anitescu][mihai] at the
+[University of Chicago](https://www.uchicago.edu).
 
+[youngseok]: https://github.com/youngseok-kim
+[peter]: https://pcarbo.github.io
+[matthew]: http://stephenslab.uchicago.edu
+[mihai]: http://www.mcs.anl.gov/~anitescu
+[mosek]: http://mosek.com
