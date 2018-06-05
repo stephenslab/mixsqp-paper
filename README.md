@@ -55,7 +55,7 @@ about the setup used to run the Julia code.
 2. Install the [Distributions][distributions-julia] and
    [LowRankApprox][lowrankapprox-julia] Julia packages:
 
-   ```
+   ```julia
    Pkg.add("Distributions")
    Pkg.add("LowRankApprox")
    ```
@@ -91,15 +91,15 @@ instructions. The other examples compare performance of different
 methods, and require additional programs and Julia packages to
 run.
 
-1. Install [R][R].
+1. Install [R][R]. Note that version 3.4.0 or later is required.
 
 2. Install [MOSEK][mosek].
 
 3. Install the [Rmosek][rmosek] package in R (see [here][mosek-docs] for
    installation instructions).
 
-4. Run [this example](code/test.rmosek.R) to verify that Rmosek is
-   correctly installed.
+4. Run [this example](code/test.rmosek.R) in R to verify that MOSEK
+   and Rmosek are correctly installed.
 
 5. Install the R package [REBayes][rebayes] from CRAN:
 
@@ -107,32 +107,18 @@ run.
    install.packages("REBayes")
    ```
 
-2. Install the [JuMP][jump-julia], [Mosek][mosek-julia] and
+2. Install the [Mosek][mosek-julia], [JuMP][jump-julia] and
    [RCall][rcall-julia] Julia packages:
 
-   ```
-   Pkg.add("RCall")
-   Pkg.add("JuMP")
-   ```
-
-Download and install [MOSEK](https://www.mosek.com).
-
-Install several Julia packages, including the DataFrames, PyCall
-and PyPlot packages:
-
    ```julia
-   Pkg.add("PyCall")
-   Pkg.build("PyCall")
-   Pkg.add("PyPlot")
-   Pkg.add("JuMP")
    Pkg.add("Mosek")
+   Pkg.add("JuMP")
+   Pkg.add("RCall")
    ```
 
-The `Pkg.build` step is important for installing the `PyPlot`
-package.
-
-Precompiling the PyPlot package may take some time since it may
-download and install additional Python packages.
+(*Old instructions:* The `Pkg.build` step is important for installing
+the `PyPlot` package. Precompiling the PyPlot package may take some
+time since it may download and install additional Python packages.)
 
 ## What's included
 
@@ -198,4 +184,5 @@ This project was developed by [Youngseok Kim][youngseok],
 [distributions-julia]: https://github.com/JuliaStats/Distributions.jl
 [lowrankapprox-julia]: https://github.com/klho/LowRankApprox.jl
 [jump-julia]: https://github.com/JuliaOpt/JuMP.jl
+[mosek-julia]: https://github.com/JuliaOpt/Mosek.jl
 [rcall-julia]: https://github.com/JuliaInterop/RCall.jl
