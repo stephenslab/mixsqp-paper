@@ -1,5 +1,5 @@
-# TO DO: Add brief description of function and input arguments here.
-function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000, tol = 1e-6, eps = 1e-8)
+function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
+               tol = 1e-6, eps = 1e-8)
 
   # Get the number of rows (n) and columns (k) of the conditional
   # likelihood matrix.

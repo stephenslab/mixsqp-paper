@@ -1,11 +1,14 @@
 function REBayes(L)
-    @rput L;
-    R"require(REBayes);
-    t_rebayes = system.time(res <- KWDual(L, rep(1,dim(L)[2]),
-                                     rep(1,dim(L)[1])/dim(L)[1]))[3];
-    res$f[res$f < 1e-3] = 0
-    x_rebayes = res$f / sum(res$f)"
-    @rget x_rebayes;
-    @rget t_rebayes;
-    return x_rebayes, t_rebayes
+  @rput L;
+  R"library(REBayes);
+    n           <- nrow(L)
+    k           <- ncol(L)
+    timing      <- system.time(out <- KWDual(L,rep(1,k),rep(1,n)/n));
+    timing      <- timing[3];
+    x           <- out$f;
+    x[x < 1e-3] <- 0;
+    x           <- x/sum(x);"
+  @rget x;
+  @rget timing;
+  return x, timing
 end

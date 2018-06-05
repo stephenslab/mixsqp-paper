@@ -2,10 +2,6 @@ function mixobjective(L, x, eps = 0)
   return -sum(log.(L * x + eps))
 end
           
-# L       : likelihood matrix; design matrix of size n by m
-# x       : initial point with default (1/m, 1/m, ...)
-# convtol :
-# 
 function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
                 pqrtol = 1e-8, eps = 1e-8, sptol = 1e-3,
                 maxiter = 100, maxqpiter = 100,
@@ -84,11 +80,11 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     if lowrank == "qr"
         D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
         g = -P * F[:R]' * (F[:Q]'*D)/n;
-        H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q]) * F[:R] * P'/n + eps * eye(k);
+        H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps*eye(k);
     elseif lowrank == "svd"
         D = 1./(F[:U]*(S*(F[:Vt]*x)) + eps);
         g = -F[:Vt]'*(S * (F[:U]'*D))/n;
-        H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps * eye(k);
+        H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps*eye(k);
     else
         D = 1./(L*x + eps);
         g = -L'*D/n;
@@ -96,15 +92,6 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     end
 
     # Report on the algorithm's progress.
-    #
-    # TO DO: The L * x matrix operation here used to compute the
-    # objective function could dramatically slow down the algorithm
-    # when number of QR factors in the partial QR is much smaller than
-    # k. We need to think of a way to avoid this by having an option
-    # to not output the objective function at each iteration, and/or
-    # make sure that this objective function operation is not included
-    # in the timing.
-    #
     if lowrank == "qr"
       obj[i] = -sum(log.(F[:Q]*(F[:R]*(P'*x)) + eps));
     elseif lowrank == "svd"
@@ -157,8 +144,6 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
         if all(lambda .>= -convtol)
           break;
         elseif length(ind) < k
-            
-          # TO DO: Explain what ind and ind_min are for.
           notind  = setdiff(1:k,ind);
           ind_min = notind[findmin(lambda[notind])[2]];
           ind     = sort([ind; ind_min]);
@@ -226,7 +211,8 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     @printf("Optimization took %d iterations and %0.4f seconds.\n",i,totaltime)
   end
 
-  return Dict([("x",full(x)), ("totaltime",totaltime), ("lowranktime",lowranktime),
-               ("obj",obj[1:i]), ("gmin",gmin[1:i]), ("nnz",nnz[1:i]),
+  return Dict([("x",full(x)), ("totaltime",totaltime),
+               ("lowranktime",lowranktime), ("obj",obj[1:i]),
+               ("gmin",gmin[1:i]), ("nnz",nnz[1:i]),
                ("nqp",nqp[1:i]), ("timing",timing[1:i])])
 end
