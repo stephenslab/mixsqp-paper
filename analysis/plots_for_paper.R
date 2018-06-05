@@ -186,7 +186,8 @@ p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
         axis.line    = element_blank())
 
 # Create a plot comparing the number of columns in the data matrix (L)
-# against the "effective" rank of L.
+# against the "effective" rank of L. NOTE: This plot is not included
+# in the manuscript.
 p8 <- ggplot(data = dat3_1) +
   geom_line(aes(x = m,y = s,color = "synthetic"), size = 1) +
   geom_line(aes(x = m,y = s2,color = "GIANT"), size = 1) +
@@ -268,7 +269,8 @@ p11 <- ggplot(data = dat4_3[-14,]) +
         axis.line       = element_blank(),
         legend.position = c(0.4,0.89))
 
-# Create a plot comparing the runtime.
+# Create a plot comparing r/m (effective rank r as estimated by RRQR
+# over number of columns) against m (the number of columns).
 p13 <- ggplot(data = dat3_1) +
   geom_line(aes(x = m,y = s/m,color = "GIANT data"),size = 1) +
   geom_line(aes(x = m,y = s2/m,color = "Synthetic data"),size = 1) +
@@ -286,38 +288,41 @@ p13 <- ggplot(data = dat3_1) +
         axis.line       = element_blank(),
         legend.position = c(0.05,0.3))
 
-# Create a plot.
+# Create a plot showing the L1 norm of differences in solutions
+# returned by the interior point and SQP solvers applied to GIANT data
+# set with different settings of m (the number of columns of L).
 p14 <- ggplot(data = dat3_2) +
   geom_line(aes(x = m,y = rel_err,color = "||x_IP - x_SQP||_1"),size = 1) +
   geom_point(aes(x = m,y = rel_err,color = "||x_IP - x_SQP||_1"),
              shape = 20,size = 3) +
   scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
-  scale_y_continuous(breaks = c(-8,-7,-6,-5)) +
+  scale_y_continuous(breaks = c(-8,-7,-6,-5),limits = c(-8,-4)) +
   scale_color_manual(values = colors[3],name = "") +
-  ylim(-8,-4) +
   labs(x     = "number of cols in L (m)",
        y     = "log10 of l1 difference (log10(diff))",
        title = "L1 difference between solutions") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
-        legend.position = c(.1,.9))
+        legend.position = c(0.1,0.9))
 
-# Create a plot.
+# Create a plot showing the difference in the objective values at the
+# solutions returned by the interior point and SQP solvers applied to
+# the GIANT data set, with different settings of m (the number of
+# columns of L).
 p15 <- ggplot(data = dat3_3) +
   geom_line(aes(x = m,y = err,color = "|f(x_REBayes) - f(x_SQP)|"),
             size = 1) +
   geom_point(aes(x = m,y = err,color = "|f(x_REBayes) - f(x_SQP)|"),
              shape = 20,size = 3) +
   scale_x_continuous(trans = "log2",breaks = c(25,50,100,200,400,800)) +
-  scale_y_continuous(breaks = c(-16,-14,-12,-10,-8,-6)) +
+  scale_y_continuous(breaks = c(-16,-14,-12,-10,-8,-6),limits = c(-16,-6)) +
   scale_color_manual(values = colors[5],name = "") +
-  ylim(-16,-6) +
   labs(x     = "number of cols in L (m)",
        y     = "log10 of difference (log10(diff))",
        title = "Difference between two objective values") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
-        legend.position = c(.1,.9))
+        legend.position = c(0.1,0.9))
 
 # SAVE PLOTS AS PDFs
 # ------------------
