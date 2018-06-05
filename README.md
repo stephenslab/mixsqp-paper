@@ -1,4 +1,4 @@
-# mix-SQP: sequentional quadratic programming for maximum-likelihood estimation of mixture proportions
+# mix-SQP: sequentional quadratic programming for fast maximum-likelihood estimation of mixture proportions
 
 This repository contains code resources to accompany our research
 paper,
@@ -6,18 +6,20 @@ paper,
 > Youngseok Kim, Peter Carbonetto, Matthew Stephens and Mihai Anitescu
 > (2018). *A fast algorithm for maximum likelihood estimation of
 > mixture proportions using sequential quadratic programming.*
+> (Submitted for review.)
 
-We provide code implementing optimization algorithms for
+We provide code implementing optimization method for
 maximum-likelihood estimation of mixture proportions, including a fast
-approach based on sequential quadratic programming, which we call
-**mix-SQP**.
+algorithm based on sequential quadratic programming, which we call
+"mix-SQP".
 
-All methods and examples are implemented in Julia, aside from the
+All methods and demonstrations are implemented in Julia, aside from the
 interior point solver based on [MOSEK][mosek], which is implemented in
 R. For an R package implementing some of these methods, please see the
 [mixsqp repository][mixsqp]
 
-If you find a bug, please post an [issue][issues].
+If you find a bug, or you have a question or feedback on our work,
+please post an [issue][issues].
 
 ## License
 
@@ -77,17 +79,41 @@ the [LICENSE](LICENSE) file for the full text of the license.
 
 ## What's included
 
-*Give overview of important files here.*
+```
+├── analysis
+├── code
+├── data
+├── docs
+├── misc
+└── output
+```
+
++ The **analysis** directory contains Jupyter notebooks illustrating
+  the optimization methods in simulated data sets, and R code to
+  generate the plots for the manuscript.
+
++ The **code** directory contains Julia code implementing the
+  optimization algorithms, as well as other code used in the numerical
+  experiments.
+
++ The **data** directory is where all raw and processed data are stored.
+
++ The **docs** directory contains webpages generated from the Jupyter
+  notebooks in the analysis directory.
+
++ Results of the demos and numerical experiments are stored in the
+  **output** directory.
 
 ## Developer notes
 
-Run these commands to re-build the website from the Jupyter
-notebooks.
+Run these commands from the `analysis` directory to re-build the
+website from the Jupyter notebooks.
 
 ```bash
-cd analysis
 jupyter nbconvert --template=../docs/nbconvert.tpl \
-  index.ipynb mixSQP_example.ipynb low_rank_approximation.ipynb \
+  index.ipynb \
+  mixSQP_example.ipynb \
+  low_rank_approximation.ipynb \
   --output-dir=../docs
 ```
 
@@ -99,6 +125,7 @@ This project was developed by [Youngseok Kim][youngseok],
 [University of Chicago](https://www.uchicago.edu).
 
 [mixsqp]: https://github.com/youngseok-kim/mixsqp
+[issues]: https://github.com/stephenslab/mixsqp-paper/issues
 [youngseok]: https://github.com/youngseok-kim
 [peter]: https://pcarbo.github.io
 [matthew]: http://stephenslab.uchicago.edu
