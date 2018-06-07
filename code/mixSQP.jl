@@ -4,8 +4,8 @@ end
           
 function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
                 pqrtol = 1e-8, eps = 1e-8, sptol = 1e-3,
-                maxiter = 100, maxqpiter = 100,
-                lowrank = "svd", seed = 1, verbose = true)
+                maxiter = 100, maxqpiter = 100, lowrank = "svd",
+                verbose = true)
     
   # Get the number of rows (n) and columns (k) of L
   n = size(L,1); k = size(L,2);
@@ -18,11 +18,9 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
   # start timing for low-rank approximation of L
   tic();
   if lowrank == "qr"
-      srand(seed)
       F = pqrfact(L, rtol=pqrtol);
       P = sparse(F[:P]);
   elseif lowrank == "svd"
-      srand(seed)
       F = psvdfact(L, rtol=pqrtol);
       S = Diagonal(F[:S]);
   else
