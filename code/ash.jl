@@ -18,7 +18,7 @@ function ash(x, s; method = "mixSQP", gridmult = 1.3, lowrank = "svd",
   # Fit the model using either the SQP or interior point solvers.
   if method == "mixSQP"
     fit, t_fit, bytes, gctime, memallocs = @timed mixSQP(L,pqrtol = pqrtol,
-                                           lowrank = lowrank,verbose = false);
+      lowrank = lowrank,eps = 1e-6,verbose = false);
     w = fit["x"];
   elseif method == "REBayes"
     w, t_fit = REBayes(L);
