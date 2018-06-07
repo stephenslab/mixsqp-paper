@@ -1,49 +1,43 @@
 # Basic Julia implementation of adaptive shrinkage with normal
-# likelihood and mixture-of-centered-normals prior.
-function ash(x, s; method = "mixSQP", gridmult = 1.3, lowrank = "svd")
+# likelihood and mixture-of-centered-normals prior. The outputs are
+# the fitted mixture weights (x), the standard deviations of the
+# normal mixture components (sd), the posterior mean effect estimates
+# (post_mean), and the runtime of the likelihood computations
+# (t_likelihood), model fitting (t_fit) and posterior computations
+# (t_posterior).
+function ash(x, s; method = "mixSQP", gridmult = 1.3, lowrank = "svd",
+             pqrtol = 1e-8)
 
-  # Compute the n x m conditional likelihood matrix.
-  out, t1, bytes, gctime, memallocs = @timed if true
-    sd      = autoselectmixsd(x,s,gridmult = gridmult);
-    log_lik = normlikmatrix(x,s,sd = sd);
+  # Select the variances of the normal mixture components, then
+  # compute the n x m conditional likelihood matrix.
+  out, t_likelihood, bytes, gctime, memallocs = @timed if true
+    sd = autoselectmixsd(x,s,gridmult = gridmult);
+    L  = normlikmatrix(x,s,sd = sd);
   end
     
-  # Fit the model.
+  # Fit the model using either the SQP or interior point solvers.
   if method == "mixSQP"
-    temp = mixSQP_time(log_lik, pqrtol = 1e-8, lowrank = lowrank);
-    t3 = temp[3];
-    t2 = temp[2];
-    p  = temp[1];
+    fit, t_fit, bytes, gctime, memallocs = @timed mixSQP(L,pqrtol = pqrtol,
+                                           lowrank = lowrank,verbose = false);
+    w = fit["x"];
   elseif method == "REBayes"
-    temp = REBayes(log_lik);
-    t2 = temp[2];
-    p = temp[1];
-  else
-    error("Error")
+    w, t_fit = REBayes(L);
   end
     
-  tic();
-    
-    # Exploit sparsity.
-    ind = find(p .> 0);
+  # Posterior calculations.
+  out, t_posterior, bytes, gctime, memallocs = @timed if true
+    ind = find(w .> 0);
     ps2 = sd[ind].^2;
-    
-    # Posterior calculations.
-    s2   = s.^2;
-    t               = s2 .+ ps2';
+    s2  = s.^2;
+    t   = s2 .+ ps2';
     comp_post_mean  = (x * ps2') ./ t;
     comp_post_sd2   = (s2 * ps2') ./ t;
     comp_post_mean2 = comp_post_sd2 + comp_post_mean.^2;
-    comp_post_prob  = log_lik[:,ind] .* p[ind]';
+    comp_post_prob  = L[:,ind] .* w[ind]';
     comp_post_prob  = comp_post_prob ./ sum(comp_post_prob,2);
     post_mean       = sum(comp_post_prob .* comp_post_mean,2);
     post_mean2      = sum(comp_post_prob .* comp_post_mean2,2);
-    t4 = toq();
-    
-    # return posterior first/second moments
-  if method == "mixSQP"
-    return post_mean, post_mean2, log_lik, p, [t1;t2;t3;t4]
-  else
-    return post_mean, post_mean2, log_lik, p, [t1;t2;t4]
   end
+    
+  return x, sd, t_likelihood, t_fit, t_posterior
 end
