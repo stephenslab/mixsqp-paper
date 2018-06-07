@@ -39,5 +39,6 @@ function ash(x, s; method = "mixSQP", gridmult = 1.3, lowrank = "svd",
     post_mean2      = sum(comp_post_prob .* comp_post_mean2,2);
   end
     
-  return x, sd, t_likelihood, t_fit, t_posterior
+  return Dict([("x",x), ("timing-likelihood",t_likelihood),
+               ("timing-fit",t_fit), ("timing-posterior",t_posterior)])
 end
