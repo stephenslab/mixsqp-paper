@@ -41,7 +41,7 @@ citation is given above.
 
 ## Setup instructions (simple)
 
-To try the first and second demos [here][github-site], follow these
+To run the first two demos listed [here][github-site], follow these
 steps.
 
 **Note:** If you encounter a problem running the demos, or installing
@@ -86,10 +86,10 @@ about the setup used to run the Julia code.
 
 The simple setup instructions above will allow you to run the first
 two examples. If you have successfully run the first two examples, and
-you would work through more examples, follow these additional setup
-instructions. The other examples compare performance of different
-methods, and require additional programs and Julia packages to
-run.
+you would like to try the other demos, follow these additional setup
+instructions. These additional examples compare performance of
+different methods, and require additional programs and Julia packages
+to run.
 
 1. Install [R][R]. Note that version 3.4.0 or later is required.
 
