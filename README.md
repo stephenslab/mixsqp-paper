@@ -155,7 +155,8 @@ website from the Jupyter notebooks.
 ```bash
 jupyter nbconvert --template=../docs/nbconvert.tpl index.ipynb \
   mixSQP_example.ipynb low_rank_approximation.ipynb \
-  mixSQP_REBayes_EM.ipynb --output-dir=../docs
+  mixSQP_REBayes_EM.ipynb ash_computation_time.ipynb \
+  --output-dir=../docs
 ```
 
 ## Credits
