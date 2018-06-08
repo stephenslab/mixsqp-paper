@@ -116,6 +116,15 @@ to run.
    Pkg.add("RCall")
    ```
 
+3. Restart Julia, then precompile the packages and load them to make
+   sure that they work:
+
+   ```julia
+   using Mosek
+   using JuMP
+   using RCall
+   ```
+
 (*Old instructions:* The `Pkg.build` step is important for installing
 the `PyPlot` package. Precompiling the PyPlot package may take some
 time since it may download and install additional Python packages.)
