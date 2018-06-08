@@ -39,7 +39,7 @@ If you find any of the source code in this repository useful for your
 work, please cite our manuscript, Kim *et al* (2018). The full
 citation is given above.
 
-## Setup instructions (simple)
+## Setup instructions (simpler)
 
 To run the first two demos listed [here][github-site], follow these
 steps.

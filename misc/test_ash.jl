@@ -13,6 +13,9 @@ include("../code/ash.jl");
 gridmult = 1.1;
 n        = round(Int,1e5);
 
+# Initialize the pseudorandom number generator.
+srand(1);
+
 # Generate data set.
 x = normtmixdatasim(n);
 s = ones(n);
