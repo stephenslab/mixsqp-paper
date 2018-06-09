@@ -28,3 +28,5 @@ L  = normlikmatrix(x,sd = sd);
 @time x_nonnegsqp = nonnegSQP(L);
 
 full([x_simplexip x_nonnegip x_dual x_simplexsqp])
+
+# TO DO: Check the quality of the solutions.
