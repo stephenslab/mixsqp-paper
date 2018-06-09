@@ -14,11 +14,8 @@ function simplexIP(L)
   @constraint(mod,sum(x) == 1)
   solve(mod);
 
-  # Output the solution, setting any small values near zero to be
-  # exactly zero.
-  x = getvalue(x);
-  x[x .< 1e-3] = 0;
-  return sparse(x/sum(x))
+  # Output the solution.
+  return getvalue(x)
 end
 
 # Compute maximum-likelihood estimates of the mixture weights by
@@ -37,11 +34,8 @@ function nonnegIP(L)
                          sum(x[i] for i = 1:m));
   solve(mod);
 
-  # Output the solution, setting any small values near zero to be
-  # exactly zero.
-  x = getvalue(x);
-  x[x.< 1e-3] = 0;
-  return sparse(x/sum(x))
+  # Output the solution.
+  return getvalue(x)
 end
 
 # Compute maximum-likelihood estimates of the mixture weights by
@@ -60,35 +54,48 @@ function dualIP(L)
   solve(mod);
 
   # Output the solution to the primal problem (contained in the dual
-  # variables), setting any small values near zero to be exactly zero.
-  x = -getdual(ic);
-  x[x.< 1e-3] = 0;
-  return sparse(x/sum(x))
+  # variables).
+  return -getdual(ic)
 end
 
-function sqp_simp(L)
-  n,m = size(L);
+# Compute maximum-likelihood estimates of the mixture weights by
+# solving the (primal) simplex-constrained optimization problem using
+# an SQP method.
+function simplexSQP(L; maxiter = 1000, convtol = 1e-8, eps = 1e-8)
+
+  # Get the number of rows (n) and columns (m) of the likelihood matrix.
+  n, m = size(L);
+
+  # This is the initial estimate of the solution.
   x = ones(m)/m;
-  for i = 1:100
-    D = 1./(L*x + 1e-8);
+
+  # Repeat until we reach the maximum number of iterations, or until
+  # convergence is reached.
+  for i = 1:maxiter
+
+    # Compute ghe gradient and Hessian.
+    D = 1./(L*x + eps);
     g = -L'*D/n;
-    H = L'*Diagonal(D.^2)*L/n + 1e-8 * speye(m);
+    H = L'*Diagonal(D.^2)*L/n + eps*eye(m);
     
-    if minimum(g+1) >= -1e-8
+    # Check convergence.
+    if minimum(g + 1) >= -convtol
       break;
     end
     
-    mod = Model(solver=MosekSolver(QUIET = true));
-    a,b = findn(H);
-    @variable(mod, y[1:m] >= 0);
-    @objective(mod, Min, QuadExpr(y[a],y[b],H[:]/2,AffExpr(y, 2*g, 0)) )
-    @constraint(mod, sum(y) == 1);
+    # Define the constrained quadratic program in JuMP, and solve it
+    # using MOSEK.
+    mod = Model(solver = MosekSolver(QUIET = true));
+    a, b = findn(H);
+    @variable(mod,y[1:m] >= 0);
+    @objective(mod,Min,QuadExpr(y[a],y[b],H[:]/2,AffExpr(y,2*g,0)))
+    @constraint(mod,sum(y) == 1);
     solve(mod);
     x = getvalue(y);
     x[x .< 0] = 0;
-
   end
-  x[x .< 1e-3] = 0;
+    
+  # Output the solution.
   return x
 end
 
@@ -127,10 +134,8 @@ function nonnegSQP(L; maxiter = 1000, convtol = 1e-8, eps = 1e-8)
     x[x .< 0] = 0;
   end
 
-  # Output the solution, setting any small values near zero to be
-  # exactly zero.
-  x[x .< 1e-3] = 0;
-  return sparse(x/sum(x))
+  # Output the solution.
+  return x
 end
 
 function sqp_dual(L)
