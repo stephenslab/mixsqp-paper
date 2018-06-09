@@ -165,7 +165,7 @@ website from the Jupyter notebooks.
 jupyter nbconvert --template=../docs/nbconvert.tpl index.ipynb \
   mixSQP_example.ipynb low_rank_approximation.ipynb \
   mixSQP_REBayes_EM.ipynb ash_computation_time.ipynb \
-  primaldual.ipynb --output-dir=../docs
+  --output-dir=../docs
 ```
 
 ## Credits
