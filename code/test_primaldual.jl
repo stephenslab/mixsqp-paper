@@ -33,6 +33,7 @@ L  = normlikmatrix(x,sd = sd);
 @printf "simplex, SQP: "
 @time x_simplexsqp = simplexSQP(L);
 # @time x_nonnegsqp = nonnegSQP(L);
+@time x_dualsqp = dualSQP(L);
 
 # Check quality of the solutions.
 f_simplexip  = mixobjective(L,x_simplexip);

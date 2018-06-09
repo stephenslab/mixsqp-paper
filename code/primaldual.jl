@@ -125,7 +125,7 @@ function nonnegSQP(L; maxiter = 1000, convtol = 1e-8, eps = 1e-8)
 
     # Define the constrained quadratic program in JuMP, and solve it
     # using MOSEK.
-    mod  = Model(solver = MosekSolver(QUIET = true));
+    mod = Model(solver = MosekSolver(QUIET = true));
     a, b = findn(H);
     @variable(mod,y[1:m] >= 0);
     @objective(mod,Min,QuadExpr(y[a],y[b],H[:]/2,AffExpr(y,2*g + 1,0)));
@@ -138,26 +138,37 @@ function nonnegSQP(L; maxiter = 1000, convtol = 1e-8, eps = 1e-8)
   return x
 end
 
-function sqp_dual(L)
-  n,m = size(L);
-  x = ones(n)/n; lambda = zeros(m);
-  for i = 1:100
+# TO DO: Explain here what this function does.
+function dualSQP(L; maxiter = 1000, convtol = 1e-8)
+
+  # Get the number of rows (n) and columns (m) of the likelihood matrix.
+  n, m = size(L);
+
+  # This is the initial estimate of the solution to the dual problem.
+  x = ones(n)/n;
+
+  # Repeat until we reach the maximum number of iterations, or until
+  # convergence is reached.
+  z = zeros(m);
+  for i = 1:maxiter
+
+    # Define the constrained quadratic program in JuMP, and solve it
+    # using MOSEK.
     D = 1./x;
-    
-    mod = Model(solver=MosekSolver(QUIET = true));
-    @variable(mod, y[1:n] >= 0);
-    @objective(mod, Min, QuadExpr(y,y,D.^2/2/n,AffExpr(y, -2*D/n, 0)) )
-    @constraint(mod, ic, L'*y .<= 1);
+    mod = Model(solver = MosekSolver(QUIET = true));
+    @variable(mod,y[1:n] >= 0);
+    @objective(mod,Min,QuadExpr(y,y,D.^2/2/n,AffExpr(y,-2*D/n,0)));
+    @constraint(mod,ic,L'*y .<= 1);
     solve(mod);
     x = getvalue(y);
-    lambda = -getdual(ic);
+    z = -getdual(ic);
     x[x .< 0] = 0;
-    if minimum(L *lambda - x) > 0
+    if minimum(L*z - x) > convtol
       break;
     end
   end
-  lambda[lambda .< 1e-3] = 0;
-  lambda = lambda/sum(lambda);
-  
-  return lambda
+
+  # Output the solution to the primal problem (contained in the dual
+  # variables).
+  return z
 end
