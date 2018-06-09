@@ -1,5 +1,3 @@
-using Mosek, JuMP
-
 function QPsubprob(L; method = "activeset")
   # fix setting
   eps = 1e-5; tol = 1e-8; sptol=1e-3; maxiter = 100;
