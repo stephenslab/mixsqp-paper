@@ -259,11 +259,11 @@ body {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">5e4</span><span class="p">);</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
 <span class="n">s</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
 </pre></div>
 
@@ -276,7 +276,7 @@ body {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this example, the standard errors (<code>s</code>) of the provided estimates (<code>x</code>) are assumed to be all 1.</p>
+<p>In this example, the standard errors (<code>s</code>) of the provided estimates (<code>z</code>) are assumed to be all 1.</p>
 
 </div>
 </div>
@@ -292,12 +292,12 @@ body {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">gridmult</span>    <span class="o">=</span> <span class="mf">1.2</span><span class="p">;</span>
-<span class="n">out_rebayes</span> <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;REBayes&quot;</span><span class="p">);</span>
-<span class="n">out_mixsqp</span>  <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;mixSQP&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;qr&quot;</span><span class="p">);</span>
+<span class="n">out_rebayes</span> <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;REBayes&quot;</span><span class="p">);</span>
+<span class="n">out_mixsqp</span>  <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;mixSQP&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;qr&quot;</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -316,11 +316,11 @@ body {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">out_rebayes</span> <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;REBayes&quot;</span><span class="p">);</span>
-<span class="n">out_mixsqp</span>  <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;mixSQP&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;qr&quot;</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">out_rebayes</span> <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;REBayes&quot;</span><span class="p">);</span>
+<span class="n">out_mixsqp</span>  <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;mixSQP&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;qr&quot;</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -339,7 +339,7 @@ body {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="nd">@printf</span> <span class="s">&quot; solver likelihood fitting posterior</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -364,8 +364,8 @@ body {
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> solver likelihood fitting posterior
-  MOSEK      0.131   1.740     0.012
-mix-SQP      0.169   0.328     0.015
+  MOSEK      0.132   1.827     0.097
+mix-SQP      0.098   0.335     0.012
 </pre>
 </div>
 </div>
@@ -395,11 +395,11 @@ mix-SQP      0.169   0.328     0.015
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e5</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
 <span class="n">s</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
 </pre></div>
 
@@ -419,12 +419,12 @@ mix-SQP      0.169   0.328     0.015
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">gridmult</span>    <span class="o">=</span> <span class="mf">1.05</span><span class="p">;</span>
-<span class="n">out_rebayes</span> <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;REBayes&quot;</span><span class="p">);</span>
-<span class="n">out_mixsqp</span>  <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;mixSQP&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;qr&quot;</span><span class="p">);</span>
+<span class="n">out_rebayes</span> <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;REBayes&quot;</span><span class="p">);</span>
+<span class="n">out_mixsqp</span>  <span class="o">=</span> <span class="n">ash</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gridmult</span> <span class="o">=</span> <span class="n">gridmult</span><span class="p">,</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;mixSQP&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;qr&quot;</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -443,7 +443,7 @@ mix-SQP      0.169   0.328     0.015
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="nd">@printf</span> <span class="s">&quot; solver likelihood fitting posterior</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -468,8 +468,8 @@ mix-SQP      0.169   0.328     0.015
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> solver likelihood fitting posterior
-  MOSEK      1.237  18.519     0.156
-mix-SQP      1.023   0.725     0.023
+  MOSEK      1.057  17.191     0.160
+mix-SQP      0.983   0.769     0.040
 </pre>
 </div>
 </div>
@@ -482,7 +482,7 @@ mix-SQP      1.023   0.725     0.023
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The result is similar to above, but more dramatic—the effort of model fitting with mix-SQP is comparable to the effort required to compute the likelihood matrix, whereas the model fitting using the interior point method (MOSEK) is much greater than the other steps.</p>
+<p>The result is similar to above, but more dramatic—the effort of model fitting with mix-SQP is comparable to the effort required to compute the likelihood matrix, whereas the model fitting using the interior point method (MOSEK) dominates the effort of the other steps.</p>
 <p>In summary, this illustrates the benefit of the SQP approach for adaptive shrinkage, particularly for large data sets.</p>
 
 </div>
@@ -500,7 +500,7 @@ notebook, including the version of Julia and the Julia packages.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;Distributions&quot;</span><span class="p">)</span>

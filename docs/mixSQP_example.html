@@ -243,7 +243,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">5e4</span><span class="p">));</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">5e4</span><span class="p">));</span>
 </pre></div>
 
 </div>
@@ -265,8 +265,8 @@ body {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">20</span><span class="p">);</span>
-<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">20</span><span class="p">);</span>
+<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
 <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
 </pre></div>
 
@@ -380,7 +380,7 @@ iter      objective -min(g+1) #nnz #qp #ls
   21 9.72700023e+03 +1.85e-03    5   7   1
   22 9.72691655e+03 +1.71e-06    5   7   1
   23 9.72691593e+03 -3.18e-09    5   7   1
-Optimization took 23 iterations and 0.3982 seconds.
+Optimization took 23 iterations and 0.3798 seconds.
 </pre>
 </div>
 </div>
@@ -404,7 +404,7 @@ Optimization took 23 iterations and 0.3982 seconds.
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">srand</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e5</span><span class="p">));</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e5</span><span class="p">));</span>
 </pre></div>
 
 </div>
@@ -426,8 +426,8 @@ Optimization took 23 iterations and 0.3982 seconds.
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">40</span><span class="p">);</span>
-<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">40</span><span class="p">);</span>
+<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
 <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
 </pre></div>
 
@@ -518,7 +518,7 @@ iter      objective -min(g+1) #nnz #qp #ls
   20 1.94610866e+04 +1.37e-02    4  15   1
   21 1.94608952e+04 +5.46e-04    4  18   1
   22 1.94608878e+04 -3.14e-09    4  15   1
-Optimization took 22 iterations and 0.6650 seconds.
+Optimization took 22 iterations and 0.6374 seconds.
 </pre>
 </div>
 </div>
@@ -600,7 +600,7 @@ iter      objective -min(g+1) #nnz #qp #ls
   34 1.94608908e+04 +1.44e-04    4  18   1
   35 1.94608893e+04 +1.36e-07    4  15   1
   36 1.94608893e+04 -3.14e-13    4  15   1
-Optimization took 36 iterations and 4.9207 seconds.
+Optimization took 36 iterations and 5.4277 seconds.
 </pre>
 </div>
 </div>

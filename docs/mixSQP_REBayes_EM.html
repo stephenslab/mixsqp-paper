@@ -247,7 +247,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">5e4</span><span class="p">));</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">5e4</span><span class="p">));</span>
 </pre></div>
 
 </div>
@@ -269,8 +269,8 @@ body {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">20</span><span class="p">);</span>
-<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">20</span><span class="p">);</span>
+<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
 <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
 </pre></div>
 
@@ -356,9 +356,9 @@ body {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  3.669475 seconds (25.40 k allocations: 7.243 GiB, 21.91% gc time)
-  1.304768 seconds (579 allocations: 30.897 KiB)
-  0.288999 seconds (38.24 k allocations: 404.534 MiB, 17.59% gc time)
+<pre>  3.479721 seconds (25.40 k allocations: 7.243 GiB, 21.60% gc time)
+  1.314076 seconds (579 allocations: 30.897 KiB)
+  0.276557 seconds (38.24 k allocations: 404.534 MiB, 15.43% gc time)
 </pre>
 </div>
 </div>
@@ -430,7 +430,7 @@ Difference between SQP and best solutions: 2.22e-06
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e5</span><span class="p">));</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e5</span><span class="p">));</span>
 </pre></div>
 
 </div>
@@ -452,8 +452,8 @@ Difference between SQP and best solutions: 2.22e-06
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">100</span><span class="p">);</span>
-<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">100</span><span class="p">);</span>
+<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
 <span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
 </pre></div>
 
@@ -515,9 +515,9 @@ Difference between SQP and best solutions: 2.22e-06
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 15.008274 seconds (12.71 k allocations: 11.820 GiB, 54.60% gc time)
- 13.174656 seconds (315 allocations: 16.172 KiB)
-  0.879814 seconds (134.62 k allocations: 872.181 MiB, 15.35% gc time)
+<pre> 17.030483 seconds (12.71 k allocations: 11.820 GiB, 53.78% gc time)
+ 19.056084 seconds (315 allocations: 16.172 KiB)
+  1.019957 seconds (134.62 k allocations: 872.181 MiB, 12.84% gc time)
 </pre>
 </div>
 </div>
