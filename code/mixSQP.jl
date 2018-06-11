@@ -5,17 +5,18 @@ end
 function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
                 pqrtol = 1e-8, eps = 1e-8, sptol = 1e-3,
                 maxiter = 100, maxqpiter = 100, lowrank = "svd",
-                verbose = true)
+                qpsubprob = "activeset",verbose = true)
     
-  # Get the number of rows (n) and columns (k) of L
-  n = size(L,1); k = size(L,2);
+  # Get the number of rows (n) and columns (k) of L.
+  n = size(L,1);
+  k = size(L,2);
 
   # If requested (i.e., if pqrtol > 0), compute the partial QR
   # decomposition with relative precision "tol", then retrieve the
   # permutation matrix, P. For details on the partial QR, see
   # https://github.com/klho/LowRankApprox.jl.
     
-  # start timing for low-rank approximation of L
+  # Start timing for low-rank approximation of L.
   tic();
   if lowrank == "qr"
       F = pqrfact(L, rtol=pqrtol);
@@ -66,7 +67,8 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     @printf("iter      objective -min(g+1) #nnz #qp #ls\n")
   end
 
-  # QP subproblem start.
+  # Repeat until we reach the maximum number of iterations, or until
+  # convergence is reached.
   for i = 1:maxiter
 
     # Start timing the iteration.
@@ -76,17 +78,17 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     # QR decomposition to increase the speed of these computations.
     # gradient and Hessian computation -- Rank reduction method
     if lowrank == "qr"
-        D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
-        g = -P * F[:R]' * (F[:Q]'*D)/n;
-        H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps*eye(k);
+      D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
+      g = -P * F[:R]' * (F[:Q]'*D)/n;
+      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps*eye(k);
     elseif lowrank == "svd"
-        D = 1./(F[:U]*(S*(F[:Vt]*x)) + eps);
-        g = -F[:Vt]'*(S * (F[:U]'*D))/n;
-        H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps*eye(k);
+      D = 1./(F[:U]*(S*(F[:Vt]*x)) + eps);
+      g = -F[:Vt]'*(S * (F[:U]'*D))/n;
+      H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps*eye(k);
     else
-        D = 1./(L*x + eps);
-        g = -L'*D/n;
-        H = L'*Diagonal(D.^2)*L/n + eps * eye(k);
+      D = 1./(L*x + eps);
+      g = -L'*D/n;
+      H = L'*Diagonal(D.^2)*L/n + eps * eye(k);
     end
 
     # Report on the algorithm's progress.
@@ -109,84 +111,29 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     if minimum(g + 1) >= -convtol
       break
     end
+
+    # Solve the QP subproblem using either the active-set or
+    # interior-point (MOSEK) method.
+    if qpsubprob == "activeset"
+      y = qpactiveset(x,g,H,convtol = convtol,sptol = sptol,
+                      maxiter = maxqpiter);
+    end
       
-    # Initialize the solution to the QP subproblem (y).
-    y      = sparse(zeros(k));
-    if i > 1
-        ind    = find(x .> sptol);
-        y[ind] = 1/length(ind);
-    else
-        ind    = [1;k];
-        y[ind] = 1/length(ind);
-    end
-
-    # Run active set method to solve the QP subproblem.
-    for j = 1:maxqpiter
-        
-      # Define the smaller QP subproblem.
-      s   = length(ind);
-      H_s = H[ind,ind];
-      d   = H*y + 2*g + 1;
-      d_s = d[ind];
-
-      # Solve the smaller problem.
-      p      = sparse(zeros(k));
-      p_s    = -H_s\d_s;
-      p[ind] = p_s;
-
-      # Check convergence using KKT
-      if norm(p_s) < convtol
-            
-        # Compute the Lagrange multiplier.
-        lambda = d;
-        if all(lambda .>= -convtol)
-          break;
-        elseif length(ind) < k
-          notind  = setdiff(1:k,ind);
-          ind_min = notind[findmin(lambda[notind])[2]];
-          ind     = sort([ind; ind_min]);
-        end
-      else
-          
-        # Find a feasible step length.
-        alpha     = 1;
-        alpha0    = -y[ind]./p_s;
-        ind_block = find(p_s .< 0);
-        alpha0    = alpha0[ind_block];
-        if ~isempty(ind_block)
-          v, t = findmin(alpha0);
-          if v < 1
-
-            # Blocking constraint.
-            ind_block = ind[ind_block[t]]; 
-            alpha     = v;
-              
-            # Update working set if there is a blocking constraint.
-            deleteat!(ind,find(ind - ind_block .== 0));
-          end
-        end
-          
-        # Move to the new "inner loop" iterate (y) along the search
-        # direction.
-        y = y + alpha * p;
-      end
-    end
-    
     # Perform backtracking line search
     for t = 1:10
-        if lowrank == "qr"
-            D_new = 1./(F[:Q]*(F[:R]*(P'*y)) + eps);
-        elseif lowrank == "svd"
-            D_new = 1./(F[:U]*(S*(F[:Vt]*y)) + eps);
-        else
-            D_new = 1./(L*y + eps);
+      if lowrank == "qr"
+        D_new = 1./(F[:Q]*(F[:R]*(P'*y)) + eps);
+      elseif lowrank == "svd"
+        D_new = 1./(F[:U]*(S*(F[:Vt]*y)) + eps);
+      else
+        D_new = 1./(L*y + eps);
+      end
+      if all(D_new .> 0)
+        if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
+          break
         end
-        if all(D_new .> 0)
-          if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
-            break;
-          end
-        end
-        y = (y-x)/2 + x;
+      end
+      y = (y-x)/2 + x;
     end
     numls = t;
 
@@ -208,9 +155,80 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
   if verbose
     @printf("Optimization took %d iterations and %0.4f seconds.\n",i,totaltime)
   end
-
   return Dict([("x",full(x)), ("totaltime",totaltime),
                ("lowranktime",lowranktime), ("obj",obj[1:i]),
                ("gmin",gmin[1:i]), ("nnz",nnz[1:i]),
                ("nqp",nqp[1:i]), ("timing",timing[1:i])])
 end
+
+# Solve the QP subproblem for the mix-SQP algorithm using an active
+# set method.
+function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-3, maxiter = 100)
+
+  # Get the number of degrees of freedom in the optimization problem.
+  k = length(x);
+    
+  # Initialize the solution to the QP subproblem.
+  y      = sparse(zeros(k));
+  ind    = find(x .> sptol);
+  y[ind] = 1/length(ind);
+
+  # Repeat until we reach the maximum number of iterations, or until
+  # convergence is reached.
+  for i = 1:maxiter
+        
+    # Define the smaller QP subproblem.
+    s   = length(ind);
+    H_s = H[ind,ind];
+    d   = H*y + 2*g + 1;
+    d_s = d[ind];
+
+    # Solve the smaller problem.
+    p      = sparse(zeros(k));
+    p_s    = -H_s\d_s;
+    p[ind] = p_s;
+
+    # Check convergence using KKT
+    if norm(p_s) < convtol
+            
+      # Compute the Lagrange multiplier.
+      z = d;
+      if all(z .>= -convtol)
+        break
+      elseif length(ind) < k
+        notind  = setdiff(1:k,ind);
+        ind_min = notind[findmin(z[notind])[2]];
+        ind     = sort([ind; ind_min]);
+      end
+    else
+          
+      # Find a feasible step length.
+      alpha     = 1;
+      alpha0    = -y[ind]./p_s;
+      ind_block = find(p_s .< 0);
+      alpha0    = alpha0[ind_block];
+      if ~isempty(ind_block)
+        v, t = findmin(alpha0);
+        if v < 1
+
+          # Blocking constraint.
+          ind_block = ind[ind_block[t]]; 
+          alpha     = v;
+              
+          # Update working set if there is a blocking constraint.
+          deleteat!(ind,find(ind - ind_block .== 0));
+        end
+      end
+          
+      # Move to the new "inner loop" iterate (y) along the search
+      # direction.
+      y = y + alpha * p;
+    end
+  end
+
+  # Return the solution to the quadratic program.
+  return y
+end
+
+# Solve the QP subproblem for the mix-SQP algorithm using MOSEK.
+
