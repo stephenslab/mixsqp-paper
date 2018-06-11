@@ -58,11 +58,12 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
   end
 
   # Initialize storage for the outputs obj, gmin, nnz and nqp.
-  obj    = zeros(maxiter);
-  gmin   = zeros(maxiter);
-  nnz    = zeros(maxiter);
-  nqp    = zeros(maxiter);
-  timing = zeros(maxiter);
+  obj      = zeros(maxiter);
+  gmin     = zeros(maxiter);
+  nnz      = zeros(maxiter);
+  nqp      = zeros(maxiter);
+  timing   = zeros(maxiter);
+  qptiming = zeros(maxiter);
     
   # Initialize loop variables used in the loops below so that they
   # are available outside the scope of the loop.
@@ -124,7 +125,8 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
 
     # Solve the QP subproblem using either the active-set or
     # interior-point (MOSEK) method.
-    if qpsubprob == "activeset"
+    out, qptiming[i], bytes, gctime,
+    memallocs = @timed if qpsubprob == "activeset"
       y = qpactiveset(x,g,H,convtol = convtol,sptol = sptol,
                       maxiter = maxqpiter);
     elseif qpsubprob == "mosek"
@@ -171,7 +173,8 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
   return Dict([("x",full(x)), ("totaltime",totaltime),
                ("lowranktime",lowranktime), ("obj",obj[1:i]),
                ("gmin",gmin[1:i]), ("nnz",nnz[1:i]),
-               ("nqp",nqp[1:i]), ("timing",timing[1:i])])
+               ("nqp",nqp[1:i]), ("timing",timing[1:i]),
+               ("qptiming",qptiming[1:i])])
 end
 
 # Solve the QP subproblem for the mix-SQP algorithm using an active

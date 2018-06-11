@@ -6,7 +6,6 @@ using Mosek
 using JuMP
 include("datasim.jl");
 include("likelihood.jl");
-include("QPsubprob.jl");
 include("mixSQP.jl");
 
 # Initialize the pseudorandom number generator.
