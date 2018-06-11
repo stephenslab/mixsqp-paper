@@ -2,6 +2,7 @@ function mixobjective(L, x, eps = 0)
   return -sum(log.(L * x + eps))
 end
           
+# TO DO: Add note about initial estimate x.
 function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
                 pqrtol = 1e-8, eps = 1e-8, sptol = 1e-3,
                 maxiter = 100, maxqpiter = 100, lowrank = "svd",
@@ -11,20 +12,29 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
   n = size(L,1);
   k = size(L,2);
 
+  # Adjust the initial solution for the SQP method using the MOSEK
+  # solver.
+  if qpsubprob == "mosek"
+    x = zeros(k);
+    x[1:2] = 1/2;
+  end
+    
   # If requested (i.e., if pqrtol > 0), compute the partial QR
   # decomposition with relative precision "tol", then retrieve the
   # permutation matrix, P. For details on the partial QR, see
   # https://github.com/klho/LowRankApprox.jl.
     
   # Start timing for low-rank approximation of L.
+  if lowrank != "none" && qpsubprob == "mosek"
+    error("lowrank must be \"none\" when qpsubprob = \"mosek\"");
+  end
   tic();
   if lowrank == "qr"
-      F = pqrfact(L, rtol=pqrtol);
-      P = sparse(F[:P]);
+    F = pqrfact(L, rtol=pqrtol);
+    P = sparse(F[:P]);
   elseif lowrank == "svd"
-      F = psvdfact(L, rtol=pqrtol);
-      S = Diagonal(F[:S]);
-  else
+    F = psvdfact(L, rtol=pqrtol);
+    S = Diagonal(F[:S]);
   end
   lowranktime = toq();
     
@@ -117,6 +127,8 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     if qpsubprob == "activeset"
       y = qpactiveset(x,g,H,convtol = convtol,sptol = sptol,
                       maxiter = maxqpiter);
+    elseif qpsubprob == "mosek"
+      y = qpmosek(g,H);
     end
       
     # Perform backtracking line search
@@ -138,7 +150,7 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
     numls = t;
 
     # Update the solution to the original optimization problem.
-    x = y;
+    x = copy(y);
 
     # Get the elapsed time for the ith iteration.
     timing[i] = toq();
@@ -150,8 +162,9 @@ function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
   # iteration; (4) the number of nonzero entries in the vector at each
   # iteration; and (5) the number of inner iterations taken to solve
   # the QP subproblem at each outer iteration.
-  x[x .< sptol] = 0; x = x/sum(x);
-  totaltime = lowranktime + sum(timing[1:i]);
+  x[x .< sptol] = 0;
+  x             = x/sum(x);
+  totaltime     = lowranktime + sum(timing[1:i]);
   if verbose
     @printf("Optimization took %d iterations and %0.4f seconds.\n",i,totaltime)
   end
@@ -231,4 +244,24 @@ function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-3, maxiter = 100)
 end
 
 # Solve the QP subproblem for the mix-SQP algorithm using MOSEK.
-
+function qpmosek(g, H)
+  k      = length(g);
+  y      = copy(x);
+  bkx    = repmat([MSK_BK_LO],k,1)[:];
+  blx    = zeros(k);
+  bux    = Inf * ones(k);
+  numvar = length(bkx);
+  c      = 2*g + 1;
+    
+  maketask() do task
+    appendvars(task,numvar)
+    putclist(task,[1:numvar;],c)
+    putvarboundslice(task,1,numvar+1,bkx,blx,bux)
+    Q = LowerTriangular(H); ind = (Q .> 0); a, b = findn(ind);
+    putqobj(task,a,b,Q[ind])
+    putobjsense(task,MSK_OBJECTIVE_SENSE_MINIMIZE)
+    optimize(task)
+    y = getxx(task,MSK_SOL_ITR)
+  end
+  return y
+end

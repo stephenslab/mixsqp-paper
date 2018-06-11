@@ -5,12 +5,16 @@ function QPsubprob(L; method = "activeset", eps = 1e-8, sptol = 1e-6,
   k = size(L,2);
     
   # return param
-  timing = zeros(maxiter); linesearch = zeros(maxiter);
-  y_nnz = zeros(maxiter); q_nnz = zeros(maxiter); i = 0;
+  timing = zeros(maxiter);
+  linesearch = zeros(maxiter);
+  y_nnz = zeros(maxiter);
+  q_nnz = zeros(maxiter);
+  i = 0;
     
   # initialize
-  x = sparse(zeros(k)); x[1] = 1/2; x[round(Int,k/2)] = 1/2;
-
+  x = sparse(zeros(k));
+  x[1:2] = 1/2;
+    
   # Print the column labels for reporting the algorithm's progress.
   if verbose
     @printf("iter      objective -min(g+1) #nnz\n")
@@ -99,15 +103,15 @@ function QPsubprob(L; method = "activeset", eps = 1e-8, sptol = 1e-6,
         solve(mod)
         y = getvalue(u);
     end
+
     timing[i] = toq();
-     
     for linesearch[i] = 1:10
         if sum(log.(D)) - sum(log.(1./(L*y + eps))) > sum((x-y) .* g) / 2
             break;
         end
         y = (y-x)/2 + x;
     end
-        
+      
     y_nnz[i] = sum(y .> sptol);
     q_nnz[i] = sum(abs.(x-y) .> sptol);
         
