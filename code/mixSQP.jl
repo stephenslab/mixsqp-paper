@@ -146,7 +146,7 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
       y = qpactiveset(x,g,H,convtol = convtol,sptol = sptol,
                       maxiter = maxqpiter);
     elseif qpsubprob == "mosek"
-      y = qpmosek(g,H);
+      y = qpmosek(x,g,H);
     end
       
     # Perform backtracking line search
@@ -263,7 +263,7 @@ function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-3, maxiter = 100)
 end
 
 # Solve the QP subproblem for the mix-SQP algorithm using MOSEK.
-function qpmosek(g, H)
+function qpmosek(x, g, H)
   k      = length(g);
   y      = copy(x);
   bkx    = repmat([MSK_BK_LO],k,1)[:];
