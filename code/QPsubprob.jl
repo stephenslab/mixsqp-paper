@@ -15,7 +15,7 @@ function QPsubprob(L; method = "activeset", eps = 1e-8, sptol = 1e-6,
   x = sparse(zeros(k));
   x[1:2] = 1/2;
 
-  # This initialization doesn't work with MOSEK.
+  # This initialization doesn't work with MOSEK:
   # 
   #   x = sparse(ones(k)/k);
   #

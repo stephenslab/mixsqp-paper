@@ -2,21 +2,37 @@ function mixobjective(L, x, eps = 0)
   return -sum(log.(L * x + eps))
 end
           
-# TO DO: Add note about initial estimate x.
-function mixSQP(L; x = ones(size(L,2))/size(L,2), convtol = 1e-8,
-                pqrtol = 1e-8, eps = 1e-8, sptol = 1e-3,
-                maxiter = 100, maxqpiter = 100, lowrank = "svd",
+# Input argument x specifies the initial iterate of the optimization
+# algorithm. When x = -1, or when any of the entries of x are
+# negative, the default setting for x is used.
+#
+# Since the MOSEK solver for the quadratic subproblem sometimes does
+# not tolerate iterates in which most of the entries are nonzero
+# ("dense" vectors), the default initial estimate for qpsubprob =
+# "mosek" is a sparse vector in which only the first two entries are
+# nonzero.
+function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
+                sptol = 1e-3, maxiter = 100, maxqpiter = 100, lowrank = "svd",
                 qpsubprob = "activeset",verbose = true)
     
   # Get the number of rows (n) and columns (k) of L.
   n = size(L,1);
   k = size(L,2);
 
-  # Adjust the initial solution for the SQP method using the MOSEK
-  # solver.
-  if qpsubprob == "mosek"
-    x = zeros(k);
-    x[1:2] = 1/2;
+  # If any entries of input x are negative, set the initial estimate
+  # to the default setting.
+  #
+  # When the MOSEK solver is used, the initial estimate is set to a
+  # sparse vector in which all but two of the entries are zero.
+  if any(x .< 0)
+    if qpsubprob == "activeset"
+      x = ones(k)/k;
+    elseif qpsubprob == "mosek"
+      x = zeros(k);
+      x[1:2] = 1/2;
+    else
+      error("Input \"method\" should be \"activeset\" or \"mosek\"");
+    end
   end
     
   # If requested (i.e., if pqrtol > 0), compute the partial QR
