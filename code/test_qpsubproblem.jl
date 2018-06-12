@@ -14,19 +14,20 @@ srand(1);
 # Generate a data set.
 @printf "Creating data set.\n"
 n = round(Int,5e4);
-x = normtmixdatasim(n);
+z = normtmixdatasim(n);
 
 # Compute the likelihood matrix.
 @printf "Computing likelihood matrix.\n"
-sd = autoselectmixsd(x,nv = 20);
-L  = normlikmatrix(x,sd = sd);
+sd = autoselectmixsd(z,nv = 20);
+L  = normlikmatrix(z,sd = sd);
 
 # Fit the mixture model.
 @printf "Fitting mixture model using active-set method.\n"
-out1 = mixSQP(L,qpsubprob = "activeset",lowrank = "none",sptol = 1e-6);
-@printf "\n"
+out1 = mixSQP(L,qpsubprob = "activeset",lowrank = "none",sptol = 1e-6,
+              verbose = false);
 @printf "Fitting mixture model using MOSEK.\n"
-out2 = mixSQP(L,qpsubprob = "mosek",lowrank = "none",sptol = 1e-6);
+out2 = mixSQP(L,qpsubprob = "mosek",lowrank = "none",sptol = 1e-6,
+              verbose = false);
 
 # Check quality of the solutions.
 f1    = mixobjective(L,out1["x"]);

@@ -1,8 +1,10 @@
-# TO DO: Explain here what this script is for.
+# Short script to test that the 2 x 3 = 6 different solvers (compared
+# in Fig. 1 of the manuscript) work on a medium-size simulated data
+# set.
 using Distributions
 using Mosek
 using JuMP
-include("datasim.jl");@time x_nonnegsqp = nonnegSQP(L);
+include("datasim.jl");
 include("likelihood.jl");
 include("primaldual.jl");
 include("mixSQP.jl");
@@ -13,12 +15,12 @@ srand(1);
 # Generate a data set.
 @printf "Creating data set.\n"
 n = round(Int,5e4);
-x = normtmixdatasim(n);
+z = normtmixdatasim(n);
 
 # Compute the likelihood matrix.
 @printf "Computing likelihood matrix.\n"
-sd = autoselectmixsd(x,nv = 20);
-L  = normlikmatrix(x,sd = sd);
+sd = autoselectmixsd(z,nv = 20);
+L  = normlikmatrix(z,sd = sd);
 
 # Fit the mixture model using the different formulations
 # (simplex-constrained, non-negatively-constrained and dual) and
@@ -33,7 +35,7 @@ L  = normlikmatrix(x,sd = sd);
 @printf "simplex, SQP: "
 @time x_simplexsqp = simplexSQP(L);
 # @time x_nonnegsqp = nonnegSQP(L);
-@time x_dualsqp = dualSQP(L);
+@time x_dualsqp = sqp_dual(L);
 
 # Check quality of the solutions.
 f_simplexip  = mixobjective(L,x_simplexip);

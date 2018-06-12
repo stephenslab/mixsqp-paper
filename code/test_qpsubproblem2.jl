@@ -15,12 +15,12 @@ srand(1);
 # Generate a data set.
 @printf "Creating data set.\n"
 n = round(Int,5e4);
-x = normtmixdatasim(n);
+z = normtmixdatasim(n);
 
 # Compute the likelihood matrix.
 @printf "Computing likelihood matrix.\n"
-sd = autoselectmixsd(x,nv = 20);
-L  = normlikmatrix(x,sd = sd);
+sd = autoselectmixsd(z,nv = 20);
+L  = normlikmatrix(z,sd = sd);
 
 # Fit the mixture model.
 @printf "Fitting mixture model.\n"
