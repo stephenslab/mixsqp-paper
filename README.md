@@ -39,7 +39,7 @@ If you find any of the source code in this repository useful for your
 work, please cite our manuscript, Kim *et al* (2018). The full
 citation is given above.
 
-## Setup instructions (simpler)
+## Setup instructions (part 1)
 
 To run the first two demos listed [here][github-site], follow these
 steps.
@@ -82,7 +82,7 @@ about the setup used to run the Julia code.
    inside Jupyter. This requires that you have already installed the
    [Jupyter kernel for Julia][ijulia].
 
-## Setup instructions (more complicated)
+## Setup instructions (part 2)
 
 The simple setup instructions above will allow you to run the first
 two examples. If you have successfully run the first two examples, and
@@ -165,7 +165,7 @@ website from the Jupyter notebooks.
 jupyter nbconvert --template=../docs/nbconvert.tpl index.ipynb \
   mixSQP_example.ipynb low_rank_approximation.ipynb \
   mixSQP_REBayes_EM.ipynb ash_computation_time.ipynb \
-  --output-dir=../docs
+  QPsubproblem.ipynb --output-dir=../docs
 ```
 
 ## Credits

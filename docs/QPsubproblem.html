@@ -1,0 +1,928 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="ipynb_website:version" content="0.9.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="stylesheet" type="text/css" href="css/jt.css">
+<link rel="stylesheet" type="text/css" href="css/readable.css">
+<link rel="stylesheet" type="text/css" href="css/toc2.css">
+
+<link href="site_libs/jqueryui-1.11.4/jquery-ui.css">
+<link rel="stylesheet" href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<link rel="stylesheet"
+      href="site_libs/highlightjs-1.1/textmate.css"
+      type="text/css" />
+
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+<script src="../js/doc_toc.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+        },
+        "HTML-CSS": {
+            preferredFont: "TeX",
+            availableFonts: ["TeX"],
+            styles: {
+                scale: 110,
+                ".MathJax_Display": {
+                    "font-size": "110%",
+                }
+            }
+        }
+    });
+</script>
+<script>
+function filterDataFrame(id) {
+    var input = document.getElementById("search_" + id);
+    var filter = input.value.toUpperCase();
+    var table = document.getElementById("dataframe_" + id);
+    var tr = table.getElementsByTagName("tr");
+    // Loop through all table rows, and hide those who don't match the search query
+    for (var i = 1; i < tr.length; i++) {
+        for (var j = 0; j < tr[i].cells.length; ++j) {
+            var matched = false;
+            if (tr[i].cells[j].innerHTML.toUpperCase().indexOf(filter) != -1) {
+                tr[i].style.display = "";
+                matched = true
+                break;
+            }
+            if (!matched)
+                tr[i].style.display = "none";
+        }
+    }
+}
+function sortDataFrame(id, n, dtype) {
+    var table = document.getElementById("dataframe_" + id);
+    var tb = table.tBodies[0]; // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+    var tr = Array.prototype.slice.call(tb.rows, 0); // put rows into array
+    if (dtype === 'numeric') {
+        var fn = function(a, b) { 
+            return parseFloat(a.cells[n].textContent) <= parseFloat(b.cells[n].textContent) ? -1 : 1;
+        }
+    } else {
+        var fn = function(a, b) {
+            var c = a.cells[n].textContent.trim().localeCompare(b.cells[n].textContent.trim()); 
+            return c > 0 ? 1 : (c < 0 ? -1 : 0) }
+    }
+    var isSorted = function(array, fn) {
+        if (array.length < 2)
+            return 1;
+        var direction = fn(array[0], array[1]); 
+        for (var i = 1; i < array.length - 1; ++i) {
+            var d = fn(array[i], array[i+1]);
+            if (d == 0)
+                continue;
+            else if (direction == 0)
+                direction = d;
+            else if (direction != d)
+                return 0;
+            }
+        return direction;
+    }
+    var sorted = isSorted(tr, fn);
+    if (sorted == 1 || sorted == -1) {
+        // if sorted already, reverse it
+        for(var i = tr.length - 1; i >= 0; --i)
+            tb.appendChild(tr[i]); // append each row in order
+    } else {
+        tr = tr.sort(fn);
+        for(var i = 0; i < tr.length; ++i)
+            tb.appendChild(tr[i]); // append each row in order
+    }
+}
+</script>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+  // mark it active
+  menuAnchor.parent().addClass('active');
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+<div class="container-fluid main-container">
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<title>mix-SQP experiments</title>
+
+<style type = "text/css">
+body {
+  
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+</style>
+</head>
+
+<body>
+<div tabindex="-1" id="notebook" class="border-box-sizing">
+<div class="container" id="notebook-container">
+
+<!-- code folding -->
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">mix-SQP demos</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+        
+<ul class="nav navbar-nav navbar-right">
+<li>
+   <a href="http://github.com/stephenslab/mixopt-paper">source</a>
+</li>
+</ul>
+        
+      </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Comparing-performance-of-active-set-and-interior-point-methods-for-solving-quadratic-subproblem-inside-SQP">Comparing performance of active-set and interior-point methods for solving quadratic subproblem inside SQP<a class="anchor-link" href="#Comparing-performance-of-active-set-and-interior-point-methods-for-solving-quadratic-subproblem-inside-SQP">&#182;</a></h1><p>Here we explore the use of active-set and interior-point methods (the latter implemented by the commercial software MOSEK) for solving the quadratic subproblem inside SQP.</p>
+<h2 id="Analysis-setup">Analysis setup<a class="anchor-link" href="#Analysis-setup">&#182;</a></h2><p><em>Before attempting to run this Julia code, make sure your computer is properly set up to run this code by following the setup instructions in the README of the <a href="https://github.com/stephenslab/mixsqp-paper">git repository</a>.</em></p>
+<p>We begin by loading the Distributions, Mosek and JuMP Julia packages, as well as some function definitions used in the code chunks below.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
+<span class="k">using</span> <span class="n">Mosek</span>
+<span class="k">using</span> <span class="n">JuMP</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/datasim.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/likelihood.jl&quot;</span><span class="p">);</span>
+<span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/mixSQP.jl&quot;</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING: Method definition abs(ForwardDiff.Dual{T, V, N} where N where V&lt;:Real) in module ForwardDiff at /Users/pcarbo/.julia/v0.6/ForwardDiff/src/dual.jl:317 overwritten at /Users/pcarbo/.julia/v0.6/ForwardDiff/src/dual.jl:163.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, initialize the sequence of pseudorandom numbers.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">srand</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Generate-a-small-data-set">Generate a small data set<a class="anchor-link" href="#Generate-a-small-data-set">&#182;</a></h2><p>Let's begin with a smaller example with 50,000 samples.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">5e4</span><span class="p">);</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Compute-the-likelihood-matrix">Compute the likelihood matrix<a class="anchor-link" href="#Compute-the-likelihood-matrix">&#182;</a></h2><p>Compute the $n \times k$ likelihood matrix for a mixture of zero-centered normals, with $k = 20$. Note that the rows of the likelihood matrix are normalized by default.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="mi">20</span><span class="p">);</span>
+<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
+<span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(50000, 20)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Fit-mixture-model-using-SQP-algorithm">Fit mixture model using SQP algorithm<a class="anchor-link" href="#Fit-mixture-model-using-SQP-algorithm">&#182;</a></h2><p>First we run the mix-SQP algorithm a couple of times to precompile the relevant functions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;activeset&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;mosek&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Fit the model using the SQP algorithm, with an active-set method to find the solution to the quadratic program at each SQP iteration.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">out1</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;activeset&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Running SQP algorithm with the following settings:
+- 50000 x 20 data matrix
+- convergence tolerance = 1.00e-08
+- zero threshold        = 1.00e-03
+- Exact derivative computation (partial QR not used).
+iter      objective -min(g+1) #nnz #qp #ls
+   1 3.03733620e+04 +6.30e-01   20   0   0
+   2 2.09533189e+04 +5.80e+04    1   0   1
+   3 1.28079423e+04 +2.01e+04    3   0   1
+   4 1.11142170e+04 +8.72e+03    3   0   1
+   5 1.09365390e+04 +4.16e+03    3   0   1
+   6 1.07220696e+04 +2.01e+03    3   0   1
+   7 1.05949242e+04 +1.03e+03    3   0   1
+   8 1.05173539e+04 +5.08e+02    3   0   1
+   9 1.03017484e+04 +2.50e+02    2   0   1
+  10 1.01824445e+04 +1.28e+02    3   0   1
+  11 1.01286239e+04 +6.46e+01    3   0   1
+  12 1.00404507e+04 +3.20e+01    3   0   1
+  13 9.89744142e+03 +1.61e+01    3   0   1
+  14 9.85084743e+03 +8.00e+00    3   0   1
+  15 9.81505659e+03 +3.85e+00    3   0   1
+  16 9.77438543e+03 +1.81e+00    3   0   1
+  17 9.75247900e+03 +8.28e-01    4   0   1
+  18 9.74083776e+03 +3.51e-01    4   0   1
+  19 9.73161458e+03 +1.06e-01    4   0   1
+  20 9.72785163e+03 +2.17e-02    5   0   1
+  21 9.72698842e+03 +1.59e-03    5   0   1
+  22 9.72691639e+03 +1.04e-06    5   0   1
+  23 9.72691593e+03 -3.18e-09    5   0   1
+Optimization took 23 iterations and 0.4471 seconds.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next fit the model again using the same SQP algorithm, with the active-set method replaced by MOSEK.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">out2</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;mosek&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Running SQP algorithm with the following settings:
+- 50000 x 20 data matrix
+- convergence tolerance = 1.00e-08
+- zero threshold        = 1.00e-03
+- Exact derivative computation (partial QR not used).
+iter      objective -min(g+1) #nnz #qp #ls
+   1 1.18584295e+04 +7.79e+04    2   0   0
+   2 1.18019962e+04 +2.39e+04    7   0   1
+   3 1.15826110e+04 +9.45e+03    8   0   1
+   4 1.12252365e+04 +4.33e+03    8   0   1
+   5 1.09642877e+04 +2.04e+03    8   0   1
+   6 1.07884947e+04 +1.01e+03    6   0   1
+   7 1.06007499e+04 +5.08e+02    7   0   1
+   8 1.05098000e+04 +2.55e+02    7   0   1
+   9 1.03011708e+04 +1.26e+02    4   0   1
+  10 1.01721090e+04 +6.41e+01    3   0   1
+  11 1.01096088e+04 +3.23e+01    3   0   1
+  12 1.00125909e+04 +1.59e+01    4   0   1
+  13 9.87791041e+03 +8.07e+00    3   0   1
+  14 9.83461847e+03 +3.97e+00    3   0   1
+  15 9.79385100e+03 +1.86e+00    3   0   1
+  16 9.75930608e+03 +8.52e-01    4   0   1
+  17 9.74409206e+03 +3.61e-01    4   0   1
+  18 9.73365669e+03 +1.12e-01    4   0   1
+  19 9.72836684e+03 +2.77e-02    5   0   1
+  20 9.72705594e+03 +2.95e-03    5   0   1
+  21 9.72691759e+03 +1.03e-05    5   0   1
+  22 9.72691593e+03 -2.98e-09    5   0   1
+Optimization took 22 iterations and 0.4430 seconds.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Both runs converged to a solution in a small number of iterations. The solutions are very similar:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">out1</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">out2</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1.40932608673483e-7</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We also observe that solving the quadratic programs is only a small fraction of the total effort. Nonetheless, the effort with the active-set implementation is about 5 times less than with MOSEK.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="nd">@printf</span> <span class="s">&quot;Total runtime of active set method:     </span><span class="si">%0.3f</span><span class="s"> s.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">sum</span><span class="p">(</span><span class="n">out1</span><span class="p">[</span><span class="s">&quot;qptiming&quot;</span><span class="p">])</span>
+<span class="nd">@printf</span> <span class="s">&quot;Total runtime of interior point method: </span><span class="si">%0.3f</span><span class="s"> s.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">sum</span><span class="p">(</span><span class="n">out2</span><span class="p">[</span><span class="s">&quot;qptiming&quot;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total runtime of active set method:     0.011 s.
+Total runtime of interior point method: 0.033 s.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Comparison-with-a-larger-data-set">Comparison with a larger data set<a class="anchor-link" href="#Comparison-with-a-larger-data-set">&#182;</a></h2><p>Let's now explore the accuracy and runtime of the active-set and MOSEK solvers in a larger data set.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">normtmixdatasim</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">1e5</span><span class="p">));</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As before, we compute the $n \times k$ conditional likelihood matrix for a mixture of zero-centered normals. This time, we use a finer grid of $k = 40$ normal densities to compute this matrix.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">k</span>  <span class="o">=</span> <span class="mi">40</span><span class="p">;</span>
+<span class="n">sd</span> <span class="o">=</span> <span class="n">autoselectmixsd</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">nv</span> <span class="o">=</span> <span class="n">k</span><span class="p">);</span>
+<span class="n">L</span>  <span class="o">=</span> <span class="n">normlikmatrix</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span><span class="p">);</span>
+<span class="n">size</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(100000, 40)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we fit the model using the two variants of the SQP algorithm.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="nd">@time</span> <span class="n">out1</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;activeset&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+<span class="nd">@time</span> <span class="n">out2</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;mosek&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>  4.081609 seconds (71.63 k allocations: 2.956 GiB, 66.13% gc time)
+  5.948761 seconds (18.61 k allocations: 3.885 GiB, 60.98% gc time)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first SQP run with the active-set method is slightly faster. And, as before, the solutions are very similar:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">out1</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">out2</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[13]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>7.392572117970175e-5</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The amount of time spent solving the quadratic programs is again only a small proportion of the total:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="nd">@printf</span> <span class="s">&quot;Total runtime of active set method:     </span><span class="si">%0.3f</span><span class="s"> s.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">sum</span><span class="p">(</span><span class="n">out1</span><span class="p">[</span><span class="s">&quot;qptiming&quot;</span><span class="p">])</span>
+<span class="nd">@printf</span> <span class="s">&quot;Total runtime of interior point method: </span><span class="si">%0.3f</span><span class="s"> s.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">sum</span><span class="p">(</span><span class="n">out2</span><span class="p">[</span><span class="s">&quot;qptiming&quot;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total runtime of active set method:     0.018 s.
+Total runtime of interior point method: 0.062 s.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Therefore, although the active-set method is faster than MOSEK (roughly a 5-fold improvement in runtime), the overall impact on performance is relatively small.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="SQP-with-MOSEK-sometimes-fails-to-converge-to-the-correct-solution">SQP with MOSEK sometimes fails to converge to the correct solution<a class="anchor-link" href="#SQP-with-MOSEK-sometimes-fails-to-converge-to-the-correct-solution">&#182;</a></h2><p>Perhaps a more important advantage of the active-set method is that it converges more reliably to the correct solution; in practice, we have found that the MOSEK solver does not provide the correct solution when the initial iterate is not sparse. (To safeguard against this issue, the default initial estimate is set to a vector with only two nonzero entries whenever the MOSEK solver is used.)</p>
+<p>To illustrate the convergence issue, we set the initial estimate to a vector in which all the entries are the same:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">out3</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">/</span><span class="n">k</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;mosek&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Running SQP algorithm with the following settings:
+- 100000 x 40 data matrix
+- convergence tolerance = 1.00e-08
+- zero threshold        = 1.00e-03
+- Exact derivative computation (partial QR not used).
+iter      objective -min(g+1) #nnz #qp #ls
+   1 6.69043907e+04 +7.43e-01   40   0   0
+   2 3.43556702e+04 +2.17e-01   39   0   1
+   3 1.08872324e+04 -3.94e-02   39   0   1
+Optimization took 3 iterations and 0.5615 seconds.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The optimization algorithm stops after only a small number of iterations, and we see that the solution is far from the correct solution:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">out1</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">out3</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[16]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.868145175450365</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Indeed, we see that the provide solution from this run is very far away from the solution obtained earlier.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Session-information">Session information<a class="anchor-link" href="#Session-information">&#182;</a></h2><p>The section gives information about the computing environment used to generate the results contained in this
+notebook, including the version of Julia, and the versions of the Julia packages used here.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;Distributions&quot;</span><span class="p">);</span>
+<span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;Mosek&quot;</span><span class="p">);</span>
+<span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;JuMP&quot;</span><span class="p">);</span>
+<span class="n">versioninfo</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> - Distributions                 0.15.0
+ - Mosek                         0.8.3
+ - JuMP                          0.18.0
+Julia Version 0.6.2
+Commit d386e40c17 (2017-12-13 18:08 UTC)
+Platform Info:
+  OS: macOS (x86_64-apple-darwin14.5.0)
+  CPU: Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz
+  WORD_SIZE: 64
+  BLAS: libopenblas (USE64BITINT DYNAMIC_ARCH NO_AFFINITY Prescott)
+  LAPACK: libopenblas64_
+  LIBM: libopenlibm
+  LLVM: libLLVM-3.9.1 (ORCJIT, broadwell)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<hr>
+&copy; 2017-2018 Youngseok Kim, Peter Carbonetto, Matthew Stephens &amp;
+  Mihai Anitescu.
+</div>
+</div>
+</body>
+</html>

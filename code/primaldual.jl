@@ -138,37 +138,29 @@ function nonnegSQP(L; maxiter = 1000, convtol = 1e-8, eps = 1e-8)
   return x
 end
 
-# TO DO: Explain here what this function does.
-function dualSQP(L; maxiter = 1000, convtol = 1e-8)
-
-  # Get the number of rows (n) and columns (m) of the likelihood matrix.
+function sqp_dual(L; maxiter = 1000, verbose = false)
   n, m = size(L);
-
-  # This is the initial estimate of the solution to the dual problem.
   x = ones(n)/n;
-
-  # Repeat until we reach the maximum number of iterations, or until
-  # convergence is reached.
   z = zeros(m);
+  if verbose
+    @printf "%4d %0.2e\n"
+  end
   for i = 1:maxiter
-
-    # Define the constrained quadratic program in JuMP, and solve it
-    # using MOSEK.
     D = 1./x;
     mod = Model(solver = MosekSolver(QUIET = true));
     @variable(mod,y[1:n] >= 0);
-    @objective(mod,Min,QuadExpr(y,y,D.^2/2/n,AffExpr(y,-2*D/n,0)));
+    @objective(mod,Min,QuadExpr(y,y,D.^2/2/n,AffExpr(y,-2*D/n,0)))
     @constraint(mod,ic,L'*y .<= 1);
     solve(mod);
     x = getvalue(y);
     z = -getdual(ic);
     x[x .< 0] = 0;
-    if minimum(L*z - x) > convtol
-      break;
+    if verbose
+      @printf "\n"
+    end
+    if minimum(L*z - x) > 0
+      break
     end
   end
-
-  # Output the solution to the primal problem (contained in the dual
-  # variables).
   return z
 end
