@@ -13,7 +13,7 @@ maximum-likelihood estimation of mixture proportions, including a fast
 algorithm based on sequential quadratic programming, which we call
 "mix-SQP".
 
-All methods and demonsstrations are implemented in [Julia][julia],
+All methods and demonstrations are implemented in [Julia][julia],
 aside from the interior point solver based on [MOSEK][mosek], which is
 implemented in R. For an R package implementing some of these methods,
 please see the [mixsqp repository][mixsqp]
