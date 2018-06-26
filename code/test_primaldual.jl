@@ -34,7 +34,9 @@ L  = normlikmatrix(z,sd = sd);
 @time x_dualip     = dualIP(L);
 @printf "simplex, SQP: "
 @time x_simplexsqp = simplexSQP(L);
-# @time x_nonnegsqp = nonnegSQP(L);
+@printf "non-neg, SQP: "
+@time x_nonnegsqp = sqp_box(L);
+@printf "dual,    SQP: "
 @time x_dualsqp = sqp_dual(L);
 
 # Check quality of the solutions.
@@ -42,7 +44,7 @@ f_simplexip  = mixobjective(L,x_simplexip);
 f_nonnegip   = mixobjective(L,x_simplexip);
 f_dualip     = mixobjective(L,x_dualip);
 f_simplexsqp = mixobjective(L,x_simplexsqp);
-f_best       = minimum([f_simplexip f_nonnegip f_dualip f_simplexsqp]);
+f_best       = minimum([f_simplexip f_nonnegip f_dualip]);
 @printf "Difference between objective at given solution, and best solution:\n"
 @printf "simplex, IP:  %0.2e\n" f_simplexip - f_best
 @printf "non-neg, IP:  %0.2e\n" f_nonnegip - f_best

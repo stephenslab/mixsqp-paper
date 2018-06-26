@@ -39,7 +39,7 @@ function nonnegIP(L)
 end
 
 # Compute maximum-likelihood estimates of the mixture weights by
-# solving the dual problem.
+# solving the dual problem using an interior-point method.
 function dualIP(L)
 
   # Get the number of rows (n) and columns (m) of the likelihood matrix.
@@ -101,66 +101,63 @@ end
 
 # Compute maximum-likelihood estimates of the mixture weights by
 # solving the non-negatively constrained optimization problem.
-function nonnegSQP(L; maxiter = 1000, convtol = 1e-8, eps = 1e-8)
-
-  # Get the number of rows (n) and columns (m) of the likelihood matrix.
-  n, m = size(L);
-
-  # This is the initial estimate of the solution.
-  x = ones(m)/m;
-
-  # Repeat until we reach the maximum number of iterations, or until
-  # convergence is reached.
-  for i = 1:maxiter
-
-    # Compute ghe gradient and Hessian.
-    D = 1./(L*x + eps);
-    g = -L'*D/n;
-    H = L'*Diagonal(D.^2)*L/n + eps*eye(m);
-
-    # Check convergence.
-    if minimum(g + 1) >= -convtol
-      break;
-    end
-
-    # Define the constrained quadratic program in JuMP, and solve it
-    # using MOSEK.
-    mod = Model(solver = MosekSolver(QUIET = true));
-    a, b = findn(H);
-    @variable(mod,y[1:m] >= 0);
-    @objective(mod,Min,QuadExpr(y[a],y[b],H[:]/2,AffExpr(y,2*g + 1,0)));
-    solve(mod);
-    x = getvalue(y);
-    x[x .< 0] = 0;
-  end
-
-  # Output the solution.
-  return x
-end
-
-function sqp_dual(L; maxiter = 1000, verbose = false)
-  n, m = size(L);
-  x = ones(n)/n;
-  z = zeros(m);
-  if verbose
-    @printf "%4d %0.2e\n"
-  end
-  for i = 1:maxiter
-    D = 1./x;
-    mod = Model(solver = MosekSolver(QUIET = true));
-    @variable(mod,y[1:n] >= 0);
-    @objective(mod,Min,QuadExpr(y,y,D.^2/2/n,AffExpr(y,-2*D/n,0)))
-    @constraint(mod,ic,L'*y .<= 1);
-    solve(mod);
-    x = getvalue(y);
-    z = -getdual(ic);
-    x[x .< 0] = 0;
+function sqp_box(L; verbose = true)
+    n,m = size(L);
+    x = ones(m)/m;
     if verbose
-      @printf "\n"
+      @printf "iter -min(g+1)\n"
     end
-    if minimum(L*z - x) > 0
-      break
+    for i = 1:100
+        D = 1./(L*x + 1e-8);
+        g = -L'*D/n;
+        H = L'*Diagonal(D.^2)*L/n + 1e-8 * speye(m);
+        if verbose
+          @printf "%4d %+0.2e\n" i -minimum(g+1)
+        end
+        if minimum(g+1) >= -1e-6
+          break;
+        end
+        
+        mod = Model(solver=MosekSolver(QUIET = true));
+        a,b = findn(H);
+        @variable(mod, y[1:m] >= 0);
+        @objective(mod, Min, QuadExpr(y[a],y[b],H[:]/2,AffExpr(y, 2*g+1, 0)) )
+        solve(mod);
+        x = getvalue(y);
+        x[x .< 0] = 0;
     end
-  end
-  return z
+    x[x .< 1e-3] = 0;
+    return x
+end
+ 
+# Compute maximum-likelihood estimates of the mixture weights by
+# solving the dual problem using an SQP method.
+function sqp_dual(L; verbose = true)
+    n,m = size(L);
+    x = ones(n)/n; lambda = zeros(m);
+    if verbose
+      @printf "iter -min(L*z-x)\n"
+    end
+    for i = 1:100
+        D = 1./x;
+        
+        mod = Model(solver=MosekSolver(QUIET = true));
+        @variable(mod, y[1:n] >= 0);
+        @objective(mod, Min, QuadExpr(y,y,D.^2/2/n,AffExpr(y, -2*D/n, 0)) )
+        @constraint(mod, ic, L'*y .<= 1);
+        solve(mod);
+        x = getvalue(y);
+        lambda = -getdual(ic);
+        x[x .< 0] = 0;
+        if verbose
+          @printf "%4d %+0.4e\n" i -minimum(L*lambda - x)
+        end
+        if minimum(L*lambda - x) > 0
+            break;
+        end
+    end
+    lambda[lambda .< 1e-3] = 0;
+    lambda = lambda/sum(lambda);
+    
+    return lambda
 end
