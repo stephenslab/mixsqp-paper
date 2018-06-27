@@ -45,7 +45,7 @@ f_nonnegip   = mixobjective(L,x_simplexip);
 f_dualip     = mixobjective(L,x_dualip);
 f_simplexsqp = mixobjective(L,x_simplexsqp);
 f_nonnegsqp  = mixobjective(L,x_nonnegsqp);
-f_dualsqp    = mixobjective(L,x_dualsqp)
+f_dualsqp    = mixobjective(L,x_dualsqp);
 f_best = minimum([f_simplexip f_nonnegip f_dualip f_simplexsqp f_dualsqp]);
 @printf "Difference between objective at given solution, and best solution:\n"
 @printf "simplex, IP:  %0.2e\n" f_simplexip - f_best

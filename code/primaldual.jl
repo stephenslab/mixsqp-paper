@@ -132,11 +132,11 @@ end
  
 # Compute maximum-likelihood estimates of the mixture weights by
 # solving the dual problem using an SQP method.
-function sqp_dual(L; verbose = true)
+function sqp_dual(L; convtol = 1e-5, verbose = true)
     n,m = size(L);
     x = ones(n)/n; lambda = zeros(m);
     if verbose
-      @printf "iter -min(L*z-x)\n"
+      @printf "iter    min(KKT)\n"
     end
     for i = 1:100
         D = 1./x;
@@ -150,9 +150,9 @@ function sqp_dual(L; verbose = true)
         lambda = -getdual(ic);
         x[x .< 0] = 0;
         if verbose
-          @printf "%4d %+0.4e\n" i -minimum(L*lambda - x)
+          @printf "%4d %+0.4e\n" i -minimum(L*lambda - 1./(n*x))
         end
-        if minimum(L*lambda - x) > 0
+        if -minimum(L*lambda - 1./(n*x)) < convtol
             break;
         end
     end
