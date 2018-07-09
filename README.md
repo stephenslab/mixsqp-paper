@@ -1,4 +1,4 @@
-# mix-SQP: Sequential Quadratic Programming for fast maximum-likelihood estimation of mixture proportions
+# mix-SQP: sequential quadratic programming for fast maximum-likelihood estimation of mixture proportions
 
 This repository contains code resources to accompany our research
 paper,
@@ -6,7 +6,7 @@ paper,
 > Youngseok Kim, Peter Carbonetto, Matthew Stephens and Mihai Anitescu
 > (2018). *A fast algorithm for maximum likelihood estimation of
 > mixture proportions using sequential quadratic programming.*
-> (Submitted for review.)
+> [arXiv:1806.01412][arxiv].
 
 We provide code implementing optimization method for
 maximum-likelihood estimation of mixture proportions, including a fast
@@ -15,8 +15,8 @@ algorithm based on sequential quadratic programming, which we call
 
 All methods and demonstrations are implemented in [Julia][julia],
 aside from the interior point solver based on [MOSEK][mosek], which is
-implemented in R. For an R package implementing some of these methods,
-please see the [mixsqp repository][mixsqp]
+implemented in R. See also the please see the [mixSQP][mixSQP] R
+package.
 
 For demos of the mix-SQP algorithm and comparisons with other
 optimization approaches, see [here][github-site].
@@ -36,8 +36,7 @@ under the terms of the [MIT license][mit-license]. See the
 ## Citing this work
 
 If you find any of the source code in this repository useful for your
-work, please cite our manuscript, Kim *et al* (2018). The full
-citation is given above.
+work, please cite our paper. The full citation is given above.
 
 ## Setup instructions (part 1)
 
@@ -172,8 +171,9 @@ This project was developed by [Youngseok Kim][youngseok],
 [University of Chicago](https://www.uchicago.edu).
 
 [github-site]: https://stephenslab.github.io/mixsqp-paper
-[mixsqp]: https://github.com/youngseok-kim/mixsqp
+[mixSQP]: https://github.com/youngseok-kim/mixsqp
 [issues]: https://github.com/stephenslab/mixsqp-paper/issues
+[arxiv]: https://arxiv.org/abs/1806.01412
 [mit-license]: https://opensource.org/licenses/mit-license.html
 [youngseok]: https://github.com/youngseok-kim
 [peter]: https://pcarbo.github.io
