@@ -1,3 +1,5 @@
+# Outputs object function value
+
 function mixobjective(L, x, eps = 0)
   return -sum(log.(L * x + eps))
 end
@@ -11,11 +13,15 @@ end
 # ("dense" vectors), the default initial estimate for qpsubprob =
 # "mosek" is a sparse vector in which only the first two entries are
 # nonzero.
-function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
-                sptol = 1e-3, maxiter = 100, maxqpiter = 100, lowrank = "svd",
-                qpsubprob = "activeset",verbose = true)
+function mixSQP(L; x = -1,
+                convtol = 1e-8, pqrtol = 1e-8, eps = 1e-6, sptol = 1e-3,
+                maxiter = 20, maxqpiter = 100,
+                lowrank = "svd", qpsubprob = "activeset",
+                nullprior = 10,
+                linesearch = true,
+                verbose = true)
     
-  # Get the number of rows (n) and columns (k) of L.
+# Get the number of rows (n) and columns (k) of L.
   n = size(L,1);
   k = size(L,2);
 
@@ -76,8 +82,8 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   # Initialize storage for the outputs obj, gmin, nnz and nqp.
   obj      = zeros(maxiter);
   gmin     = zeros(maxiter);
-  nnz      = zeros(maxiter);
-  nqp      = zeros(maxiter);
+  nnz      = zeros(Int,maxiter);
+  nqp      = zeros(Int,maxiter);
   timing   = zeros(maxiter);
   qptiming = zeros(maxiter);
     
@@ -87,11 +93,11 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   j     = 0;
   D     = 0;
   t     = 0;
-  numls = 0;
+  numls = -1;
     
   # Print the column labels for reporting the algorithm's progress.
   if verbose
-    @printf("iter      objective -min(g+1) #nnz #qp #ls\n")
+    @printf("iter      objective -min(g+1)  #nz #qp #ls\n")
   end
 
   # Repeat until we reach the maximum number of iterations, or until
@@ -106,16 +112,16 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
     # gradient and Hessian computation -- Rank reduction method
     if lowrank == "qr"
       D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
-      g = -P * F[:R]' * (F[:Q]'*D)/n;
-      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps*eye(k);
+      g = -P * F[:R]' * (F[:Q]'*D)/n; g[1] -= nullprior/x[1]/n;
+      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps*eye(k); H[1,1] += nullprior/x[1]^2/n;
     elseif lowrank == "svd"
       D = 1./(F[:U]*(S*(F[:Vt]*x)) + eps);
-      g = -F[:Vt]'*(S * (F[:U]'*D))/n;
-      H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps*eye(k);
+      g = -F[:Vt]'*(S * (F[:U]'*D))/n; g[1] -= nullprior/x[1]/n;
+      H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps*eye(k); H[1,1] += nullprior/x[1]^2/n;
     else
       D = 1./(L*x + eps);
-      g = -L'*D/n;
-      H = L'*Diagonal(D.^2)*L/n + eps * eye(k);
+      g = -L'*D/n; g[1] -= nullprior/x[1]/n;
+      H = L'*Diagonal(D.^2)*L/n + eps * eye(k); H[1,1] += nullprior/x[1]^2/n;
     end
 
     # Report on the algorithm's progress.
@@ -127,45 +133,54 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
       obj[i] = mixobjective(L,x,eps);
     end
     gmin[i] = minimum(g + 1);
-    nnz[i]  = sum(x .> sptol);
+    nnz[i]  = length(find(x .> sptol));
     nqp[i]  = j;
     if verbose
-      @printf("%4d %0.8e %+0.2e %4d %3d %3d\n",
-              i,obj[i],-gmin[i],nnz[i],j,numls);
+      if i == 1
+          @printf("%4d %0.8e %+0.2e %4d\n",
+              i,obj[i],-gmin[i],nnz[i]);
+      else
+          @printf("%4d %0.8e %+0.2e %4d %3d %3d\n",
+              i,obj[i],-gmin[i],nnz[i],nqp[i-1],numls);
+      end
     end
       
     # Check convergence of outer loop
     if minimum(g + 1) >= -convtol
       break
     end
-
+    
     # Solve the QP subproblem using either the active-set or
     # interior-point (MOSEK) method.
     out, qptiming[i], bytes, gctime,
     memallocs = @timed if qpsubprob == "activeset"
-      y = qpactiveset(x,g,H,convtol = convtol,sptol = sptol,
+      y,nqp[i] = qpactiveset(x,g,H,convtol = convtol,sptol = sptol,
                       maxiter = maxqpiter);
     elseif qpsubprob == "mosek"
       y = qpmosek(x,g,H);
     end
-      
+    
     # Perform backtracking line search
-    for t = 1:10
-      if lowrank == "qr"
-        D_new = 1./(F[:Q]*(F[:R]*(P'*y)) + eps);
-      elseif lowrank == "svd"
-        D_new = 1./(F[:U]*(S*(F[:Vt]*y)) + eps);
-      else
-        D_new = 1./(L*y + eps);
-      end
-      if all(D_new .> 0)
-        if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
-          break
+    if linesearch == true
+        for t = 1:10
+          if lowrank == "qr"
+            D_new = 1./(F[:Q]*(F[:R]*(P'*y)) + eps);
+          elseif lowrank == "svd"
+            D_new = 1./(F[:U]*(S*(F[:Vt]*y)) + eps);
+          else
+            D_new = 1./(L*y + eps);
+          end
+          if all(D_new .> 0)
+            if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
+              break
+            end
+          end
+          y = (y-x)/2 + x;
         end
-      end
-      y = (y-x)/2 + x;
+        numls = t;
+    else
+        numls = -1;
     end
-    numls = t;
 
     # Update the solution to the original optimization problem.
     x = copy(y);
@@ -204,6 +219,7 @@ function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-3, maxiter = 100)
   y      = sparse(zeros(k));
   ind    = find(x .> sptol);
   y[ind] = 1/length(ind);
+  i = 0;
 
   # Repeat until we reach the maximum number of iterations, or until
   # convergence is reached.
@@ -259,7 +275,7 @@ function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-3, maxiter = 100)
   end
 
   # Return the solution to the quadratic program.
-  return y
+  return y, Int(i)
 end
 
 # Solve the QP subproblem for the mix-SQP algorithm using MOSEK.
