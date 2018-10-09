@@ -15,7 +15,7 @@ algorithm based on sequential quadratic programming, which we call
 
 All methods and demonstrations are implemented in [Julia][julia],
 aside from the interior point solver based on [MOSEK][mosek], which is
-implemented in R. See also the please see the [mixSQP][mixSQP] R
+implemented in R. See also the please see the [mixsqp][mixsqp] R
 package.
 
 For demos of the mix-SQP algorithm and comparisons with other
@@ -171,7 +171,7 @@ This project was developed by [Youngseok Kim][youngseok],
 [University of Chicago](https://www.uchicago.edu).
 
 [github-site]: https://stephenslab.github.io/mixsqp-paper
-[mixSQP]: https://github.com/youngseok-kim/mixsqp
+[mixsqp]: https://github.com/stephenslab/mixsqp
 [issues]: https://github.com/stephenslab/mixsqp-paper/issues
 [arxiv]: https://arxiv.org/abs/1806.01412
 [mit-license]: https://opensource.org/licenses/mit-license.html
