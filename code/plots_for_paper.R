@@ -11,7 +11,7 @@ colors <- c("#E69F00","#56B4E9","#009E73","#F0E442",
 
 # LOAD RESULTS
 # ------------
-load("../output/results_for_plots.RData")
+load("../output/results_for_plots2.RData")
 
 # CREATE PLOTS
 # ------------
@@ -329,49 +329,51 @@ p15 <- ggplot(data = dat3_3) +
 # settings of m (the number of columns of L) from 50 to 700.
 p16 <- ggplot(data = dat7_1) +
   geom_line(aes(x = m, y = t, color = method), size = 1) +
-  geom_point(aes(x = m, y = t, color = method), size = 2) +
+  geom_point(aes(x = m, y = t, color = method, shape = method), size = 2) +
   labs(x     = "number of cols in L (m)",
        y     = "computation time (sec)",
        title = "Computation time for each method") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(0.1,0.8))
-p17 <- ggplot(data = dat7_1) +
-  geom_line(aes(x = m, y = f, color = method), size = 1) +
-  geom_point(aes(x = m, y = f, color = method), size = 2) +
-  labs(x     = "number of cols in L (m)",
-       y     = "objective value at solution (f(x*))",
-       title = "Objective value for each method") +
-  theme(plot.title      = element_text(face = "plain",size = 12),
-        axis.line       = element_blank(),
-        legend.position = c(0.3,0.3))
+
+#p17 <- ggplot(data = dat7_2) +
+#  geom_line(aes(x = m, y = f, color = method), size = 1) +
+#  geom_point(aes(x = m, y = f, color = method), size = 2) +
+#  labs(x     = "number of cols in L (m)",
+#       y     = "objective value at solution (f(x*))",
+#       title = "Objective value for each method") +
+#  theme(plot.title      = element_text(face = "plain",size = 12),
+#        axis.line       = element_blank(),
+#        legend.position = c(0.3,0.3))
 
 # Create a plot showing the computation time and difference in the objective
 # values at the solution when the rank of the low-rank approximated L varies
 # from 4 to m.
 p18 <- ggplot(data = dat8_1) +
   geom_line(aes(x = x, y = df, color = m), size = 1) +
-  geom_point(aes(x = x, y = df, color = m), size = 2) +
+  geom_point(aes(x = x, y = df, color = m, shape = m), size = 2) +
   labs(x     = "the rank of approximated L (r)",
-       y     = "difference in objective f(x*) - f(x_true)",
-       title = "Suboptimality in objective values") +
+       y     = "f(x*) - f(x_true)",
+       title = "Sub-optimality in objective vs. rank") +
   scale_x_continuous(limits = c(4,20)) +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
-        legend.position = c(0.5,0.8))
+        legend.position = c(-10,-10))
 p19 <- ggplot(data = dat8_1) +
-  geom_line(aes(x = x, y = dx0, color = m), size = 1) +
-  geom_point(aes(x = x, y = dx0, color = m), size = 2) +
-  scale_x_continuous(limits = c(4,20)) +
-  labs(x     = "the rank of approximated L (r)",
-       y     = "||x* - x_true||_infty",
-       title = "L infinity difference between solutions") +
+  geom_line(aes(x = 1/rtol, y = df, color = m), size = 1) +
+  geom_point(aes(x = 1/rtol, y = df, color = m, shape = m), size = 2) +
+  scale_x_continuous(trans = "log10", limits = c(40,1e9)) +
+  scale_y_continuous(trans = "log10") +
+  labs(x     = "inverse of relative tolerance (1/rtol)",
+       y     = "log(f(x*) - f(x_true))",
+       title = "Sub-optimality in objective vs. relative tolerance") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
-        legend.position = c(0.5,0.8))
-p20 <- ggplot(data = dat8_1) +
+        legend.position = c(-10,-10))
+p20 <- ggplot(data = dat8_1[c(1,3,5:17,18,20,22:34,35,37,39:51),]) +
   geom_line(aes(x = x, y = dx1, color = m), size = 1) +
-  geom_point(aes(x = x, y = dx1, color = m), size = 2) +
+  geom_point(aes(x = x, y = dx1, color = m, shape = m), size = 2) +
   scale_x_continuous(limits = c(4,20)) +
   labs(x     = "the rank of approximated L (r)",
        y     = "||x* - x_true||_1",
@@ -383,14 +385,13 @@ p20 <- ggplot(data = dat8_1) +
 # SAVE PLOTS AS PDFs
 # ------------------
 ggsave("../output/F1.pdf",p1,height = 4,width = 7)
-ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 8)
+ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 9)
 ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),
        height = 4,width = 12)
-ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 3.5,
-       width = 10.5)
-ggsave("../output/F5.pdf",p7,height = 4,width = 5)
-ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 8)
-ggsave("../output/F7.pdf",plot_grid(p16,p17),height = 5,width = 10)
-ggsave("../output/F8.pdf",plot_grid(p18,p19,p20,nrow = 1),height = 4,width = 10)
-
+ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 4,
+       width = 13)
+ggsave("../output/F5.pdf",p17,height = 4,width = 10)
+ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 9)
+ggsave("../output/F8.pdf",plot_grid(p19,p18,p20,nrow = 1),height = 4,width = 13)
+ggsave("../output/F9.pdf",plot_grid(p7,p16,rel_widths=c(2,1.6)),height = 4,width = 10)
        
