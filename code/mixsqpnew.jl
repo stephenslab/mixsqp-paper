@@ -12,7 +12,7 @@ function mixsqp(L; x = -1,
                 lowrank_method = "svd", lowrank_criterion = "by_rank",
                 lowrank_rtol = 1e-8, lowrank_rank = minimum(size(L)),
                 maxiter = 100, maxqpiter = 100,
-                nullprior = 0,
+                nullprior = 0, gradient_calc = "approx",
                 linesearch = true, verbose = true)
     
 # Get the number of rows (n) and columns (k) of L.
@@ -39,7 +39,7 @@ function mixsqp(L; x = -1,
     
     if lowrank_method == "qr"
       if lowrank_criterion == "by_rank"
-        F = pqrfact(L, rank = rank);
+        F = pqrfact(L, rank = lowrank_rank);
         P = sparse(F[:P]);
       elseif lowrank_criterion == "by_rtol"
         F = pqrfact(L, rtol = lowrank_rtol);
@@ -50,7 +50,7 @@ function mixsqp(L; x = -1,
           
     elseif lowrank_method == "svd"
       if lowrank_criterion == "by_rank"
-        F = psvdfact(L, rank = rank);
+        F = psvdfact(L, rank = lowrank_rank);
         S = Diagonal(F[:S]);
       elseif lowrank_criterion == "by_rtol"
         F = psvdfact(L, rtol = lowrank_rtol);
@@ -112,19 +112,33 @@ function mixsqp(L; x = -1,
     # Compute the gradient and Hessian, optionally using the partial
     # QR decomposition to increase the speed of these computations.
     # gradient and Hessian computation -- Rank reduction method
-    if lowrank_method == "qr"
-      D = 1 ./(F[:Q]*(F[:R]*(P'*x)) .+ eps_tol);
-      g = -P * F[:R]' * (F[:Q]'*D)/n;
-      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps_tol * Diagonal(ones(k));
-    elseif lowrank_method == "svd"
-      D = 1 ./(F[:U]*(S*(F[:Vt]*x)) .+ eps_tol);
-      g = -F[:Vt]'*(S * (F[:U]'*D))/n;
-      H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps_tol * Diagonal(ones(k));
-    else
-      D = 1 ./(L*x .+ eps_tol);
-      g = -L'*D/n;
-      H = L'*Diagonal(D.^2)*L/n + eps_tol * Diagonal(ones(k));
+    if (lowrank_rank > 0) & (gradient_calc == "approx")
+        if lowrank_method == "qr"
+          D = 1 ./(F[:Q]*(F[:R]*(P'*x)) .+ eps_tol);
+          g = -P * F[:R]' * (F[:Q]'*D)/n;
+          H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps_tol * Diagonal(ones(k));
+        elseif lowrank_method == "svd"
+          D = 1 ./(F[:U]*(S*(F[:Vt]*x)) .+ eps_tol);
+          g = -F[:Vt]'*(S * (F[:U]'*D))/n;
+          H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps_tol * Diagonal(ones(k));
+        else
+          D = 1 ./(L*x .+ eps_tol);
+          g = -L'*D/n;
+          H = L'*Diagonal(D.^2)*L/n + eps_tol * Diagonal(ones(k));
+        end
+            
+    elseif (lowrank_rank > 0) & (gradient_calc == "exact")
+        error("We do not provide this case since it is inefficient");
+            
+    elseif lowrank_rank == 0
+    #    D = 1 ./(L*x .+ eps_tol);
+    #    g = -(L'*D)/n;
+    #    H = speye(k)/n;
+    #else
+        error("We do not provide this case when lowrank_rank = 0");
     end
+        
+            
     if nullprior > 0
       g[1] -= nullprior/x[1]/n;
       H[1,1] += nullprior/x[1]^2/n;

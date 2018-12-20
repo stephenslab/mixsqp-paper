@@ -327,7 +327,7 @@ p15 <- ggplot(data = dat3_3) +
 # Create a plot showing the computation time and difference in the objective
 # values at the solution applied to the simulated data, with different
 # settings of m (the number of columns of L) from 50 to 700.
-p16 <- ggplot(data = dat7_1) +
+p16 <- ggplot(data = dat7_2) +
   geom_line(aes(x = m, y = t, color = method), size = 1) +
   geom_point(aes(x = m, y = t, color = method, shape = method), size = 2) +
   labs(x     = "number of cols in L (m)",
@@ -354,9 +354,10 @@ p18 <- ggplot(data = dat8_1) +
   geom_line(aes(x = x, y = df, color = m), size = 1) +
   geom_point(aes(x = x, y = df, color = m, shape = m), size = 2) +
   labs(x     = "the rank of approximated L (r)",
-       y     = "f(x*) - f(x_true)",
+       y     = "f_approx* - f_true*",
        title = "Sub-optimality in objective vs. rank") +
   scale_x_continuous(limits = c(4,20)) +
+  scale_y_continuous(trans = "log10") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(-10,-10))
@@ -366,7 +367,7 @@ p19 <- ggplot(data = dat8_1) +
   scale_x_continuous(trans = "log10", limits = c(40,1e9)) +
   scale_y_continuous(trans = "log10") +
   labs(x     = "inverse of relative tolerance (1/rtol)",
-       y     = "log(f(x*) - f(x_true))",
+       y     = "f_approx* - f_true*",
        title = "Sub-optimality in objective vs. relative tolerance") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
@@ -375,9 +376,10 @@ p20 <- ggplot(data = dat8_1[c(1,3,5:17,18,20,22:34,35,37,39:51),]) +
   geom_line(aes(x = x, y = dx1, color = m), size = 1) +
   geom_point(aes(x = x, y = dx1, color = m, shape = m), size = 2) +
   scale_x_continuous(limits = c(4,20)) +
+  scale_y_continuous(trans = "log10") +
   labs(x     = "the rank of approximated L (r)",
-       y     = "||x* - x_true||_1",
-       title = "L1 difference between solutions") +
+       y     = "||x_approx* - x_true*||_1",
+       title = "L1-norm difference between solutions") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(0.5,0.8))
