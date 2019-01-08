@@ -16,8 +16,12 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000, alpha = 0.1,
     maxd = zeros(maxiter);
     iter = 0;
     
+    timing   = zeros(maxiter);
+    
     # loop start
     for iter = 1:maxiter
+        
+        tic();
         
         # calculate gradient and objective value
         D         = 1 ./ (L * w + eps);
@@ -52,6 +56,7 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000, alpha = 0.1,
         
         # save diff
         maxd[iter] = maximum(abs.(w - wnew));
+        timing[iter] = toq();
         
         # convergence check
         if maxd[iter] < tol
@@ -63,7 +68,7 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000, alpha = 0.1,
     end
 
     # Return the mixture weights and other optimization info.
-  return w, obj[1:iter], maxd[1:iter], iter
+  return w, obj[1:iter], maxd[1:iter], iter, timing[1:iter]
 end
     
 function take_step(w, g; formulation = "simplex");

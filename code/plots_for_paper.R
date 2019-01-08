@@ -327,15 +327,44 @@ p15 <- ggplot(data = dat3_3) +
 # Create a plot showing the computation time and difference in the objective
 # values at the solution applied to the simulated data, with different
 # settings of m (the number of columns of L) from 50 to 700.
-p16 <- ggplot(data = dat7_2) +
-  geom_line(aes(x = m, y = t, color = method), size = 1) +
-  geom_point(aes(x = m, y = t, color = method, shape = method), size = 2) +
-  labs(x     = "number of cols in L (m)",
-       y     = "computation time (sec)",
-       title = "Computation time for each method") +
+
+p21 <- ggplot(data = dat9_1) + 
+       geom_line(aes(x = time, y = objective, color = method), size = 1) +
+       #geom_point(aes(x = time, y = objective, color = method, shape = method), size = 2) +
+       scale_x_continuous(limits = c(0,5)) +
+       scale_y_continuous(trans = "log10", limits = c(1e-4,1e4)) +
+  labs(title = "m = 100") + 
+  guides(fill=FALSE, color= FALSE) +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank())
+p22 <- ggplot(data = dat9_2) + 
+  geom_line(aes(x = time, y = objective, color = method), size = 1) +
+  #geom_point(aes(x = time, y = objective, color = method, shape = method), size = 2) +
+  scale_x_continuous(limits = c(0,10)) +
+  scale_y_continuous(trans = "log10", limits = c(1e-4,1e4)) +
+  labs(title = "m = 200") +
+  guides(fill=FALSE, color= FALSE) +
+  theme(plot.title      = element_text(face = "plain",size = 12),
+        axis.line       = element_blank())
+p23 <- ggplot(data = dat9_3) + 
+  geom_line(aes(x = time, y = objective, color = method), size = 1) +
+  #geom_point(aes(x = time, y = objective, color = method, shape = method), size = 2) +
+  scale_x_continuous(limits = c(0,20)) +
+  scale_y_continuous(trans = "log10", limits = c(1e-4,1e4)) +
+  labs(title = "m = 400") + 
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
-        legend.position = c(0.1,0.8))
+        legend.position = c(0.4,0.3))
+
+#p16 <- ggplot(data = dat7_2) +
+#  geom_line(aes(x = m, y = t, color = method), size = 1) +
+#  geom_point(aes(x = m, y = t, color = method, shape = method), size = 2) +
+#  labs(x     = "number of cols in L (m)",
+#       y     = "computation time (sec)",
+#       title = "Computation time for each method") +
+#  theme(plot.title      = element_text(face = "plain",size = 12),
+#        axis.line       = element_blank(),
+#        legend.position = c(0.1,0.8))
 
 #p17 <- ggplot(data = dat7_2) +
 #  geom_line(aes(x = m, y = f, color = method), size = 1) +
@@ -392,8 +421,9 @@ ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),
        height = 4,width = 12)
 ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 4,
        width = 13)
-ggsave("../output/F5.pdf",p17,height = 4,width = 10)
+ggsave("../output/F5.pdf",p7,height = 4,width = 10)
 ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 9)
 ggsave("../output/F8.pdf",plot_grid(p19,p18,p20,nrow = 1),height = 4,width = 13)
-ggsave("../output/F9.pdf",plot_grid(p7,p16,rel_widths=c(2,1.6)),height = 4,width = 10)
+ggsave("../output/F9.pdf",p7,height = 4,width = 10)
+ggsave("../output/F10.pdf",plot_grid(p21,p22,p23,nrow = 1),height = 4,width = 13)
        

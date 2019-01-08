@@ -10,6 +10,8 @@ function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
   obj  = zeros(maxiter);
   maxd = zeros(maxiter);
 
+  timing   = zeros(maxiter);
+    
   # Compute the objective function value at the initial iterate.
   iter      = 1;
   obj[iter] = -sum(log.(L * w + eps));
@@ -17,7 +19,8 @@ function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
   # Repeat until convergence criterion is met, or until the maximum
   # number of iterations is reached.
   for iter = 2:maxiter
-
+    
+    tic();
     # Save the current estimate of the mixture weights.
     w0 = w;
 
@@ -43,12 +46,15 @@ function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
     # between the mixture weights at two successive iterations is less
     # than the specified tolerance, or when objective increases.
     maxd[iter] = maximum(abs.(w - w0));
+        
+    timing[iter] = toq();
     if maxd[iter] < tol
       break
     end
+    
   end
       
   # Return the mixture weights and other optimization info.
-  return w, obj[1:iter], maxd[1:iter]
+  return w, obj[1:iter], maxd[1:iter], timing[1:iter]
 end        
 
