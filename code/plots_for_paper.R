@@ -180,7 +180,7 @@ p7 <- ggplot(data = pdat,aes(x = n,y = time,color = m,shape = solver)) +
                      name = "m (num. cols)") +
   labs(x = "n (number of rows in L)",
        y = "runtime (seconds)",
-       title = "Comparison of mix-SQP and KWdual performance") +
+       title = "Comparison of mix-SQP and KWDual performance") +
   theme_cowplot(font_size = 12) +
   theme(plot.title   = element_text(face = "plain",size = 12),
         axis.line    = element_blank())
@@ -421,9 +421,9 @@ ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),
        height = 4,width = 12)
 ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 4,
        width = 13)
-ggsave("../output/F5.pdf",p7,height = 4,width = 10)
+ggsave("../output/F5.pdf",p7,height = 4,width = 7)
 ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 9)
-ggsave("../output/F8.pdf",plot_grid(p19,p18,p20,nrow = 1),height = 4,width = 13)
+ggsave("../output/F8.pdf",plot_grid(p18,p20,nrow = 1),height = 4,width = 9)
 ggsave("../output/F9.pdf",p7,height = 4,width = 10)
-ggsave("../output/F10.pdf",plot_grid(p21,p22,p23,nrow = 1),height = 4,width = 13)
+ggsave("../output/F10.pdf",plot_grid(p21,p23,nrow = 1),height = 4,width = 9)
        
