@@ -18,9 +18,9 @@ function normdatasim(n::Int)
 end
 
 # Simulate n random numbers generated as follows: 50% of the random
-# numbers are drawn from the standard univariaten normal; 20% are
-# drawn from a t-distribution with 4 degrees of freedom; and the
-# remaining 30% are drawn from a t-distribution with 6 degrees of
+# numbers are drawn from the standard univariate normal; 20% are
+# drawn from a t distribution with 4 degrees of freedom; and the
+# remaining 30% are drawn from a t distribution with 6 degrees of
 # freedom. The return value is a vector of floats of length n.
 function normtmixdatasim(n::Int)
   
