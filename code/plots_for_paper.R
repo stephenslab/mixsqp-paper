@@ -11,7 +11,7 @@ colors <- c("#E69F00","#56B4E9","#009E73","#F0E442",
 
 # LOAD RESULTS
 # ------------
-load("../output/results_for_plots2.RData")
+load("../output/results_for_plots.RData")
 
 # CREATE PLOTS
 # ------------
@@ -39,11 +39,11 @@ pdat <- with(dat1,
                               method      = "IP (KWDual/Rmosek)",
                               n = n,runtime = t7)))
 
-# Create a plot comparing the computation time for solving three
+# Create a plot comparing the computation time for solving 
 # different formulations of the maximum-likelihood estimation problem
 # with MOSEK (in JuMP) and the SQP algorithm: (1) the dual problem,
 # (2) the primal problem with simple constraints, and (3) the primal
-# problem with non-negativity constraints.
+# problem with non-negativity constraints. Also
 p1 <- ggplot(data = pdat,aes(x = n,y = runtime,color = method,
                              shape = formulation)) +
   geom_line(size = 0.5) +
@@ -415,7 +415,7 @@ p20 <- ggplot(data = dat8_1[c(1,3,5:17,18,20,22:34,35,37,39:51),]) +
 
 # SAVE PLOTS AS PDFs
 # ------------------
-ggsave("../output/F1.pdf",p1,height = 4,width = 7)
+ggsave("../output/compare-formulations.pdf",p1,height = 4,width = 7)
 ggsave("../output/F2.pdf",plot_grid(p3,p4),height = 4,width = 9)
 ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),
        height = 4,width = 12)
