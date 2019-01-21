@@ -348,7 +348,6 @@ p22 <- ggplot(data = dat9_2) +
         axis.line       = element_blank())
 p23 <- ggplot(data = dat9_3) + 
   geom_line(aes(x = time, y = objective, color = method), size = 1) +
-  #geom_point(aes(x = time, y = objective, color = method, shape = method), size = 2) +
   scale_x_continuous(limits = c(0,20)) +
   scale_y_continuous(trans = "log10", limits = c(1e-4,1e4)) +
   labs(title = "m = 400") + 
@@ -356,29 +355,8 @@ p23 <- ggplot(data = dat9_3) +
         axis.line       = element_blank(),
         legend.position = c(0.4,0.3))
 
-#p16 <- ggplot(data = dat7_2) +
-#  geom_line(aes(x = m, y = t, color = method), size = 1) +
-#  geom_point(aes(x = m, y = t, color = method, shape = method), size = 2) +
-#  labs(x     = "number of cols in L (m)",
-#       y     = "computation time (sec)",
-#       title = "Computation time for each method") +
-#  theme(plot.title      = element_text(face = "plain",size = 12),
-#        axis.line       = element_blank(),
-#        legend.position = c(0.1,0.8))
-
-#p17 <- ggplot(data = dat7_2) +
-#  geom_line(aes(x = m, y = f, color = method), size = 1) +
-#  geom_point(aes(x = m, y = f, color = method), size = 2) +
-#  labs(x     = "number of cols in L (m)",
-#       y     = "objective value at solution (f(x*))",
-#       title = "Objective value for each method") +
-#  theme(plot.title      = element_text(face = "plain",size = 12),
-#        axis.line       = element_blank(),
-#        legend.position = c(0.3,0.3))
-
-# Create a plot showing the computation time and difference in the objective
-# values at the solution when the rank of the low-rank approximated L varies
-# from 4 to m.
+# Create plots to show the effect of the RRQR rank on the accuracy of
+# the solution.
 p18 <- ggplot(data = dat8_1) +
   geom_line(aes(x = x, y = df, color = m), size = 1) +
   geom_point(aes(x = x, y = df, color = m, shape = m), size = 2) +
@@ -387,17 +365,6 @@ p18 <- ggplot(data = dat8_1) +
        title = "Sub-optimality in objective vs. rank") +
   scale_x_continuous(limits = c(4,20)) +
   scale_y_continuous(trans = "log10") +
-  theme(plot.title      = element_text(face = "plain",size = 12),
-        axis.line       = element_blank(),
-        legend.position = c(-10,-10))
-p19 <- ggplot(data = dat8_1) +
-  geom_line(aes(x = 1/rtol, y = df, color = m), size = 1) +
-  geom_point(aes(x = 1/rtol, y = df, color = m, shape = m), size = 2) +
-  scale_x_continuous(trans = "log10", limits = c(40,1e9)) +
-  scale_y_continuous(trans = "log10") +
-  labs(x     = "inverse of relative tolerance (1/rtol)",
-       y     = "f_approx* - f_true*",
-       title = "Sub-optimality in objective vs. relative tolerance") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(-10,-10))
@@ -413,18 +380,21 @@ p20 <- ggplot(data = dat8_1[c(1,3,5:17,18,20,22:34,35,37,39:51),]) +
         axis.line       = element_blank(),
         legend.position = c(0.5,0.8))
 
+stop()
+
 # SAVE PLOTS AS PDFs
 # ------------------
 ggsave("../output/compare-formulations.pdf",p1,height = 4,width = 7)
 ggsave("../output/sqp-lowrank-approx.pdf",plot_grid(p3,p4),
        height = 4,width = 9)
-ggsave("../output/low-rank-approx-error.pdf",plot_grid(p13,p14,p15,nrow = 1),
-       height = 4,width = 12)
-ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 4,
-       width = 13)
+ggsave("../output/low-rank-approx-error.pdf",
+       plot_grid(p13,p14,p15,nrow = 1),height = 4,width = 12)
+ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),
+       height = 4,width = 13)
 ggsave("../output/F5.pdf",p7,height = 4,width = 7)
 ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 9)
-ggsave("../output/F8.pdf",plot_grid(p18,p20,nrow = 1),height = 4,width = 9)
+ggsave("../output/low-rank-approx-varying-rank.pdf",
+       plot_grid(p18,p20,nrow = 1),height = 4,width = 9)
 ggsave("../output/F9.pdf",p7,height = 4,width = 10)
 ggsave("../output/F10.pdf",plot_grid(p21,p23,nrow = 1),height = 4,width = 9)
        
