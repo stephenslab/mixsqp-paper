@@ -418,7 +418,7 @@ p20 <- ggplot(data = dat8_1[c(1,3,5:17,18,20,22:34,35,37,39:51),]) +
 ggsave("../output/compare-formulations.pdf",p1,height = 4,width = 7)
 ggsave("../output/sqp-lowrank-approx.pdf",plot_grid(p3,p4),
        height = 4,width = 9)
-ggsave("../output/F3.pdf",plot_grid(p13,p14,p15,nrow = 1),
+ggsave("../output/low-rank-approx-error.pdf",plot_grid(p13,p14,p15,nrow = 1),
        height = 4,width = 12)
 ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),height = 4,
        width = 13)
