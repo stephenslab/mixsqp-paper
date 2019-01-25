@@ -206,8 +206,8 @@ p8 <- ggplot(data = dat3_1) +
         legend.position = c(0.6,0.2))
 
 # Create a plot comparing the runtime of the interior-point (MOSEK)
-# and active-set methods for solving the QP subproblem, for different
-# settings of m (the number of columns in matrix L).
+# and active-set methods for solving the quadratic subproblem, for
+# different settings of m (the number of columns in matrix L).
 p9 <- ggplot(data = dat4_1) +
   geom_line(aes(x = m,y = t1,color = "interior point (MOSEK)"),size = 1) +
   geom_line(aes(x = m,y = t2,color = "active-set"),size = 1) +
@@ -220,14 +220,14 @@ p9 <- ggplot(data = dat4_1) +
   scale_color_manual(values = colors[c(6,2)],name = "") +
   labs(x     = "number of columns in L (m)",
        y     = "runtime (seconds)",
-       title = "Average time solving the QP subproblem in m") +
+       title = "Average time solving the quadratic subproblem in m") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(0.05,0.9))
 
 # Create a plot comparing the runtime of the interior-point (MOSEK)
-# and active-st methods for solving the QP subproblem, for different
-# settings of n (the number of rows in L).
+# and active-st methods for solving the quadratic subproblem, for
+# different settings of n (the number of rows in L).
 p10 <- ggplot(data = dat4_2) +
   geom_line(aes(x = n,y = t1,color = "interior point (MOSEK)"),size = 1) +
   geom_line(aes(x = n,y = t2,color = "active-set"),size = 1) +
@@ -240,7 +240,7 @@ p10 <- ggplot(data = dat4_2) +
   scale_color_manual(values = colors[c(6,2)],name = "") +
   labs(x     = "number of rows in L (n)",
        y     = "runtime (seconds)",
-       title = "Average time solving the QP subproblem in n") +
+       title = "Average time solving the quadratic subproblem in n") +
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank(),
         legend.position = c(0.05,0.5))
@@ -380,8 +380,6 @@ p20 <- ggplot(data = dat8_1[c(1,3,5:17,18,20,22:34,35,37,39:51),]) +
         axis.line       = element_blank(),
         legend.position = c(0.5,0.8))
 
-stop()
-
 # SAVE PLOTS AS PDFs
 # ------------------
 ggsave("../output/compare-formulations.pdf",p1,height = 4,width = 7)
@@ -389,8 +387,8 @@ ggsave("../output/sqp-lowrank-approx.pdf",plot_grid(p3,p4),
        height = 4,width = 9)
 ggsave("../output/low-rank-approx-error.pdf",
        plot_grid(p13,p14,p15,nrow = 1),height = 4,width = 12)
-ggsave("../output/F4.pdf",plot_grid(p9,p10,p11,nrow = 1),
-       height = 4,width = 13)
+ggsave("../output/compare-quadratic-subproblem-solvers.pdf",
+       plot_grid(p9,p10,p11,nrow = 1),height = 4,width = 13)
 ggsave("../output/F5.pdf",p7,height = 4,width = 7)
 ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 9)
 ggsave("../output/low-rank-approx-varying-rank.pdf",
