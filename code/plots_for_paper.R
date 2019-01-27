@@ -389,7 +389,7 @@ ggsave("../output/low-rank-approx-error.pdf",
        plot_grid(p13,p14,p15,nrow = 1),height = 4,width = 12)
 ggsave("../output/compare-quadratic-subproblem-solvers.pdf",
        plot_grid(p9,p10,p11,nrow = 1),height = 4,width = 13)
-ggsave("../output/F5.pdf",p7,height = 4,width = 7)
+ggsave("../output/mixsqp-vs-kwdual.pdf",p7,height = 4,width = 7)
 ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 9)
 ggsave("../output/low-rank-approx-varying-rank.pdf",
        plot_grid(p18,p20,nrow = 1),height = 4,width = 9)
