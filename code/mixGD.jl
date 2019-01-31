@@ -8,16 +8,14 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000,
     k = size(L,2);
     
     if lowrank == "qr"
-        F = pqrfact(L, rank = r);
-        R = F[:R][:,sortperm(F[:p])];
+      F = pqrfact(L, rank = r);
+      R = F[:R][:,sortperm(F[:p])];
     end
 
-    # Initialize storage for outputs obj and maxd.
-    obj  = zeros(maxiter);
-    maxd = zeros(maxiter);
-    iter = 0;
-    
-    timing   = zeros(maxiter);
+    # Initialize storage for outputs obj, maxd and timing.
+    obj    = zeros(maxiter);
+    maxd   = zeros(maxiter);
+    timing = zeros(maxiter);
     
     # loop start
     for iter = 1:maxiter
