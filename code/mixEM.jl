@@ -1,3 +1,7 @@
+# Fit a mixture model using EM. Input argument L is the n x m
+# conditional likelihood matrix, where n is the number of samples and
+# m is the number of mixture components; optional input argument w is
+# the initial estimate of the mixture weights.
 function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
                tol = 1e-6, eps = 1e-8)
 
@@ -6,11 +10,10 @@ function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
   n = size(L,1);
   k = size(L,2);
 
-  # Initialize storage for outputs obj and maxd.
-  obj  = zeros(maxiter);
-  maxd = zeros(maxiter);
-
-  timing   = zeros(maxiter);
+  # Initialize storage for outputs obj, maxd and timing.
+  obj    = zeros(maxiter);
+  maxd   = zeros(maxiter);
+  timing = zeros(maxiter);
     
   # Compute the objective function value at the initial iterate.
   iter      = 1;
@@ -41,18 +44,15 @@ function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
     obj[iter] = -sum(log.(L * w + eps));
       
     # CHECK CONVERGENCE
-    # -----------------                       
-    # Print the status of the algorithm and check the convergence
-    # criterion. Convergence is reached when the maximum difference
-    # between the mixture weights at two successive iterations is less
-    # than the specified tolerance, or when objective increases.
+    # -----------------
+    # Convergence is reached when the maximum difference between the
+    # mixture weights at two successive iterations is less than the
+    # specified tolerance, or when objective increases.
     maxd[iter] = maximum(abs.(w - w0));
-        
     timing[iter] = toq();
     if maxd[iter] < tol
       break
     end
-    
   end
       
   # Return the mixture weights and other optimization info.
