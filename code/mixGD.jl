@@ -1,5 +1,6 @@
-function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000, alpha = 0.1,
-               tol = 1e-6, eps = 1e-8, lowrank = "none", r = 1, formulation = "simplex")
+function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000,
+               alpha = 0.1, tol = 1e-6, eps = 1e-8, lowrank = "none",
+               r = 1, formulation = "simplex")
     
     # Get the number of rows (n) and columns (k) of the conditional
     # likelihood matrix.
@@ -26,11 +27,11 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000, alpha = 0.1,
         # calculate gradient and objective value
         D         = 1 ./ (L * w + eps);
         obj[iter] = sum(log.(D));
-        g         = (L'*D)/n; # negative g
+        g         = (L'*D)/n;
         
         # get step
         if lowrank == "none"
-            p     = alpha * g;
+          p = alpha * g;
         end
         
         # F[:Q] * F[:R][:,sortperm(F[:p])]
@@ -41,7 +42,7 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000, alpha = 0.1,
         end
             
         # take initial step
-        wnew      = take_step(w, p; formulation = formulation);
+        wnew = take_step(w, p; formulation = formulation);
         
         # line search
         for i = 1:10
@@ -64,7 +65,7 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000, alpha = 0.1,
         end
         
         # take step
-        w          = copy(wnew);
+        w = copy(wnew);
     end
 
     # Return the mixture weights and other optimization info.

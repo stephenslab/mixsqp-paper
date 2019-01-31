@@ -21,6 +21,7 @@ function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
   for iter = 2:maxiter
     
     tic();
+      
     # Save the current estimate of the mixture weights.
     w0 = w;
 

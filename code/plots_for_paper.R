@@ -324,36 +324,35 @@ p15 <- ggplot(data = dat3_3) +
         axis.line       = element_blank(),
         legend.position = c(0.1,0.9))
 
-# Create a plot showing the computation time and difference in the objective
-# values at the solution applied to the simulated data, with different
-# settings of m (the number of columns of L) from 50 to 700.
-
-p21 <- ggplot(data = dat9_1) + 
-       geom_line(aes(x = time, y = objective, color = method), size = 1) +
-       #geom_point(aes(x = time, y = objective, color = method, shape = method), size = 2) +
-       scale_x_continuous(limits = c(0,5)) +
-       scale_y_continuous(trans = "log10", limits = c(1e-4,1e4)) +
-  labs(title = "m = 100") + 
-  guides(fill=FALSE, color= FALSE) +
+# Create plots showing the evolution of the objective for mix-SQP
+# vs. two algorithms, projected gradient and EM, that do not benefit
+# from the second-order information.
+p21 <- ggplot(data = dat9_1,aes(x = time,y = objective,color = method,
+              linetype = method)) + 
+  geom_line(size = 0.75) +
+  scale_x_continuous(limits = c(0,2)) +
+  scale_y_continuous(trans = "log10",breaks = c(0.001,0.01,0.1,1,10,100,1e3)) +
+  scale_color_manual(values = c("dodgerblue","darkblue","darkorange",
+                                "darkorange")) +
+  scale_linetype_manual(values = c("solid","solid","solid","dashed")) +
+  labs(title = "number of columns (m) = 100",
+       x     = "runtime (seconds)",
+       y     = "objective value") + 
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank())
-p22 <- ggplot(data = dat9_2) + 
-  geom_line(aes(x = time, y = objective, color = method), size = 1) +
-  #geom_point(aes(x = time, y = objective, color = method, shape = method), size = 2) +
+p23 <- ggplot(data = dat9_3,aes(x = time,y = objective,color = method,
+              linetype = method)) + 
+  geom_line(size = 0.75) +
   scale_x_continuous(limits = c(0,10)) +
-  scale_y_continuous(trans = "log10", limits = c(1e-4,1e4)) +
-  labs(title = "m = 200") +
-  guides(fill=FALSE, color= FALSE) +
+  scale_y_continuous(trans = "log10",breaks = c(0.001,0.01,0.1,1,10,100,1e3)) +
+  scale_color_manual(values = c("dodgerblue","darkblue","darkorange",
+                                "darkorange")) +
+  scale_linetype_manual(values = c("solid","solid","solid","dashed")) +
+  labs(title = "number of columns (m) = 400",
+       x     = "runtime (seconds)",
+       y     = "objective value") + 
   theme(plot.title      = element_text(face = "plain",size = 12),
         axis.line       = element_blank())
-p23 <- ggplot(data = dat9_3) + 
-  geom_line(aes(x = time, y = objective, color = method), size = 1) +
-  scale_x_continuous(limits = c(0,20)) +
-  scale_y_continuous(trans = "log10", limits = c(1e-4,1e4)) +
-  labs(title = "m = 400") + 
-  theme(plot.title      = element_text(face = "plain",size = 12),
-        axis.line       = element_blank(),
-        legend.position = c(0.4,0.3))
 
 # Create plots to show the effect of the RRQR rank on the accuracy of
 # the solution.
@@ -394,5 +393,6 @@ ggsave("../output/F6.pdf",plot_grid(p5,p6),height = 4,width = 9)
 ggsave("../output/low-rank-approx-varying-rank.pdf",
        plot_grid(p18,p20,nrow = 1),height = 4,width = 9)
 ggsave("../output/F9.pdf",p7,height = 4,width = 10)
-ggsave("../output/F10.pdf",plot_grid(p21,p23,nrow = 1),height = 4,width = 9)
+ggsave("../output/mixsqp-vs-first-order.pdf",
+       plot_grid(p21,p23,nrow = 1),height = 4,width = 9)
        
