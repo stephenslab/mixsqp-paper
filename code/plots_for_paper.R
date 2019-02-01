@@ -325,8 +325,8 @@ p15 <- ggplot(data = dat3_3) +
         legend.position = c(0.1,0.9))
 
 # Create plots showing the evolution of the objective for mix-SQP
-# vs. two algorithms, projected gradient and EM, that do not benefit
-# from the second-order information.
+# vs. two algorithms, projected gradient descent and EM, that do not
+# benefit from the second-order information.
 p21 <- ggplot(data = dat9_1,aes(x = time,y = objective,color = method,
               linetype = method)) + 
   geom_line(size = 0.75) +
