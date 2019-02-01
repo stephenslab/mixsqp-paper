@@ -1,5 +1,4 @@
-# Outputs object function value
-
+# Outputs the value of the objective function at x.
 function mixobjective(L, x, eps = 0)
   return -sum(log.(L * x + eps))
 end
