@@ -19,7 +19,7 @@ sd = autoselectmixsd(z,nv = 20);
 L  = normlikmatrix(z,sd = sd);
 
 # Run the mix-SQP algorithm.
-outsqp = mixSQP(L,lowrank = "none",eps = 1e-6);
+outsqp = mixSQP(L,lowrank = "none");
 
 # Run the EM algorithm.
 xem, fem = mixEM(L,maxiter = 1000,tol = 1e-4);
