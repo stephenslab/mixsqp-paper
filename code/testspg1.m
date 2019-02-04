@@ -15,8 +15,6 @@ y = X*w + randn(n,1);
 
 % FIT MODEL
 % ---------
-lb = zeros(p,1);
-ub = Inf(p,1);
 w0 = zeros(p,1);
 f  = @(w) SquaredError(w,X,y);
 g  = @(w) projectSimplex(w);
