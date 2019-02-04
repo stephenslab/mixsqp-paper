@@ -31,12 +31,12 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000,
     wnew = take_step(w,p);
         
     # Backtracking line search.
-    for i = 1:10
+    for i = 1:100
       fnew = 1 ./ (L * wnew + eps);
-      if obj[iter] - fnew[1] > dot(w - wnew,g)/2
+      if obj[iter] - fnew[1] > n * dot(w - wnew,g)/2
         break;
       else
-      p    = p/2;
+      p    = p/10;
       wnew = take_step(w,p);
       end
     end
