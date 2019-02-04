@@ -1,18 +1,25 @@
-% TO DO: Explain here what this script does.
+% Small illustration of the spectral projected gradient (SPG) algorithm
+% applied to the problem of fitting a linear regression subject to the
+% coefficients being probabilities (that is, they are non-negative, and sum
+% to one).
 rng(1);
 
-% Simulate a data set.
-n = 1000;
-p = 100;
-A = randn(n,p);
-x = rand(p,1) .* (rand(p,1) > 0.5);
-b = A*x + randn(n,1);
+% SIMULATE DATA
+% -------------
+n = 1e4;
+p = 10;
+X = randn(n,p);
+w = rand(p,1) .* (rand(p,1) > 0.75);
+w = w/sum(w);
+y = X*w + randn(n,1);
 
-% Fit a linear regression subject to the coefficients being non-negative.
+% FIT MODEL
+% ---------
 lb = zeros(p,1);
 ub = Inf(p,1);
-x0 = zeros(p,1);
-f  = @(x) SquaredError(x,A,b);
-g  = @(x) boundProject(x,lb,ub);
-out = minConf_SPG(f,x0,g);
-
+w0 = zeros(p,1);
+f  = @(w) SquaredError(w,X,y);
+g  = @(w) projectSimplex(w);
+wspg = minConf_SPG(f,w0,g,struct('useSpectral',true,'optTol',1e-8,...
+                                 'progTol',1e-15,'suffDec',1e-8));
+[w wspg]
