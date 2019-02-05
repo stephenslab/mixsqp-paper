@@ -50,7 +50,7 @@ end
 % Output Log
 if verbose >= 2
     if testOpt
-        fprintf('%10s %10s %10s %15s %15s %15s\n','Iteration','FunEvals','Projections','Step Length','Function Val','Opt Cond');
+        fprintf('%10s %10s %10s %15s %15s %14s\n','Iteration','FunEvals','Projections','Step Length','Function Val','Opt Cond');
     else
         fprintf('%10s %10s %10s %15s %15s\n','Iteration','FunEvals','Projections','Step Length','Function Val');
     end
@@ -237,7 +237,7 @@ t = t/2;
     % Output Log
     if verbose >= 2
         if testOpt
-            fprintf('%10d %10d %10d %15.5e %15.5e %15.5e\n',i,funEvals*funEvalMultiplier,projects,t,f,optCond);
+            fprintf('%10d %10d %10d %15.5e %15.9e %14.8e\n',i,funEvals*funEvalMultiplier,projects,t,f,optCond);
         else
             fprintf('%10d %10d %10d %15.5e %15.5e\n',i,funEvals*funEvalMultiplier,projects,t,f);
         end

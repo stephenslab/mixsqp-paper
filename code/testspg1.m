@@ -1,7 +1,7 @@
-% Small illustration of the spectral projected gradient (SPG) algorithm
-% applied to the problem of fitting a linear regression subject to the
-% coefficients being probabilities (that is, they are non-negative, and sum
-% to one).
+% Small illustration of the projected gradient algorithm applied to the
+% problem of fitting a linear regression subject to the coefficients being
+% probabilities (that is, they are non-negative, and sum to one). This
+% example is drawn from the code on Mark Schmidt's website.
 rng(1);
 
 % SIMULATE DATA

@@ -8,7 +8,7 @@ function [f, g] = mixobj (L, x, e)
     g = zeros(m,1);  
   else
     n = size(L,1);
-    f = -mean(log(y));
+    f = -sum(log(y));
     d = 1./(L*x + e);
     g = -L'*d;
     U = diag(sparse(d)) * L;
