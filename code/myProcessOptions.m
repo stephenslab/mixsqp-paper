@@ -16,7 +16,6 @@ for i = 1:2:length(varargin)
         varargout{(i+1)/2}=varargin{i+1};
     end
 end
-
 end
 
 function [o] = toUpper(o)
