@@ -20,7 +20,7 @@ function mixSQP(L; x = -1,
                 linesearch = true,
                 verbose = true)
     
-# Get the number of rows (n) and columns (k) of L.
+  # Get the number of rows (n) and columns (k) of L.
   n = size(L,1);
   k = size(L,2);
 
