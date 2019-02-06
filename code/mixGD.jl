@@ -35,7 +35,7 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000,
     
     i = 0;
     # Backtracking line search.
-    for i = 1:11
+    for i = 1:101
       Dnew = 1 ./ (L * wnew + eps);
       #println([obj[iter], sum(log.(Dnew[1])), n * dot(wnew - w,g)/2])
       if obj[iter] - sum(log.(Dnew)) > n * dot(wnew - w,g)/2
