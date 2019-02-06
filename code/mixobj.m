@@ -9,8 +9,6 @@ function [f, g] = mixobj (L, x, e)
   else
     n = size(L,1);
     f = -sum(log(y));
-    d = 1./(L*x + e);
-    g = -L'*d;
-    %U = diag(sparse(d)) * L;
-    %H = U'*U + e*eye(m);
+    d = 1./(y + e);
+    g = -(d'*L)';
   end

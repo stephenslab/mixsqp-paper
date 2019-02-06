@@ -29,7 +29,9 @@
 
 % LOAD DATA
 % ---------
-L = rand(1000,10000);
+% Or use this for a larger matrix:
+% L = rand(1000,10000);
+L = csvread('simdata.csv');
 [n m] = size(L);
 
 % FIT MODEL
@@ -41,5 +43,5 @@ tic
 x  = minConf_SPG(f,x0,g,struct('useSpectral',false,'optTol',1e-8,...
                                'progTol',1e-15,'suffDec',1e-8,...
                                'memory',1,'maxIter',1000,'verbose',2,...
-                               'interp',2));
+                               'interp',2,'testOpt',1));
 toc
