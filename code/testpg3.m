@@ -31,7 +31,8 @@
 % ---------
 % Or use this for a larger matrix:
 % L = rand(1000,10000);
-L = csvread('simdata.csv');
+% L = csvread('simdata.csv');
+load ../analysis/d1.mat
 [n m] = size(L);
 
 % FIT MODEL

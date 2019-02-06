@@ -6,6 +6,8 @@ function [w] = projectSimplex(v)
 nVars = length(v);
 mu = sort(v,'descend');
 sm = 0;
+row = 0;
+sm_row = 0;
 
 for j = 1:nVars
   sm = sm+mu(j);
