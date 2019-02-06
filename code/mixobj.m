@@ -11,6 +11,6 @@ function [f, g] = mixobj (L, x, e)
     f = -sum(log(y));
     d = 1./(L*x + e);
     g = -L'*d;
-    U = diag(sparse(d)) * L;
-    H = U'*U + e*eye(m);
+    %U = diag(sparse(d)) * L;
+    %H = U'*U + e*eye(m);
   end

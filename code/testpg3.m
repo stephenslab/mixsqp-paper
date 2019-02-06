@@ -29,7 +29,7 @@
 
 % LOAD DATA
 % ---------
-L = csvread('simdata.csv');
+L = rand(1000,10000);
 [n m] = size(L);
 
 % FIT MODEL
@@ -37,7 +37,9 @@ L = csvread('simdata.csv');
 x0 = ones(m,1)/m;
 f  = @(x) mixobj(L,x,eps);
 g  = @(x) projectSimplex(x);
+tic
 x  = minConf_SPG(f,x0,g,struct('useSpectral',false,'optTol',1e-8,...
                                'progTol',1e-15,'suffDec',1e-8,...
                                'memory',1,'maxIter',1000,'verbose',2,...
                                'interp',2));
+toc

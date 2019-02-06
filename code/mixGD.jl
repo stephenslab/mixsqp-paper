@@ -11,10 +11,12 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000,
   obj    = zeros(maxiter);
   maxd   = zeros(maxiter);
   timing = zeros(maxiter);
+  ls     = zeros(maxiter);
     
   # Repeat until convergence criterion is met, or until the maximum
   # number of iterations is reached.
   iter = 1;
+  alpha0 = copy(alpha);
   for iter = 1:maxiter
         
     tic();
@@ -25,18 +27,21 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000,
     g         = (L'*D)/n;
         
     # Get the initial search direction.
+    alpha = min(alpha0, 1/sum(abs.(g)))
     p = alpha * g;
         
     # Take initial step along the search direction.
     wnew = take_step(w,p);
-        
+    
+    i = 0;
     # Backtracking line search.
-    for i = 1:100
-      fnew = 1 ./ (L * wnew + eps);
-      if obj[iter] - fnew[1] > n * dot(w - wnew,g)/2
+    for i = 1:11
+      Dnew = 1 ./ (L * wnew + eps);
+      #println([obj[iter], sum(log.(Dnew[1])), n * dot(wnew - w,g)/2])
+      if obj[iter] - sum(log.(Dnew)) > n * dot(wnew - w,g)/2
         break;
       else
-      p    = p/10;
+      p    = p/2;
       wnew = take_step(w,p);
       end
     end
@@ -44,6 +49,7 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000,
     # Check for convergence.
     maxd[iter] = maximum(abs.(w - wnew));
     timing[iter] = toq();
+    ls[iter] = i - 1;
     if maxd[iter] < tol
       break;
     end
@@ -53,7 +59,7 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000,
   end
 
   # Return the mixture weights and other optimization info.
-  return w, obj[1:iter], maxd[1:iter], iter, timing[1:iter]
+  return w, obj[1:iter], maxd[1:iter], ls[1:iter], iter, timing[1:iter]
 end
     
 function take_step(w, g)
