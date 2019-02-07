@@ -112,8 +112,9 @@ while funEvals <= maxIter
     
     % Compute Projected Step
     if ~curvilinear
-        d = funProj(x+d)-x;
-        projects = projects+1;
+      d0 = d;
+      d  = funProj(x + d0) - x;
+      projects = projects+1;
     end
 
     % Check that Progress can be made along the direction

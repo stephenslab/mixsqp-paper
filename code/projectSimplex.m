@@ -6,14 +6,14 @@ function [w] = projectSimplex(v)
 nVars = length(v);
 mu = sort(v,'descend');
 sm = 0;
-row = 0;
-sm_row = 0;
+row = 1;
+sm_row = mu(1);
 
 for j = 1:nVars
-  sm = sm+mu(j);
+  sm = sm + mu(j);
   if mu(j) - (1/j)*(sm-1) > 0
-       row = j;
-       sm_row = sm;
+     row = j;
+     sm_row = sm;
    end
 end
 
