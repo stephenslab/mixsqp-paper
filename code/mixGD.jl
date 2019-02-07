@@ -27,7 +27,7 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000,
     g         = (L'*D)/n;
         
     # Get the initial search direction.
-    alpha = min(alpha0, 1/sum(abs.(g)))
+    alpha = min(1, 1/sum(abs.(g))) * alpha0;
     p = alpha * g;
         
     # Take initial step along the search direction.
@@ -47,7 +47,7 @@ function mixGD(L;  w = ones(size(L,2))/size(L,2), maxiter = 10000,
     end
 
     # Check for convergence.
-    maxd[iter] = maximum(abs.(w - wnew));
+    maxd[iter] = -minimum(-g + 1) #maximum(abs.(w - wnew));
     timing[iter] = toq();
     ls[iter] = i - 1;
     if maxd[iter] < tol

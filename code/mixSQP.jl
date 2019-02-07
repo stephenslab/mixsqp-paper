@@ -16,7 +16,7 @@ function mixSQP(L; x = -1,
                 convtol = 1e-8, pqrtol = 1e-8, eps = 1e-6, sptol = 1e-3,
                 maxiter = 20, maxqpiter = 100,
                 lowrank = "svd", qpsubprob = "activeset",
-                nullprior = 10,
+                nullprior = 0,
                 linesearch = true,
                 verbose = true)
     
@@ -111,16 +111,21 @@ function mixSQP(L; x = -1,
     # gradient and Hessian computation -- Rank reduction method
     if lowrank == "qr"
       D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
-      g = -P * F[:R]' * (F[:Q]'*D)/n; g[1] -= nullprior/x[1]/n;
-      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps*eye(k); H[1,1] += nullprior/x[1]^2/n;
+      g = -P * F[:R]' * (F[:Q]'*D)/n;
+      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps*Diagonal(k);
     elseif lowrank == "svd"
       D = 1./(F[:U]*(S*(F[:Vt]*x)) + eps);
-      g = -F[:Vt]'*(S * (F[:U]'*D))/n; g[1] -= nullprior/x[1]/n;
-      H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps*eye(k); H[1,1] += nullprior/x[1]^2/n;
+      g = -F[:Vt]'*(S * (F[:U]'*D))/n;
+      H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps*Diagonal(k);
     else
       D = 1./(L*x + eps);
-      g = -L'*D/n; g[1] -= nullprior/x[1]/n;
-      H = L'*Diagonal(D.^2)*L/n + eps * eye(k); H[1,1] += nullprior/x[1]^2/n;
+      g = -L'*D/n;
+      H = L'*Diagonal(D.^2)*L/n + eps * eye(k);
+    end
+        
+    if nullprior > 0
+      g[1] -= nullprior/x[1]/n;
+      H[1,1] += nullprior/x[1]^2/n;
     end
 
     # Report on the algorithm's progress.

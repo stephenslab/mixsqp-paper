@@ -8,7 +8,7 @@
 # "mosek" is a sparse vector in which only the first two entries are
 # nonzero.
 function mixsqp(L; x = -1,
-                convergence_tol = 1e-8, eps_tol = 1e-8, sparse_tol = 1e-6,
+                convergence_tol = 1e-8, eps_tol = 1e-8, sparse_tol = 1e-3,
                 lowrank_method = "svd", lowrank_criterion = "by_rank",
                 lowrank_rtol = 1e-8, lowrank_rank = minimum(size(L)),
                 maxiter = 100, maxqpiter = 100,
@@ -112,7 +112,6 @@ function mixsqp(L; x = -1,
     # Compute the gradient and Hessian, optionally using the partial
     # QR decomposition to increase the speed of these computations.
     # gradient and Hessian computation -- Rank reduction method
-    if (lowrank_rank > 0) & (gradient_calc == "approx")
         if lowrank_method == "qr"
           D = 1 ./(F[:Q]*(F[:R]*(P'*x)) .+ eps_tol);
           g = -P * F[:R]' * (F[:Q]'*D)/n;
@@ -126,17 +125,6 @@ function mixsqp(L; x = -1,
           g = -L'*D/n;
           H = L'*Diagonal(D.^2)*L/n + eps_tol * Diagonal(ones(k));
         end
-            
-    elseif (lowrank_rank > 0) & (gradient_calc == "exact")
-        error("We do not provide this case since it is inefficient");
-            
-    elseif lowrank_rank == 0
-    #    D = 1 ./(L*x .+ eps_tol);
-    #    g = -(L'*D)/n;
-    #    H = speye(k)/n;
-    #else
-        error("We do not provide this case when lowrank_rank = 0");
-    end
         
             
     if nullprior > 0
