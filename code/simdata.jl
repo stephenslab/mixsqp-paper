@@ -1,7 +1,8 @@
 # Generate the data sets used in the comparisons of mix-SQP vs. the
 # first-order methods (EM and projected gradient).
 using Distributions
-cinclude("datasim.jl");
+include("datasim.jl");
+include("likelihood.jl");
 
 m = 2000;
 
@@ -12,3 +13,4 @@ sd = autoselectmixsd(z,nv = m);
 L  = normlikmatrix(z,sd = sd);
 
 # Save the matrix to a CSV file.
+writecsv("simdata-n=1000-m=2000.csv",L);
