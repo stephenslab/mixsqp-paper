@@ -1,4 +1,5 @@
-function [x,f,funEvals,projects] = minConf_SPG(funObj,x,funProj,options)
+function [x, obj, funEvals, projects, timings] = ...
+  minConf_SPG(funObj, x, funProj, options)
 % function [x,f] = minConF_SPG(funObj,x,funProj,options)
 %
 % Function for using Spectral Projected Gradient to solve problems of the form
@@ -75,6 +76,8 @@ end
 [f,g] = funObj(x);
 projects = 1;
 funEvals = 1;
+obj     = zeros(maxIter,1);
+timings = zeros(maxIter,1);
 
 % Optionally check optimality
 if testOpt
@@ -87,6 +90,7 @@ if testOpt
     end
 end
 
+tic
 i = 1;
 while funEvals <= maxIter
 
@@ -275,6 +279,11 @@ t = t/2;
         break;
     end
 
+    obj(i)     = f;
+    timings(i) = toc;
     i = i + 1;
 end
+
+obj     = obj(1:(i-1));
+timings = timings(1:(i-1));
 end
