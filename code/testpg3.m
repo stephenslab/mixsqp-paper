@@ -30,19 +30,23 @@
 % LOAD DATA
 % ---------
 % Uncomment this code for other examples:
+% load('../analysis/d1.mat');
 % L = rand(1000,10000);
 % L = csvread('simdata.csv');
-load('../analysis/d1.mat');
+L = csvread('simdata-n=1000-m=2000.csv');
 [n m] = size(L);
 
 % FIT MODEL
 % ---------
 x0 = ones(m,1)/m;
-f  = @(x) mixobj(L,x,eps);
+fx = @(x) mixobj(L,x,eps);
 g  = @(x) projectSimplex(x);
-tic
-x  = minConf_SPG(f,x0,g,struct('useSpectral',false,'optTol',1e-8,...
+[x f nfevals nproj timings] = ...
+    minConf_SPG(fx,x0,g,struct('useSpectral',false,'optTol',1e-8,...
                                'progTol',1e-15,'suffDec',1e-8,...
-                               'memory',1,'maxIter',1000,'verbose',2,...
+                               'memory',1,'maxIter',1e4,'verbose',0,...
                                'interp',2,'testOpt',1,'curvilinear',0));
-toc
+
+% SAVE RESULTS TO FILE
+% --------------------
+csvwrite('pg-n=1000-m=2000.csv',[timings f]);

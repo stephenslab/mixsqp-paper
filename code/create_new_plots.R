@@ -1,6 +1,6 @@
 library(ggplot2)
 library(cowplot)
-dat <- read.csv("../output/simcompare4.csv")
+dat <- read.csv("../output/simcompare2.csv")
 # dat$robj <- pmax(1e-4,dat$robj)
 p <- ggplot(dat,aes(x = time,y = robj,color = method)) +
     geom_point() +
