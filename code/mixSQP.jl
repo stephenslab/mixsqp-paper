@@ -52,7 +52,7 @@ function mixSQP(L; x = -1,
   tic();
   if lowrank == "qr"
     F = pqrfact(L, rtol=pqrtol);
-    P = sparse(F[:P]);
+    P = sparse(F[:P]) * 1.0;
   elseif lowrank == "svd"
     F = psvdfact(L, rtol=pqrtol);
     S = Diagonal(F[:S]);
@@ -112,11 +112,13 @@ function mixSQP(L; x = -1,
     if lowrank == "qr"
       D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
       g = -P * F[:R]' * (F[:Q]'*D)/n;
-      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps*Diagonal(k);
+      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + 
+          eps*(Diagonal(ones(k)));
     elseif lowrank == "svd"
       D = 1./(F[:U]*(S*(F[:Vt]*x)) + eps);
       g = -F[:Vt]'*(S * (F[:U]'*D))/n;
-      H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps*Diagonal(k);
+      H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + 
+          eps*Diagonal(ones(k));
     else
       D = 1./(L*x + eps);
       g = -L'*D/n;
