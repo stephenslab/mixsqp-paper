@@ -33,7 +33,7 @@
 % load('../analysis/d1.mat');
 % L = rand(1000,10000);
 % L = csvread('simdata.csv');
-L = csvread('simdata-n=1000-m=2000.csv');
+L = csvread('simdata-n=20000-m=20.csv');
 [n m] = size(L);
 
 % FIT MODEL
@@ -44,7 +44,7 @@ g  = @(x) projectSimplex(x);
 [x f nfevals nproj timings] = ...
     minConf_SPG(fx,x0,g,struct('useSpectral',false,'optTol',1e-8,...
                                'progTol',1e-15,'suffDec',1e-8,...
-                               'memory',1,'maxIter',1e4,'verbose',0,...
+                               'memory',1,'maxIter',1e4,'verbose',2,...
                                'interp',2,'testOpt',1,'curvilinear',0));
 
 % SAVE RESULTS TO FILE
