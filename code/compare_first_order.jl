@@ -43,20 +43,24 @@ outsqp2 = mixSQP(L,lowrank = "qr", eps = 1e-8, maxqpiter = m,
 # Run the EM algorithm.
 @printf "Fitting model using EM.\n"
 @time xem, fem, tem = mixEM(L,maxiter = 10000,tol = 1e-6);
+fem = fem/n;
 
 # Run mix-SQP with no approximation to the input matrix.
 @printf "Fitting model using mix-SQP with exact L.\n"
 outsqp1 = mixSQP(L,lowrank = "none",eps = 1e-8,maxqpiter = m,
                  maxiter = 200,verbose = false);
+outsqp1["obj"] = outsqp1["obj"]/n;
 
 # Run the mix-SQP with a low rank (truncated QR) approximation to the
 # input matrix.
 @printf "Fitting model using mix-SQP with approximate L.\n"
 outsqp2 = mixSQP(L,lowrank = "qr", eps = 1e-8, maxqpiter = m,
                  maxiter = 200,verbose = false);
+outsqp2["obj"] = outsqp2["obj"]/n;
 
-# Compare the quality of the solutions.
-@printf "Objective at SQP1 solution: %0.12e\n" mixobjective(L,outsqp1["x"])
-@printf "Objective at SQP2 solution: %0.12e\n" mixobjective(L,outsqp2["x"])
-@printf "Objective at EM   solution: %0.12e\n" mixobjective(L,xem)
+# Compare the quality of the solutions. Note that we need to divide
+# the objective by n to match the objective used in the manuscript.
+@printf "Objective at SQP1 solution: %0.12f\n" mixobjective(L,outsqp1["x"])/n
+@printf "Objective at SQP2 solution: %0.12f\n" mixobjective(L,outsqp2["x"])/n
+@printf "Objective at EM solution:   %0.12f\n" mixobjective(L,xem)/n
 
