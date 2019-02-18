@@ -1,7 +1,7 @@
 library(ggplot2)
 library(cowplot)
-dat <- read.csv("../output/simcompare3.csv")
-dat.matlab <- read.csv("../output/pg-n=1000-m=200.csv",header = FALSE)
+dat <- read.csv("../output/simcompare2.csv")
+dat.matlab <- read.csv("../output/pg-n=1000-m=20.csv.gz",header = FALSE)
 dat.matlab <- cbind(dat.matlab,"minConf_SPG")
 names(dat.matlab) <- c("time","robj","method")
 f <- min(dat$obj - dat$robj)
@@ -12,11 +12,11 @@ dat$robj <- pmax(1e-4,dat$robj)
 p <- ggplot(dat,aes(x = time,y = robj,color = method)) +
     geom_point() +
     geom_line() +
-    xlim(c(0,0.5)) +
+    xlim(c(0,0.1)) +
     scale_y_log10() +
     scale_color_manual(values = c("darkorange","darkblue","dodgerblue",
                                   "firebrick","magenta")) +
     labs(x = "runtime (seconds)",
          y = "distance from minimum",
-         title = "m=200")
+         title = "n=1000, m=20")
 
