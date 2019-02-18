@@ -7,14 +7,14 @@
 # sinteractive --partition=broadwl --mem=8G
 # module load julia/0.6.2
 #
-# Note that we ran this script with m = 20 and m = 200.
+# Note that we ran this script with m = 20, m = 200 and m = 2000.
 #
 n = 20000;
-m = 2000;
-matrixfile      = "simdata-n=20000-m=2000.csv";
-outfile_mixsqp1 = "mixsqp-exact-n=20000-m=2000.csv";
-outfile_mixsqp2 = "mixsqp-approx-n=20000-m=2000.csv";
-outfile_em      = "em-n=20000-m=2000.csv";
+m = 200;
+matrixfile      = "simdata-n=20000-m=200.csv";
+outfile_mixsqp1 = "mixsqp-exact-n=20000-m=200.csv";
+outfile_mixsqp2 = "mixsqp-approx-n=20000-m=200.csv";
+outfile_em      = "em-n=20000-m=200.csv";
 
 using Distributions
 using LowRankApprox
