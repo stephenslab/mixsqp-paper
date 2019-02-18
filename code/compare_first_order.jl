@@ -45,14 +45,14 @@ outsqp2 = mixSQP(L,lowrank = "qr",maxiter = 4,maxqpiter = 4,verbose = false);
 # Run the mix-SQP with a low rank (truncated QR) approximation to the
 # input matrix.
 @printf "Fitting model using mix-SQP with approximate L.\n"
-outsqp2 = mixSQP(L,lowrank = "qr",eps = 1e-8,sptol = 1e-6,maxqpiter = 20,
-                 maxiter = 200,verbose = false);
+outsqp2 = mixSQP(L,lowrank = "qr",eps = 1e-8,sptol = 1e-6,maxqpiter = m,
+                 maxiter = 200,verbose = true);
 outsqp2["obj"] = outsqp2["obj"]/n;
 
 # Run mix-SQP with no approximation to the input matrix.
 @printf "Fitting model using mix-SQP with exact L.\n"
-outsqp1 = mixSQP(L,lowrank = "none",eps = 1e-8,sptol = 1e-6,maxqpiter = 20,
-                 maxiter = 200,verbose = false);
+outsqp1 = mixSQP(L,lowrank = "none",eps = 1e-8,sptol = 1e-6,maxqpiter = m,
+                 maxiter = 200,verbose = true);
 outsqp1["obj"] = outsqp1["obj"]/n;
 
 # Run the EM algorithm.
