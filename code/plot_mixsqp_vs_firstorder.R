@@ -23,15 +23,16 @@ dat  <- rbind(cbind(data.frame(method    = "mix-SQP-exact",
 rm(dat1,dat2,dat3,dat4)
 
 # Find the distance between the current solutions and the best solution.
-f   <- min(dat$objective)
+f   <- min(subset(dat,method == "mix-SQP-exact" |
+                      method == "mix-SQP-approx")$objective)
 dat <- transform(dat,objective = objective - f + 1e-8)
 
 # Create the plot comparing performance of the methods over time.
 p <- ggplot(dat,aes(x = runtime,y = objective,color = method)) +
   geom_line() +
   geom_point() +
-  xlim(c(0,10)) +
+  xlim(c(0,12)) +
   scale_y_log10() +
   labs(x = "runtime (seconds)",
        y = "distance from minimum",
-       title = "n=2000, m=20")
+       title = "n=20,000, m=20")
