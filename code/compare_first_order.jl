@@ -7,14 +7,14 @@
 # sinteractive --partition=broadwl --mem=8G
 # module load julia/0.6.2
 #
-# Note that I also ran this script with m = 200 and m = 2000.
+# Note that we ran this script with m = 20 and m = 200.
 #
-n = 20000;
+n = 2000;
 m = 200;
-matrixfile      = "simdata-n=20000-m=200.csv";
-outfile_mixsqp1 = "mixsqp-exact-n=20000-m=200.csv";
-outfile_mixsqp2 = "mixsqp-approx-n=20000-m=200.csv";
-outfile_em      = "em-n=20000-m=200.csv";
+matrixfile      = "simdata-n=2000-m=200.csv";
+outfile_mixsqp1 = "mixsqp-exact-n=2000-m=200.csv";
+outfile_mixsqp2 = "mixsqp-approx-n=2000-m=200.csv";
+outfile_em      = "em-n=2000-m=200.csv";
 
 using Distributions
 using LowRankApprox
@@ -45,13 +45,13 @@ outsqp2 = mixSQP(L,lowrank = "qr",maxiter = 4,maxqpiter = 4,verbose = false);
 # Run the mix-SQP with a low rank (truncated QR) approximation to the
 # input matrix.
 @printf "Fitting model using mix-SQP with approximate L.\n"
-outsqp2 = mixSQP(L,lowrank = "qr",eps = 1e-8,sptol = 0,maxqpiter = 20,
+outsqp2 = mixSQP(L,lowrank = "qr",eps = 1e-8,sptol = 1e-6,maxqpiter = 20,
                  maxiter = 200,verbose = false);
 outsqp2["obj"] = outsqp2["obj"]/n;
 
 # Run mix-SQP with no approximation to the input matrix.
 @printf "Fitting model using mix-SQP with exact L.\n"
-outsqp1 = mixSQP(L,lowrank = "none",eps = 1e-8,sptol = 0,maxqpiter = 20,
+outsqp1 = mixSQP(L,lowrank = "none",eps = 1e-8,sptol = 1e-6,maxqpiter = 20,
                  maxiter = 200,verbose = false);
 outsqp1["obj"] = outsqp1["obj"]/n;
 
