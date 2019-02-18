@@ -41,20 +41,20 @@ outsqp2 = mixSQP(L,lowrank = "qr",maxiter = 20,verbose = false);
 
 # Run the EM algorithm.
 @printf "Fitting model using EM.\n"
-@time xem, fem, tem = mixEM(L,maxiter = 1000,tol = 1e-6);
+xem, fem, dem, tem = mixEM(L,maxiter = 1000,tol = 1e-6);
 fem = fem/n;
 
 # Run mix-SQP with no approximation to the input matrix.
 @printf "Fitting model using mix-SQP with exact L.\n"
 outsqp1 = mixSQP(L,lowrank = "none",eps = 1e-8,sptol = 0,maxqpiter = m,
-                 maxiter = 200,verbose = falsec);
+                 maxiter = 200,verbose = false);
 outsqp1["obj"] = outsqp1["obj"]/n;
 
 # Run the mix-SQP with a low rank (truncated QR) approximation to the
 # input matrix.
 @printf "Fitting model using mix-SQP with approximate L.\n"
 outsqp2 = mixSQP(L,lowrank = "qr",eps = 1e-8,sptol = 0,maxqpiter = m,
-                 maxiter = 200,verbose = true);
+                 maxiter = 200,verbose = false);
 outsqp2["obj"] = outsqp2["obj"]/n;
 
 # Compare the quality of the solutions. Note that we need to divide
@@ -63,8 +63,5 @@ outsqp2["obj"] = outsqp2["obj"]/n;
 @printf "Objective at SQP2 sol.: %0.12f\n" mixobjective(L,outsqp2["x"],1e-8)/n
 @printf "Objective at EM sol.:   %0.12f\n" mixobjective(L,xem,1e-8)/n
 
-# Save the EM results to a CSV file.
-# TO DO.
+# Save the results to file.
 
-# Save the mix-SQP results to a CSV file.
-# TO DO.

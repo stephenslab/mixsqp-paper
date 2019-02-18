@@ -57,7 +57,6 @@ function mixSQP(L; x = -1,
     F = psvdfact(L, rtol=pqrtol);
     S = Diagonal(F[:S]);
   end
-  lowranktime = toq();
     
   # Summarize the analysis here.
   if verbose
@@ -103,7 +102,7 @@ function mixSQP(L; x = -1,
   # convergence is reached.
   for i = 1:maxiter
 
-    # Start timing the iteration.
+    # Start timing the SQP iteration.
     tic();
       
     # Compute the gradient and Hessian, optionally using the partial
@@ -154,6 +153,7 @@ function mixSQP(L; x = -1,
       
     # Check convergence of outer loop
     if minimum(g + 1) >= -convtol
+      timing[i] = toq();
       break
     end
     
@@ -202,14 +202,9 @@ function mixSQP(L; x = -1,
   # iteration; (4) the number of nonzero entries in the vector at each
   # iteration; and (5) the number of inner iterations taken to solve
   # the QP subproblem at each outer iteration.
-  x[x .< sptol] = 0;
-  x             = x/sum(x);
-  totaltime     = lowranktime + sum(timing[1:i]);
-  if verbose
-    @printf("Optimization took %d iterations and %0.4f seconds.\n",i,totaltime)
-  end
-  return Dict([("x",full(x)), ("totaltime",totaltime),
-               ("lowranktime",lowranktime), ("obj",obj[1:i]),
+  # x[x .< sptol] = 0;
+  # x = x/sum(x);
+  return Dict([("x",full(x)), ("obj",obj[1:i]),
                ("gmin",gmin[1:i]), ("nnz",nnz[1:i]),
                ("nqp",nqp[1:i]), ("timing",timing[1:i]),
                ("qptiming",qptiming[1:i])])
