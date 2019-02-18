@@ -10,11 +10,11 @@
 # Note that I also ran this script with m = 200 and m = 2000.
 #
 n = 20000;
-m = 20;
-matrixfile      = "simdata-n=20000-m=20.csv";
-outfile_mixsqp1 = "mixsqp-exact-n=20000-m=20.csv";
-outfile_mixsqp2 = "mixsqp-approx-n=20000-m=20.csv";
-outfile_em      = "em-n=20000-m=20.csv";
+m = 200;
+matrixfile      = "simdata-n=20000-m=200.csv";
+outfile_mixsqp1 = "mixsqp-exact-n=20000-m=200.csv";
+outfile_mixsqp2 = "mixsqp-approx-n=20000-m=200.csv";
+outfile_em      = "em-n=20000-m=200.csv";
 
 using Distributions
 using LowRankApprox
@@ -25,7 +25,7 @@ include("mixGD.jl");
 include("mixSQP.jl");
 
 # Generate the matrix.
-srand(2019);
+srand(1);
 @printf "Generating %d x %d data matrix.\n" n m
 z  = normtmixdatasim(n);
 sd = autoselectmixsd(z,nv = m);
@@ -39,26 +39,26 @@ writecsv(matrixfile,L);
 # code.
 @printf "Precompiling EM and mixSQP code.\n"
 xem, fem, tem = mixEM(L,maxiter = 10);
-outsqp1 = mixSQP(L,lowrank = "none",maxiter = 20,verbose = false);
-outsqp2 = mixSQP(L,lowrank = "qr",maxiter = 20,verbose = false);
+outsqp1 = mixSQP(L,lowrank = "none",maxiter = 4,maxqpiter = 4,verbose = false);
+outsqp2 = mixSQP(L,lowrank = "qr",maxiter = 4,maxqpiter = 4,verbose = false);
+
+# Run the mix-SQP with a low rank (truncated QR) approximation to the
+# input matrix.
+@printf "Fitting model using mix-SQP with approximate L.\n"
+outsqp2 = mixSQP(L,lowrank = "qr",eps = 1e-8,sptol = 0,maxqpiter = 20,
+                 maxiter = 200,verbose = false);
+outsqp2["obj"] = outsqp2["obj"]/n;
+
+# Run mix-SQP with no approximation to the input matrix.
+@printf "Fitting model using mix-SQP with exact L.\n"
+outsqp1 = mixSQP(L,lowrank = "none",eps = 1e-8,sptol = 0,maxqpiter = 20,
+                 maxiter = 200,verbose = false);
+outsqp1["obj"] = outsqp1["obj"]/n;
 
 # Run the EM algorithm.
 @printf "Fitting model using EM.\n"
 xem, fem, dem, tem = mixEM(L,maxiter = 1000,tol = 1e-6);
 fem = fem/n;
-
-# Run mix-SQP with no approximation to the input matrix.
-@printf "Fitting model using mix-SQP with exact L.\n"
-outsqp1 = mixSQP(L,lowrank = "none",eps = 1e-8,sptol = 0,maxqpiter = m,
-                 maxiter = 200,verbose = false);
-outsqp1["obj"] = outsqp1["obj"]/n;
-
-# Run the mix-SQP with a low rank (truncated QR) approximation to the
-# input matrix.
-@printf "Fitting model using mix-SQP with approximate L.\n"
-outsqp2 = mixSQP(L,lowrank = "qr",eps = 1e-8,sptol = 0,maxqpiter = m,
-                 maxiter = 200,verbose = false);
-outsqp2["obj"] = outsqp2["obj"]/n;
 
 # Compare the quality of the solutions. Note that we need to divide
 # the objective by n to match the objective used in the manuscript.

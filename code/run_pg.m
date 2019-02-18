@@ -11,7 +11,7 @@
 
 % Load the data.
 fprintf('Reading data.\n')
-L = csvread('simdata-n=20000-m=20.csv');
+L = csvread('simdata-n=20000-m=200.csv');
 [n m] = size(L);
 
 % Fit the model using the projected gradient algorithm.
@@ -27,4 +27,4 @@ g  = @(x) projectSimplex(x);
 
 % Write the objective value and runtime at each iteration to a CSV file.
 fprintf('Writing results to file.\n');
-csvwrite('pg-n=20000-m=20.csv',[f/n timings]);
+csvwrite('pg-n=20000-m=200.csv',[f/n timings]);
