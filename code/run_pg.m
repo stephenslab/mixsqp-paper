@@ -11,7 +11,7 @@
 
 % Load the data.
 fprintf('Reading data.\n')
-L = csvread('simdata-n=2000-m=200.csv');
+L = csvread('simdata-n=2000-m=20.csv');
 [n m] = size(L);
 
 % Fit the model using the projected gradient algorithm.
@@ -22,9 +22,9 @@ g  = @(x) projectSimplex(x);
 [x f nfevals nproj timings] = ...
     minConf_SPG(fx,x0,g,struct('useSpectral',false,'optTol',1e-8,...
                                'progTol',1e-15,'suffDec',1e-8,...
-                               'memory',1,'maxIter',2e4,'verbose',0,...
+                               'memory',1,'maxIter',5e4,'verbose',1,...
                                'interp',2,'testOpt',1,'curvilinear',0));
 
 % Write the objective value and runtime at each iteration to a CSV file.
 fprintf('Writing results to file.\n');
-csvwrite('pg-n=2000-m=200.csv',[f/n timings]);
+csvwrite('pg-n=2000-m=20.csv',[f/n timings]);
