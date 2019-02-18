@@ -131,13 +131,14 @@ function mixSQP(L; x = -1,
     end
 
     # Report on the algorithm's progress.
-    if lowrank == "qr"
-      obj[i] = -sum(log.(F[:Q]*(F[:R]*(P'*x)) + eps));
-    elseif lowrank == "svd"
-      obj[i] = -sum(log.(F[:U]*(S*(F[:Vt]*x)) + eps));
-    else
-      obj[i] = mixobjective(L,x,eps);
-    end
+    # if lowrank == "qr"
+    #   obj[i] = -sum(log.(F[:Q]*(F[:R]*(P'*x)) + eps));
+    # elseif lowrank == "svd"
+    #   obj[i] = -sum(log.(F[:U]*(S*(F[:Vt]*x)) + eps));
+    # else
+    #   obj[i] = mixobjective(L,x,eps);
+    # end
+    obj[i]  = mixobjective(L,x,eps);
     gmin[i] = minimum(g + 1);
     nnz[i]  = length(find(x .> sptol));
     nqp[i]  = j;
