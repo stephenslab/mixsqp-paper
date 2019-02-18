@@ -67,6 +67,7 @@ outsqp2["obj"] = outsqp2["obj"]/n;
 @printf "Objective at EM sol.:   %0.12f\n" mixobjective(L,xem,1e-8)/n
 
 # Save the results to file.
+@printf "Writing results to file.\n"
 writecsv(outfile_mixsqp1,[outsqp1["obj"] outsqp1["timing"]]);
 writecsv(outfile_mixsqp2,[outsqp2["obj"] outsqp2["timing"]]);
 writecsv(outfile_em,[fem tem]);

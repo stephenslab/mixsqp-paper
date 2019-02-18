@@ -90,9 +90,9 @@ if testOpt
     end
 end
 
-tic
 i = 1;
 while funEvals <= maxIter
+    tic;
 
     % Compute Step Direction
     if i == 1 || ~useSpectral
@@ -123,12 +123,6 @@ while funEvals <= maxIter
 
     % Check that Progress can be made along the direction
     gtd = g'*d;
-    % if gtd > -progTol
-    %     if verbose >= 1
-    %         fprintf('Directional Derivative below progTol\n');
-    %     end
-    %     break;
-    %  end
 
     % Select Initial Guess to step length
     if i == 1
@@ -257,20 +251,6 @@ t = t/2;
             break;
         end
     end
-
-    %  if max(abs(t*d)) < progTol
-    %     if verbose >= 1
-    %         fprintf('Step size below progTol\n');
-    %     end
-    %     break;
-    % end
-
-    %  if abs(f-f_old) < progTol
-    %      if verbose >= 1
-    %         fprintf('Function value changing by less than progTol\n');
-    %     end
-    %      break;
-    %  end
 
     if funEvals*funEvalMultiplier > maxIter
         if verbose >= 1
