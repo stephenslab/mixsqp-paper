@@ -15,7 +15,7 @@ L = csvread('simdata-n=20000-m=2000.csv');
 [n m] = size(L);
 
 % Fit the model using the projected gradient algorithm.
-fprintf('Fitting model using projected gradient method.\n');
+fprintf('Fitting model to %d x %d data set using PG method.\n',n,m);
 x0 = ones(m,1)/m;
 fx = @(x) mixobj(L,x,1e-8);
 g  = @(x) projectSimplex(x);
