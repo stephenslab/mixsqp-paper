@@ -1,4 +1,5 @@
-# TO DO: Explain here what this script is for, and how to use it.
+# Create a plot comparing the performance of mix-SQP against
+# first-order methods (EM & projected gradient).
 library(ggplot2)
 library(cowplot)
 
@@ -33,4 +34,4 @@ p <- ggplot(dat,aes(x = runtime,y = objective,color = method)) +
   scale_y_log10() +
   labs(x = "runtime (seconds)",
        y = "distance from minimum",
-       title = "n=20,000, m=20")
+       title = "n=2000, m=20")
