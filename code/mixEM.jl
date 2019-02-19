@@ -18,7 +18,6 @@ function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
   # Compute the objective function value at the initial iterate.
   iter      = 1;
   obj[iter] = -sum(log.(L * w + eps));
-
     
   # Repeat until convergence criterion is met, or until the maximum
   # number of iterations is reached.
