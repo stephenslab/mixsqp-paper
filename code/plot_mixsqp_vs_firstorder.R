@@ -4,10 +4,10 @@ library(ggplot2)
 library(cowplot)
 
 # Read and prepare the data for plotting.
-dat1 <- read.csv("../output/mixsqp-exact-n=20000-m=200.csv.gz",header = FALSE)
-dat2 <- read.csv("../output/mixsqp-approx-n=20000-m=200.csv.gz",header = FALSE)
-dat3 <- read.csv("../output/em-n=20000-m=200.csv.gz",header = FALSE)
-dat4 <- read.csv("../output/pg-n=20000-m=200.csv.gz",header = FALSE)
+dat1 <- read.csv("../output/mixsqp-exact-n=20000-m=800.csv.gz",header = FALSE)
+dat2 <- read.csv("../output/mixsqp-approx-n=20000-m=800.csv.gz",header = FALSE)
+dat3 <- read.csv("../output/em-n=20000-m=800.csv.gz",header = FALSE)
+dat4 <- read.csv("../output/pg-n=20000-m=800.csv.gz",header = FALSE)
 dat  <- rbind(cbind(data.frame(method    = "mix-SQP-exact",
                                objective = dat1[[1]],
                                runtime   = cumsum(dat1[[2]]))),
@@ -30,11 +30,12 @@ dat <- transform(dat,objective = pmax(objective - f,1e-8))
 # Create the plot comparing performance of the methods over time.
 # For the 20,000 x 20 data set, use xlim(c(0,0.5)).
 # For the 20,000 x 200 data set, use xlim(c(0,8)).
+# For the 20,000 x 800 data set, use xlim(c(0,46)).
 p <- ggplot(dat,aes(x = runtime,y = objective,color = method)) +
   geom_line() +
   geom_point() +
-  xlim(c(0,8)) +
+  xlim(c(0,46)) +
   scale_y_log10() +
   labs(x = "runtime (seconds)",
        y = "distance from minimum",
-       title = "n=20,000, m=200")
+       title = "n=20,000, m=800")
