@@ -6,8 +6,6 @@ to do
 * Add information to README about which versions of MATLAB
   (2018b/9.5.0), Julia (0.6) and R were used to test/run code.
 
-* Clean up and update MATLAB code.
-
 * Clean up and update Julia code.
 
 * Clean up and update R code.

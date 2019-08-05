@@ -1,21 +1,16 @@
 % This script completes the comparison of mix-SQP against the first-order
 % methods; compare_first_order.jl runs EM and the mix-SQP variants, and
 % this script runs the projected gradient method.
-% 
-% To run on the RCC cluster, I set up my environment with the
-% following commands:
-%
-%   sinteractive --partition=broadwl --mem=8G
-%   module load matlab/2018b
-%
 
 % SCRIPT PARAMETERS
 % -----------------
+datfile = 'simdata-n=20000-m=20.csv';
+outfile = 'pg-n=20000-m=20.csv';
 
 % LOAD DATA
 % ---------
 fprintf('Reading data.\n')
-L = csvread('simdata-n=20000-m=20.csv');
+L = csvread(datfile);
 [n m] = size(L);
 
 % FIT MODEL
@@ -33,4 +28,4 @@ g  = @(x) projectSimplex(x);
 
 % Write the objective value and runtime at each iteration to a CSV file.
 fprintf('Writing results to file.\n');
-csvwrite('pg-n=20000-m=20.csv',[f/n timings]);
+csvwrite(outfile,[f/n timings]);
