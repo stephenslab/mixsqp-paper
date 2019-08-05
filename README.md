@@ -1,10 +1,10 @@
 # mix-SQP: sequential quadratic programming for fast maximum-likelihood estimation of mixture proportions
 
 This repository contains code resources to accompany our research
-paper, 
+paper,
 
 > Youngseok Kim, Peter Carbonetto, Matthew Stephens and Mihai Anitescu
-> (2018). *A fast algorithm for maximum likelihood estimation of
+> (2019). *A fast algorithm for maximum likelihood estimation of
 > mixture proportions using sequential quadratic programming.*
 > [arXiv:1806.01412][arxiv].
 
@@ -15,8 +15,7 @@ algorithm based on sequential quadratic programming, which we call
 
 All methods and demonstrations are implemented in [Julia][julia],
 aside from the interior point solver based on [MOSEK][mosek], which is
-implemented in R. See also the please see the [mixsqp][mixsqp] R
-package.
+implemented in R. See also the [mixsqp][mixsqp] R package.
 
 For demos of the mix-SQP algorithm and comparisons with other
 optimization approaches, see [here][github-site].
@@ -26,7 +25,7 @@ please post an [issue][issues].
 
 ## License
 
-Copyright (c) 2017-2018, Youngseok Kim, Peter Carbonetto, Matthew
+Copyright (c) 2017-2019, Youngseok Kim, Peter Carbonetto, Matthew
 Stephens and Mihai Anitescu.
 
 All source code and software in this repository are made available
