@@ -1,7 +1,7 @@
 # mix-SQP: sequential quadratic programming for fast maximum-likelihood estimation of mixture proportions
 
 This repository contains code resources to accompany our research
-paper, 
+paper,
 
 > Youngseok Kim, Peter Carbonetto, Matthew Stephens and Mihai Anitescu
 > (2018). *A fast algorithm for maximum likelihood estimation of
