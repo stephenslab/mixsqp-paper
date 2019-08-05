@@ -1,13 +1,21 @@
 to do
 =====
 
-* Create a new branch, "before-code-cleanup".
+* Revise/update README.
+
+* Add information to README about which versions of MATLAB
+  (2018b/9.5.0), Julia (0.6) and R were used to test/run code.
+
+* Clean up and update MATLAB code.
+
+* Clean up and update Julia code.
+
+* Clean up and update R code.
+
+* Create a new README in the "code" directory explaining the contents
+  of the directory.
 
 * Recruit a "peer reviewer".
-
-* Add arXiv citation to README.
-
-* Revise setup instructions in README.
 
 * Revise all Jupyter notebooks and webpages.
 

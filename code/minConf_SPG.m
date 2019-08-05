@@ -263,7 +263,10 @@ while funEvals <= maxIter
     timings(i) = toc;
     i = i + 1;
 end
-
 obj     = obj(1:(i-1));
 timings = timings(1:(i-1));
+end
+
+function [legal] = isLegal(v)
+  legal = sum(any(imag(v(:))))==0 & sum(isnan(v(:)))==0 & sum(isinf(v(:)))==0;
 end
