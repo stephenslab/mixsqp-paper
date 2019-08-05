@@ -1,7 +1,9 @@
 to do
 =====
 
-* Create a new branch, "more-code".
+
+
+* Create a new branch, "before-code-cleanup".
 
 * Recruit a "peer reviewer".
 

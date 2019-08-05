@@ -42,4 +42,4 @@ p <- ggplot(dat,aes(x = runtime,y = objective,color = method)) +
   scale_y_continuous(breaks = 10^seq(-6,4,2),trans = "log10") +
   labs(x = "runtime (seconds)",
        y = "distance to minimum",
-       title = "n=20,000, m=20")
+       title = "n=20,000, m=800")

@@ -166,7 +166,7 @@ while funEvals <= maxIter
             if verbose == 3
                 fprintf('Halving Step Size\n');
             end
-t = t/2;
+            t = t/2;
         elseif interp == 2 && isLegal(g_new)
             if verbose == 3
                 fprintf('Cubic Backtracking\n');
