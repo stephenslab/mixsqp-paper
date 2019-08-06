@@ -1,6 +1,25 @@
-# Outputs the value of the objective function at x.
+function tic()
+    t0 = time_ns()
+    task_local_storage(:TIMERS, (t0, get(task_local_storage(), :TIMERS, ())))
+    return t0
+end
+
+function toq()
+    t1 = time_ns()
+    timers = get(task_local_storage(), :TIMERS, ())
+    if timers === ()
+        error("`toc()` without `tic()`")
+    end
+    t0 = timers[1]::UInt64
+    task_local_storage(:TIMERS, timers[2])
+    (t1-t0)/1e9
+end
+
+
+# Outputs object function value
+
 function mixobjective(L, x, eps = 0)
-  return -sum(log.(L * x + eps))
+  return -sum(log.(L * x .+ eps))
 end
           
 # Input argument x specifies the initial iterate of the optimization
@@ -12,7 +31,7 @@ end
 # ("dense" vectors), the default initial estimate for qpsubprob =
 # "mosek" is a sparse vector in which only the first two entries are
 # nonzero.
-function mixSQP(L; x = -1,
+function mixsqp(L; x = -1,
                 convtol = 1e-8, pqrtol = 1e-8, eps = 1e-6, sptol = 1e-3,
                 maxiter = 20, maxqpiter = 100,
                 lowrank = "svd", qpsubprob = "activeset",
@@ -20,7 +39,7 @@ function mixSQP(L; x = -1,
                 linesearch = true,
                 verbose = true)
     
-  # Get the number of rows (n) and columns (k) of L.
+# Get the number of rows (n) and columns (k) of L.
   n = size(L,1);
   k = size(L,2);
 
@@ -52,11 +71,12 @@ function mixSQP(L; x = -1,
   tic();
   if lowrank == "qr"
     F = pqrfact(L, rtol=pqrtol);
-    P = sparse(F[:P]) * 1.0;
+    P = sparse(F[:P]);
   elseif lowrank == "svd"
     F = psvdfact(L, rtol=pqrtol);
     S = Diagonal(F[:S]);
   end
+  lowranktime = toq();
     
   # Summarize the analysis here.
   if verbose
@@ -100,46 +120,42 @@ function mixSQP(L; x = -1,
 
   # Repeat until we reach the maximum number of iterations, or until
   # convergence is reached.
-  for i = 1:maxiter
+  for outer i = 1:maxiter
 
-    # Start timing the SQP iteration.
+    # Start timing the iteration.
     tic();
       
     # Compute the gradient and Hessian, optionally using the partial
     # QR decomposition to increase the speed of these computations.
     # gradient and Hessian computation -- Rank reduction method
     if lowrank == "qr"
-      D = 1./(F[:Q]*(F[:R]*(P'*x)) + eps);
+      D = 1 ./(F[:Q]*(F[:R]*(P'*x)) .+ eps);
       g = -P * F[:R]' * (F[:Q]'*D)/n;
-      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + 
-          eps*(Diagonal(ones(k)));
+      H = P * F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R]*P'/n + eps * Diagonal(ones(k));
     elseif lowrank == "svd"
-      D = 1./(F[:U]*(S*(F[:Vt]*x)) + eps);
+      D = 1 ./(F[:U]*(S*(F[:Vt]*x)) .+ eps);
       g = -F[:Vt]'*(S * (F[:U]'*D))/n;
-      H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + 
-          eps*Diagonal(ones(k));
+      H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + eps * Diagonal(ones(k));
     else
-      D = 1./(L*x + eps);
+      D = 1 ./(L*x .+ eps);
       g = -L'*D/n;
-      H = L'*Diagonal(D.^2)*L/n + eps * eye(k);
+      H = L'*Diagonal(D.^2)*L/n + eps * Diagonal(ones(k));
     end
-        
     if nullprior > 0
       g[1] -= nullprior/x[1]/n;
       H[1,1] += nullprior/x[1]^2/n;
     end
 
     # Report on the algorithm's progress.
-    # if lowrank == "qr"
-    #   obj[i] = -sum(log.(F[:Q]*(F[:R]*(P'*x)) + eps));
-    # elseif lowrank == "svd"
-    #   obj[i] = -sum(log.(F[:U]*(S*(F[:Vt]*x)) + eps));
-    # else
-    #   obj[i] = mixobjective(L,x,eps);
-    # end
-    obj[i]  = mixobjective(L,x,eps);
-    gmin[i] = minimum(g + 1);
-    nnz[i]  = length(find(x .> sptol));
+    if lowrank == "qr"
+      obj[i] = -sum(log.(F[:Q]*(F[:R]*(P'*x)) .+ eps));
+    elseif lowrank == "svd"
+      obj[i] = -sum(log.(F[:U]*(S*(F[:Vt]*x)) .+ eps));
+    else
+      obj[i] = mixobjective(L,x,eps);
+    end
+    gmin[i] = minimum(g) .+ 1;
+    nnz[i]  = length(findall(x .> sptol));
     nqp[i]  = j;
     if verbose
       if i == 1
@@ -152,8 +168,7 @@ function mixSQP(L; x = -1,
     end
       
     # Check convergence of outer loop
-    if minimum(g + 1) >= -convtol
-      timing[i] = toq();
+    if gmin[i] >= -convtol
       break
     end
     
@@ -169,13 +184,13 @@ function mixSQP(L; x = -1,
     
     # Perform backtracking line search
     if linesearch == true
-        for t = 1:10
+        for outer t = 1:10
           if lowrank == "qr"
-            D_new = 1./(F[:Q]*(F[:R]*(P'*y)) + eps);
+            D_new = 1 ./(F[:Q]*(F[:R]*(P'*y)) .+ eps);
           elseif lowrank == "svd"
-            D_new = 1./(F[:U]*(S*(F[:Vt]*y)) + eps);
+            D_new = 1 ./(F[:U]*(S*(F[:Vt]*y)) .+ eps);
           else
-            D_new = 1./(L*y + eps);
+            D_new = 1 ./(L*y .+ eps);
           end
           if all(D_new .> 0)
             if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
@@ -202,9 +217,14 @@ function mixSQP(L; x = -1,
   # iteration; (4) the number of nonzero entries in the vector at each
   # iteration; and (5) the number of inner iterations taken to solve
   # the QP subproblem at each outer iteration.
-  # x[x .< sptol] = 0;
-  # x = x/sum(x);
-  return Dict([("x",full(x)), ("obj",obj[1:i]),
+  x[x .< sptol] .= 0;
+  x             = x/sum(x);
+  totaltime     = lowranktime + sum(timing[1:i]);
+  if verbose
+    @printf("Optimization took %d iterations and %0.4f seconds.\n",i,totaltime)
+  end
+  return Dict([("x",Vector(x)), ("totaltime",totaltime),
+               ("lowranktime",lowranktime), ("obj",obj[1:i]),
                ("gmin",gmin[1:i]), ("nnz",nnz[1:i]),
                ("nqp",nqp[1:i]), ("timing",timing[1:i]),
                ("qptiming",qptiming[1:i])])
@@ -219,18 +239,18 @@ function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-3, maxiter = 100)
     
   # Initialize the solution to the QP subproblem.
   y      = sparse(zeros(k));
-  ind    = find(x .> sptol);
-  y[ind] = 1/length(ind);
+  ind    = findall(x .> sptol);
+  y[ind] .= 1/length(ind);
   i = 0;
 
   # Repeat until we reach the maximum number of iterations, or until
   # convergence is reached.
-  for i = 1:maxiter
+  for outer i = 1:maxiter
         
     # Define the smaller QP subproblem.
     s   = length(ind);
     H_s = H[ind,ind];
-    d   = H*y + 2*g + 1;
+    d   = H*y + 2*g .+ 1;
     d_s = d[ind];
 
     # Solve the smaller problem.
@@ -252,10 +272,10 @@ function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-3, maxiter = 100)
       end
     else
           
-      # Find a feasible step length.
+      # findall a feasible step length.
       alpha     = 1;
       alpha0    = -y[ind]./p_s;
-      ind_block = find(p_s .< 0);
+      ind_block = findall(p_s .< 0);
       alpha0    = alpha0[ind_block];
       if ~isempty(ind_block)
         v, t = findmin(alpha0);
@@ -266,7 +286,7 @@ function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-3, maxiter = 100)
           alpha     = v;
               
           # Update working set if there is a blocking constraint.
-          deleteat!(ind,find(ind - ind_block .== 0));
+          deleteat!(ind,findall(ind .- ind_block .== 0));
         end
       end
           
@@ -294,7 +314,7 @@ function qpmosek(x, g, H)
     appendvars(task,numvar)
     putclist(task,[1:numvar;],c)
     putvarboundslice(task,1,numvar+1,bkx,blx,bux)
-    Q = LowerTriangular(H); ind = (Q .> 0); a, b = findn(ind);
+    Q = LowerTriangular(H); ind = (Q .> 0); a, b = findalln(ind);
     putqobj(task,a,b,Q[ind])
     putobjsense(task,MSK_OBJECTIVE_SENSE_MINIMIZE)
     optimize(task)

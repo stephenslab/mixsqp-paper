@@ -17,7 +17,7 @@ function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
     
   # Compute the objective function value at the initial iterate.
   iter      = 1;
-  obj[iter] = -sum(log.(L * w + eps));
+  obj[iter] = -sum(log.(L * w .+ eps));
     
   # Repeat until convergence criterion is met, or until the maximum
   # number of iterations is reached.
@@ -32,17 +32,17 @@ function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
     # E STEP
     # ------                       
     # Compute the posterior probabilities.
-    P = L * spdiagm(w);
-    P = P ./ repmat(sum(P,2) + eps,1,k);
+    P = L * sparse(Diagonal(w));
+    P = P ./ repeat(sum(P,dims = 2) .+ eps,1,k);
 
     # M STEP
     # ------                       
     # Update the mixture weights.
-    w = mean(P,1)'[:];
+    w = mean(P,dims = 1)'[:];
     
     # COMPUTE OBJECTIVE
     # -----------------
-    obj[iter] = -sum(log.(L * w + eps));
+    obj[iter] = -sum(log.(L * w .+ eps));
       
     # CHECK CONVERGENCE
     # -----------------
