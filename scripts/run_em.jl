@@ -9,10 +9,11 @@ outfile_em      = "em-n=20000-m=20.csv";
 using Printf
 using DelimitedFiles
 using LinearAlgebra
+using SparseArrays
 using LowRankApprox
 using Statistics
 include("../code/mixEM.jl");
-# include("../code/mixSQP.jl");
+include("../code/mixSQP.jl");
 
 # Load data..
 @printf("Loading data.\n")
@@ -39,15 +40,15 @@ writedlm(outfile_em,[fem tem],',');
 @time outsqp1 = mixSQP(L,lowrank = "none",eps = 1e-8,sptol = 1e-6,
                        maxqpiter = m,maxiter = 200,verbose = false);
 outsqp1["obj"] = outsqp1["obj"]/n;
-writecsv(outfile_mixsqp1,[outsqp1["obj"] outsqp1["timing"]]);
+writedlm(outfile_mixsqp1,[outsqp1["obj"] outsqp1["timing"]],',');
 
 # Run the mix-SQP with a low rank (truncated QR) approximation to the
 # input matrix.
 @printf "Fitting model using mix-SQP with approximate L.\n"
-@time outsqp2 = mixSQP(L,lowrank = "qr",eps = 1e-8,sptol = 1e-6,maxqpiter = m,
-                 maxiter = 200,verbose = false);
+@time outsqp2 = mixSQP(L,lowrank = "qr",eps = 1e-8,sptol = 1e-6,
+                       maxqpiter = m,maxiter = 200,verbose = false);
 outsqp2["obj"] = outsqp2["obj"]/n;
-writecsv(outfile_mixsqp2,[outsqp2["obj"] outsqp2["timing"]]);
+writedlm(outfile_mixsqp2,[outsqp2["obj"] outsqp2["timing"]],',');
 
 # Compare the quality of the solutions. Note that we need to divide
 # the objective by n to match the objective used in the manuscript.
