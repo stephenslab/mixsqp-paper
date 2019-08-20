@@ -88,8 +88,7 @@ about the setup used to run the Julia code.
    Pkg.add("LowRankApprox")
    ```
 
-3. Restart Julia, then precompile the packages and load them to make
-   sure that they work:
+3. Precompile the packages and load them to make sure that they work:
 
    ```julia
    using Distributions
@@ -126,6 +125,9 @@ to run.
 3. Install the [Rmosek][rmosek] package in R (see [here][mosek-docs] for
    installation instructions).
 
+4. Run [this example](scripts/test_rmosek.R) in R to verify that MOSEK
+   and Rmosek are correctly installed.
+   
 5. Install the R package [REBayes][rebayes] from CRAN:
 
    ```R

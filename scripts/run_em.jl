@@ -2,9 +2,9 @@
 # vs. the EM algorithm. The results for the projected gradient method
 # are generated separately with run_pg.m.
 matfile         = "simdata-n=20000-m=20.csv"
+outfile_em      = "em-n=20000-m=20.csv";
 outfile_mixsqp1 = "mixsqp-exact-n=20000-m=20.csv";
 outfile_mixsqp2 = "mixsqp-approx-n=20000-m=20.csv";
-outfile_em      = "em-n=20000-m=20.csv";
 
 using Printf
 using DelimitedFiles

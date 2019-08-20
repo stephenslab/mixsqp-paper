@@ -1,7 +1,3 @@
-function logspace(a, b, n)
-  return exp10.(range(a,stop = b,length = n))
-end
-
 # Try to select a reasonable set of sigma values that should be used
 # for the adaptive shrinkage model based on the values of x (the noisy
 # observations) and s (the standard error in the observations). The
@@ -77,7 +73,7 @@ function normlikmatrix(x::Array{Float64,1},
   n = length(x);
   k = length(sd);
     
-  # Check input "s"---it should be the same length
+  # Check input "s"---it should be the same length at x.
   if length(s) != n
     throw(ArgumentError("Arguments \"x\" and \"s\" should have the same" *
                         "length"))
@@ -106,3 +102,10 @@ function normlikmatrix(x::Array{Float64,1},
   end
   return exp.(L)
 end
+
+# Implements the "logspace" function that was available in an
+# earlier version of Julia.
+function logspace(a, b, n)
+  return exp10.(range(a,stop = b,length = n))
+end
+

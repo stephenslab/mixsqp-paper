@@ -11,9 +11,9 @@ end
 # x are negative, the default initial estimate is used---the default
 # initial estimate depends on whether the active-set or MOSEK solver
 # is used).
-function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-6,
-                sptol = 1e-3, maxiter = 20, maxqpiter = 100, lowrank = "svd",
-                qpsubprob = "activeset", nullprior = 0, linesearch = true,
+function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
+                sptol = 1e-6, maxiter = 100, maxqpiter = 100,
+                lowrank = "svd", qpsubprob = "activeset",
                 verbose = true)
     
   # Get the number of rows (n) and columns (k) of L.
@@ -43,10 +43,10 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-6,
     error("lowrank must be \"none\" when qpsubprob = \"mosek\"");
   end
   if lowrank == "qr"
-    F = pqrfact(L, rtol=pqrtol);
+    F = pqrfact(L, rtol = pqrtol);
     P = sparse(F[:P]);
   elseif lowrank == "svd"
-    F = psvdfact(L, rtol=pqrtol);
+    F = psvdfact(L, rtol = pqrtol);
     S = Diagonal(F[:S]);
   end
     
@@ -104,7 +104,7 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-6,
         H = P * (F[:R]' * (F[:Q]'*Diagonal(D.^2)*F[:Q])*F[:R])*P'/n + 
             eps*Diagonal(ones(k));
       elseif lowrank == "svd"
-        D = 1 ./ (F[:U]*(S*(F[:Vt]*x)) + eps);
+        D = 1 ./ (F[:U]*(S*(F[:Vt]*x)) .+ eps);
         g = -F[:Vt]'*(S * (F[:U]'*D))/n;
         H = (F[:V]*S*(F[:U]'*Diagonal(D.^2)*F[:U])* S*F[:Vt])/n + 
             eps*Diagonal(ones(k));
@@ -114,30 +114,16 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-6,
         H = L'*Diagonal(D.^2)*L/n .+ eps * Diagonal(ones(k));
       end
          
-      if nullprior > 0
-        g[1] -= nullprior/x[1]/n;
-        H[1,1] += nullprior/x[1]^2/n;
-      end
-
       # Report on the algorithm's progress.
-      if lowrank == "qr"
-        obj[i] = -sum(log.(F[:Q]*(F[:R]*(P'*x)) .+ eps));
-      elseif lowrank == "svd"
-        obj[i] = -sum(log.(F[:U]*(S*(F[:Vt]*x)) .+ eps));
-      else
-        obj[i] = mixobjective(L,x,eps);
-      end
       obj[i]  = mixobjective(L,x,eps);
       gmin[i] = minimum(g) .+ 1;
       nnz[i]  = length(findall(x .> sptol));
-      nqp[i]  = j;
       if verbose
         if i == 1
-            @printf("%4d %0.8e %+0.2e %4d\n",
-                i,obj[i],-gmin[i],nnz[i]);
+          @printf("%4d %0.8e %+0.2e %4d\n",i,obj[i],-gmin[i],nnz[i]);
         else
-            @printf("%4d %0.8e %+0.2e %4d %3d %3d\n",
-                i,obj[i],-gmin[i],nnz[i],nqp[i-1],numls);
+          @printf("%4d %0.8e %+0.2e %4d %3d %3d\n",i,obj[i],
+                  -gmin[i],nnz[i],nqp[i - 1],numls);
         end
       end
       
@@ -149,33 +135,29 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-6,
       # Solve the QP subproblem using either the active-set or
       # interior-point (MOSEK) method.
       if qpsubprob == "activeset"
-        y,nqp[i] = qpactiveset(x,g,H,convtol = convtol,sptol = sptol,
-                               maxiter = maxqpiter);
+        y, nqp[i] = qpactiveset(x,g,H,convtol = convtol,sptol = sptol,
+                                maxiter = maxqpiter);
       elseif qpsubprob == "mosek"
         y = qpmosek(x,g,H);
       end
     
       # Perform backtracking line search
-      if linesearch == true
-        for t = 1:10
-          if lowrank == "qr"
-            D_new = 1 ./ (F[:Q]*(F[:R]*(P'*y)) .+ eps);
-          elseif lowrank == "svd"
-            D_new = 1 ./ (F[:U]*(S*(F[:Vt]*y)) .+ eps);
-          else
-            D_new = 1 ./ (L*y .+ eps);
-          end
-          if all(D_new .> 0)
-            if sum(log.(D)) - sum(log.(D_new)) > sum((x-y) .* g) / 2
-              break
-            end
-          end
-          y = (y-x)/2 + x;
+      for t = 1:10
+        if lowrank == "qr"
+          D_new = 1 ./ (F[:Q]*(F[:R]*(P'*y)) .+ eps);
+        elseif lowrank == "svd"
+          D_new = 1 ./ (F[:U]*(S*(F[:Vt]*y)) .+ eps);
+        else
+          D_new = 1 ./ (L*y .+ eps);
         end
-        numls = t;
-      else
-        numls = -1;
+        if all(D_new .> 0)
+          if sum(log.(D)) - sum(log.(D_new)) > sum((x - y) .* g) / 2
+            break
+          end
+        end
+        y = (y-x)/2 + x;
       end
+      numls = t;
     end
       
     # Update the solution to the original optimization problem.
@@ -186,18 +168,18 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-6,
   # tolerance); (2) the value of the objective at each iteration; (3)
   # the minimum gradient value of the modified objective at each
   # iteration; (4) the number of nonzero entries in the vector at each
-  # iteration; and (5) the number of inner iterations taken to solve
-  # the QP subproblem at each outer iteration.
+  # iteration; (5) the number of inner iterations taken to solve the
+  # QP subproblem at each outer iteration; and (6) the runtime for
+  # each iteration.
   x[x .< sptol] .= 0;
   x = x/sum(x);
-  return Dict([("x",Vector(x)), ("obj",obj[1:i]),
-               ("gmin",gmin[1:i]), ("nnz",nnz[1:i]),
-               ("nqp",nqp[1:i]), ("timing",timing[1:i])])
+  return Dict([("x",Vector(x)), ("obj",obj[1:i]), ("gmin",gmin[1:i]),
+               ("nnz",nnz[1:i]), ("nqp",nqp[1:i]), ("timing",timing[1:i])])
 end
 
 # Solve the QP subproblem for the mix-SQP algorithm using an active
 # set method.
-function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-3, maxiter = 100)
+function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-6, maxiter = 100)
 
   # Get the number of degrees of freedom in the optimization problem.
   k = length(x);

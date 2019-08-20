@@ -256,9 +256,9 @@ function qpactiveset(x, g, H; convergence_tol = 1e-8, sparse_tol = 1e-3, maxiter
       end
     else
           
-      # find a feasible step length.
+      # Find a feasible step length.
       alpha     = 1;
-      alpha0    = -y[ind]./p_s;
+      alpha0    = -y[ind] ./ p_s;
       ind_block = find(p_s .< 0);
       alpha0    = alpha0[ind_block];
       if ~isempty(ind_block)
