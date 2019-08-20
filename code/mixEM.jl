@@ -17,40 +17,37 @@ function mixEM(L; w = ones(size(L,2))/size(L,2), maxiter = 10000,
     
   # Compute the objective function value at the initial iterate.
   iter      = 1;
-  obj[iter] = -sum(log.(L * w + eps));
+  obj[iter] = -sum(log.(L * w .+ eps));
     
   # Repeat until convergence criterion is met, or until the maximum
   # number of iterations is reached.
   for iter = 2:maxiter
 
-    # Start timing the SQP iteration.
-    tic();
-      
     # Save the current estimate of the mixture weights.
-    w0 = w;
+    out, timing[iter] = @timed begin w0 = w;
 
-    # E STEP
-    # ------                       
-    # Compute the posterior probabilities.
-    P = L * spdiagm(w);
-    P = P ./ repmat(sum(P,2) + eps,1,k);
+      # E STEP
+      # ------                       
+      # Compute the posterior probabilities.
+      P = L * sparse(Diagonal(w));
+      P = P ./ repeat(sum(P,dims = 2) .+ eps,1,k);
 
-    # M STEP
-    # ------                       
-    # Update the mixture weights.
-    w = mean(P,1)'[:];
+      # M STEP
+      # ------                       
+      # Update the mixture weights.
+      w = mean(P,dims = 1)'[:];
     
-    # COMPUTE OBJECTIVE
-    # -----------------
-    obj[iter] = -sum(log.(L * w + eps));
-      
+      # COMPUTE OBJECTIVE
+      # -----------------
+      obj[iter] = -sum(log.(L * w .+ eps));
+    end
+    
     # CHECK CONVERGENCE
     # -----------------
     # Convergence is reached when the maximum difference between the
     # mixture weights at two successive iterations is less than the
     # specified tolerance, or when objective increases.
     maxd[iter] = maximum(abs.(w - w0));
-    timing[iter] = toq();
     if maxd[iter] < tol
       break
     end
