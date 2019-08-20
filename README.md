@@ -130,19 +130,21 @@ to run.
 ├── code
 ├── data
 ├── docs
-├── misc
-└── output
+├── output
+└── scripts
 ```
 
++ The `data` directory is where raw and simulated data are stored.
+
 + The `analysis` directory contains Jupyter notebooks illustrating
-  the optimization methods in simulated data sets, and R code to
-  generate the plots for the manuscript.
+  the optimization methods on simulated data sets.
+
++ The `scripts` directory ..., including R scripts to generate plots
+  for the paper.
 
 + The `code` directory contains Julia code implementing the
   optimization algorithms, as well as other code used in the numerical
   experiments.
-
-+ The `data` directory is where all raw and processed data are stored.
 
 + The `docs` directory contains webpages generated from the Jupyter
   notebooks.
