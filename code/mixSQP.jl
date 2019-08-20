@@ -54,12 +54,12 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   if verbose
     @printf("Running SQP algorithm with the following settings:\n")
     @printf("- %d x %d data matrix\n",n,k)
-    @printf("- convergence tolerance = %0.2e\n",convtol)
-    @printf("- zero threshold        = %0.2e\n",sptol)
+    @printf("- convergence tolerance  = %0.2e\n",convtol)
+    @printf("- zero threshold         = %0.2e\n",sptol)
     if lowrank == "qr"
       err = maximum(abs.(F[:Q]*F[:R]*P' - L));
-      @printf("- partial QR tolerance  = %0.2e\n",pqrtol)
-      @printf("- partial QR max. error = %0.2e\n",err)
+      @printf("- partial QR tolerance   = %0.2e\n",pqrtol)
+      @printf("- partial QR max. error  = %0.2e\n",err)
     elseif lowrank == "svd"
       err = maximum(abs.(F[:U]*S*F[:Vt] - L));
       @printf("- partial SVD tolerance  = %0.2e\n",pqrtol)

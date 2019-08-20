@@ -1,14 +1,14 @@
 to do
 =====
 
-+ Update run_em.jl for Julia 1.1.
-
 + Figure out what to do with test_primaldual.jl.
 
-* Revise/update README.
+* Revise/update setup instructions in README.
+
+* Revise/update other parts of README.
 
 * Add information to README about which versions of MATLAB
-  (2018b/9.5.0), Julia (0.6) and R were used to test/run code.
+  (2018b/9.5.0), Julia (1.1.1) and R were used to test/run code.
 
 * Clean up and update Julia code.
 

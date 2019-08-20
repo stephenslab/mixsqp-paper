@@ -77,8 +77,8 @@ as closely as possible. At the bottom of each Jupyter notebook and
 webpage included [here][github-site], we have recorded information
 about the setup used to run the Julia code.
 
-1. Install [Julia](http://julialang.org). (Note that all the code was
-   tested with Julia 1.1.1.)
+1. Install [Julia](http://julialang.org). *Note that all the code has
+   been tested in Julia 1.1.1.*
 
 2. Install the [Distributions][distributions-julia] and
    [LowRankApprox][lowrankapprox-julia] Julia packages:
