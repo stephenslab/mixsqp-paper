@@ -5,6 +5,8 @@ to do
 
 * Revise/update setup instructions in README.
 
+* Fill out "What's included" section of README.
+
 * Revise/update other parts of README.
 
 * Add information to README about which versions of MATLAB
