@@ -7,6 +7,10 @@
 datfile = 'simdata-n=20000-m=20.csv';
 outfile = 'pg-n=20000-m=20.csv';
 
+% SET UP ENVIRONMENT
+% ------------------
+addpath ../code
+
 % LOAD DATA
 % ---------
 fprintf('Reading data.\n')

@@ -1,3 +1,7 @@
+function logspace(a, b, n)
+  return exp10.(range(a,stop = b,length = n))
+end
+
 # Try to select a reasonable set of sigma values that should be used
 # for the adaptive shrinkage model based on the values of x (the noisy
 # observations) and s (the standard error in the observations). The
@@ -90,7 +94,7 @@ function normlikmatrix(x::Array{Float64,1},
   S = sqrt.((s.^2) .+ (sd.^2)');
 
   # Compute the log-densities, and normalize the rows, if requested.
-  L = -(x./S).^2/2 - log.(S) - log(2*pi)/2;
+  L = -(x./S).^2/2 - log.(S) .- log(2*pi)/2;
   if normalizerows
 
     # This is the same as
@@ -98,7 +102,7 @@ function normlikmatrix(x::Array{Float64,1},
     #   L = L - repmat(maximum(L,2),1,k);
     #
     # but uses memory more efficiently to complete the operation.
-    L = broadcast(-,L,maximum(L,2));
+    L = broadcast(-,L,maximum(L,dims = 2));
   end
   return exp.(L)
 end

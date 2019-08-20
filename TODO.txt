@@ -1,6 +1,10 @@
 to do
 =====
 
++ Update run_em.jl for Julia 1.1.
+
++ Figure out what to do with test_primaldual.jl.
+
 * Revise/update README.
 
 * Add information to README about which versions of MATLAB

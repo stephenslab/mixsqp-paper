@@ -68,7 +68,7 @@ work, please cite our paper. The full citation is given above.
 
 ## Setup instructions
 
-To run the first two demos listed [here][github-site], follow these
+To run the first two Julia demos [here][github-site], follow these
 steps.
 
 **Note:** If you encounter a problem running the demos, or installing
@@ -77,7 +77,8 @@ as closely as possible. At the bottom of each Jupyter notebook and
 webpage included [here][github-site], we have recorded information
 about the setup used to run the Julia code.
 
-1. Install [Julia](http://julialang.org).
+1. Install [Julia](http://julialang.org). (Note that all the code was
+   tested with Julia 1.1.1.)
 
 2. Install the [Distributions][distributions-julia] and
    [LowRankApprox][lowrankapprox-julia] Julia packages:
