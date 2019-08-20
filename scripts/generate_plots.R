@@ -323,8 +323,8 @@ dat <- transform(dat,objective = pmax(n*(objective - f),1e-6))
 
 # Create the plot comparing performance of the methods over time.
 p13 <- ggplot(dat,aes(x = runtime,y = objective,color = method)) +
-  geom_line() +
-  geom_point() +
+  geom_line(na.rm = TRUE) +
+  geom_point(na.rm = TRUE) +
   xlim(c(0,46)) +
   scale_y_continuous(breaks = 10^seq(-6,4,2),trans = "log10") +
   labs(x = "runtime (seconds)",
