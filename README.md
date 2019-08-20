@@ -8,17 +8,15 @@ paper,
 > mixture proportions using sequential quadratic programming.*
 > [arXiv:1806.01412][arxiv].
 
-We provide code implementing optimization method for
-maximum-likelihood estimation of mixture proportions, including a fast
-algorithm based on sequential quadratic programming, which we call
-"mix-SQP".
-
-All methods and demonstrations are implemented in [Julia][julia],
-aside from the interior point solver based on [MOSEK][mosek], which is
-implemented in R. See also the [mixsqp][mixsqp] R package.
-
-For demos of the mix-SQP algorithm and comparisons with other
+We provide code implementing optimization methods for
+maximum-likelihood estimation of mixture proportions, in particular a
+fast algorithm based on sequential quadratic programming, which we
+call "mix-SQP". This method is implemented [Julia][julia]. For
+demonstrations of the mix-SQP algorithm and comparisons with other
 optimization approaches, see [here][github-site].
+
+For an R implementation of the mix-SQP algorithm, see the
+[mixsqp][mixsqp] R package.
 
 If you find a bug, or you have a question or feedback on our work,
 please post an [issue][issues].
@@ -37,7 +35,38 @@ under the terms of the [MIT license][mit-license]. See the
 If you find any of the source code in this repository useful for your
 work, please cite our paper. The full citation is given above.
 
-## Setup instructions (part 1)
+## What's included
+
+```
+├── analysis
+├── code
+├── data
+├── docs
+├── output
+└── scripts
+```
+
++ The `data` directory is where raw and simulated data are stored.
+
++ The `analysis` directory contains Jupyter notebooks illustrating
+  the optimization methods on simulated data sets.
+
++ The `scripts` directory contains various Julia and MATLAB scripts
+  implementing some of the numerical experiments, including R scripts
+  to generate plots for the paper. The MATLAB scripts were run in
+  MATLAB 9.5.0 (2018b).
+
++ The `code` directory contains Julia and MATLAB code implementing the
+  optimization algorithms, as well as other code used in the numerical
+  experiments.
+
++ The `docs` directory contains webpages generated from the Jupyter
+  notebooks.
+
++ Results of the demos and numerical experiments are stored in the
+  `output` directory.
+
+## Setup instructions
 
 To run the first two demos listed [here][github-site], follow these
 steps.
@@ -80,7 +109,7 @@ about the setup used to run the Julia code.
    inside Jupyter. This requires that you have already installed the
    [Jupyter kernel for Julia][ijulia].
 
-## Setup instructions (part 2)
+## More (optional) setup instructions
 
 The simple setup instructions above will allow you to run the first
 two examples. If you have successfully run the first two examples, and
@@ -95,9 +124,6 @@ to run.
 
 3. Install the [Rmosek][rmosek] package in R (see [here][mosek-docs] for
    installation instructions).
-
-4. Run [this example](code/test.rmosek.R) in R to verify that MOSEK
-   and Rmosek are correctly installed.
 
 5. Install the R package [REBayes][rebayes] from CRAN:
 
@@ -122,35 +148,6 @@ to run.
    using JuMP
    using RCall
    ```
-
-## What's included
-
-```
-├── analysis
-├── code
-├── data
-├── docs
-├── output
-└── scripts
-```
-
-+ The `data` directory is where raw and simulated data are stored.
-
-+ The `analysis` directory contains Jupyter notebooks illustrating
-  the optimization methods on simulated data sets.
-
-+ The `scripts` directory ..., including R scripts to generate plots
-  for the paper.
-
-+ The `code` directory contains Julia code implementing the
-  optimization algorithms, as well as other code used in the numerical
-  experiments.
-
-+ The `docs` directory contains webpages generated from the Jupyter
-  notebooks.
-
-+ Results of the demos and numerical experiments are stored in the
-  `output` directory.
 
 ## Developer notes
 

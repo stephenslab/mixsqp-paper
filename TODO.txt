@@ -8,8 +8,6 @@ to do
 
 * Clean up and update Julia code.
 
-* Clean up and update R code.
-
 * Create a new README in the "code" directory explaining the contents
   of the directory.
 
@@ -17,4 +15,4 @@ to do
 
 * Revise all Jupyter notebooks and webpages.
 
-* Use BFG Repo-Cleaner to remove any large files in the git history.
+* Use BFG Repo-Cleaner to remove large files in the git history.
