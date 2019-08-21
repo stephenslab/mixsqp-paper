@@ -196,7 +196,12 @@ body {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Pkg</span>
+<span class="k">using</span> <span class="n">Random</span>
+<span class="k">using</span> <span class="n">Printf</span>
+<span class="k">using</span> <span class="n">Distributions</span>
+<span class="k">using</span> <span class="n">SparseArrays</span>
+<span class="k">using</span> <span class="n">LinearAlgebra</span>
 <span class="k">using</span> <span class="n">Mosek</span>
 <span class="k">using</span> <span class="n">JuMP</span>
 <span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/datasim.jl&quot;</span><span class="p">);</span>
@@ -205,24 +210,6 @@ body {
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>WARNING: Method definition abs(ForwardDiff.Dual{T, V, N} where N where V&lt;:Real) in module ForwardDiff at /Users/pcarbo/.julia/v0.6/ForwardDiff/src/dual.jl:317 overwritten at /Users/pcarbo/.julia/v0.6/ForwardDiff/src/dual.jl:163.
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -241,7 +228,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">srand</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -330,8 +317,8 @@ body {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;activeset&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;mosek&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;activeset&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;mosek&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -353,7 +340,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">out1</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;activeset&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="nd">@time</span> <span class="n">out1</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;activeset&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -372,34 +359,34 @@ body {
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Running SQP algorithm with the following settings:
 - 50000 x 20 data matrix
-- convergence tolerance = 1.00e-08
-- zero threshold        = 1.00e-03
+- convergence tolerance  = 1.00e-08
+- zero threshold         = 1.00e-06
 - Exact derivative computation (partial QR not used).
-iter      objective -min(g+1) #nnz #qp #ls
-   1 3.03733620e+04 +6.30e-01   20   0   0
-   2 2.09533189e+04 +5.80e+04    1   0   1
-   3 1.28079423e+04 +2.01e+04    3   0   1
-   4 1.11142170e+04 +8.72e+03    3   0   1
-   5 1.09365390e+04 +4.16e+03    3   0   1
-   6 1.07220696e+04 +2.01e+03    3   0   1
-   7 1.05949242e+04 +1.03e+03    3   0   1
-   8 1.05173539e+04 +5.08e+02    3   0   1
-   9 1.03017484e+04 +2.50e+02    2   0   1
-  10 1.01824445e+04 +1.28e+02    3   0   1
-  11 1.01286239e+04 +6.46e+01    3   0   1
-  12 1.00404507e+04 +3.20e+01    3   0   1
-  13 9.89744142e+03 +1.61e+01    3   0   1
-  14 9.85084743e+03 +8.00e+00    3   0   1
-  15 9.81505659e+03 +3.85e+00    3   0   1
-  16 9.77438543e+03 +1.81e+00    3   0   1
-  17 9.75247900e+03 +8.28e-01    4   0   1
-  18 9.74083776e+03 +3.51e-01    4   0   1
-  19 9.73161458e+03 +1.06e-01    4   0   1
-  20 9.72785163e+03 +2.17e-02    5   0   1
-  21 9.72698842e+03 +1.59e-03    5   0   1
-  22 9.72691639e+03 +1.04e-06    5   0   1
-  23 9.72691593e+03 -3.18e-09    5   0   1
-Optimization took 23 iterations and 0.4471 seconds.
+iter      objective -min(g+1)  #nz #qp #ls
+   1 3.03733620e+04 +6.30e-01   20
+   2 2.09533189e+04 +5.80e+04    1  27   1
+   3 1.28079423e+04 +2.01e+04    3  54   1
+   4 1.11142170e+04 +8.72e+03    3  34   1
+   5 1.09365390e+04 +4.16e+03    3   9   1
+   6 1.07220696e+04 +2.01e+03    3  18   1
+   7 1.05949242e+04 +1.03e+03    4  12   1
+   8 1.05173539e+04 +5.08e+02    4   2   1
+   9 1.03017484e+04 +2.50e+02    4  20   1
+  10 1.01824445e+04 +1.28e+02    4   2   1
+  11 1.01286239e+04 +6.46e+01    4   4   1
+  12 1.00404507e+04 +3.20e+01    4   7   1
+  13 9.89744142e+03 +1.61e+01    4  16   1
+  14 9.85084743e+03 +8.00e+00    4   5   1
+  15 9.81505659e+03 +3.85e+00    5   4   1
+  16 9.77438543e+03 +1.81e+00    5  11   1
+  17 9.75247900e+03 +8.28e-01    5   2   1
+  18 9.74083776e+03 +3.51e-01    6   4   1
+  19 9.73161458e+03 +1.06e-01    6  11   1
+  20 9.72785163e+03 +2.17e-02    6   2   1
+  21 9.72698842e+03 +1.59e-03    6   2   1
+  22 9.72691639e+03 +1.04e-06    6   2   1
+  23 9.72691593e+03 -3.18e-09    6   2   1
+  0.389242 seconds (248.85 k allocations: 443.474 MiB, 9.25% gc time)
 </pre>
 </div>
 </div>
@@ -422,7 +409,7 @@ Optimization took 23 iterations and 0.4471 seconds.
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">out2</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;mosek&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="nd">@time</span> <span class="n">out2</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;mosek&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -441,33 +428,35 @@ Optimization took 23 iterations and 0.4471 seconds.
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Running SQP algorithm with the following settings:
 - 50000 x 20 data matrix
-- convergence tolerance = 1.00e-08
-- zero threshold        = 1.00e-03
+- convergence tolerance  = 1.00e-08
+- zero threshold         = 1.00e-06
 - Exact derivative computation (partial QR not used).
-iter      objective -min(g+1) #nnz #qp #ls
-   1 1.18584295e+04 +7.79e+04    2   0   0
-   2 1.18019962e+04 +2.39e+04    7   0   1
-   3 1.15826110e+04 +9.45e+03    8   0   1
-   4 1.12252365e+04 +4.33e+03    8   0   1
-   5 1.09642877e+04 +2.04e+03    8   0   1
-   6 1.07884947e+04 +1.01e+03    6   0   1
-   7 1.06007499e+04 +5.08e+02    7   0   1
-   8 1.05098000e+04 +2.55e+02    7   0   1
-   9 1.03011708e+04 +1.26e+02    4   0   1
-  10 1.01721090e+04 +6.41e+01    3   0   1
-  11 1.01096088e+04 +3.23e+01    3   0   1
-  12 1.00125909e+04 +1.59e+01    4   0   1
-  13 9.87791041e+03 +8.07e+00    3   0   1
-  14 9.83461847e+03 +3.97e+00    3   0   1
-  15 9.79385100e+03 +1.86e+00    3   0   1
-  16 9.75930608e+03 +8.52e-01    4   0   1
-  17 9.74409206e+03 +3.61e-01    4   0   1
-  18 9.73365669e+03 +1.12e-01    4   0   1
-  19 9.72836684e+03 +2.77e-02    5   0   1
-  20 9.72705594e+03 +2.95e-03    5   0   1
-  21 9.72691759e+03 +1.03e-05    5   0   1
-  22 9.72691593e+03 -2.98e-09    5   0   1
-Optimization took 22 iterations and 0.4430 seconds.
+iter      objective -min(g+1)  #nz #qp #ls
+   1 3.03733620e+04 +6.30e-01   20
+   2 2.35424547e+04 +3.74e-01   20   0   2
+   3 1.61319423e+04 +6.27e+04    7   0   1
+   4 1.16898684e+04 +1.99e+04    9   0   1
+   5 1.10954042e+04 +8.33e+03   10   0   1
+   6 1.09384616e+04 +3.96e+03    9   0   1
+   7 1.07182611e+04 +1.91e+03   10   0   1
+   8 1.05921969e+04 +9.72e+02    9   0   1
+   9 1.05108500e+04 +4.85e+02   10   0   1
+  10 1.02904495e+04 +2.40e+02   11   0   1
+  11 1.01780677e+04 +1.23e+02   11   0   1
+  12 1.01226704e+04 +6.19e+01   12   0   1
+  13 1.00302472e+04 +3.06e+01   12   0   1
+  14 9.89082213e+03 +1.54e+01   13   0   1
+  15 9.84835543e+03 +7.66e+00   12   0   1
+  16 9.81161447e+03 +3.68e+00    6   0   1
+  17 9.77177429e+03 +1.73e+00   13   0   1
+  18 9.75149444e+03 +7.87e-01   14   0   1
+  19 9.74004693e+03 +3.29e-01   14   0   1
+  20 9.73116124e+03 +9.73e-02    7   0   1
+  21 9.72773184e+03 +1.90e-02    6   0   1
+  22 9.72697209e+03 +1.23e-03    6   0   1
+  23 9.72691620e+03 +2.68e-07    6   0   1
+  24 9.72691593e+03 -2.98e-09    6   0   1
+  0.334137 seconds (16.08 k allocations: 449.188 MiB, 11.10% gc time)
 </pre>
 </div>
 </div>
@@ -509,7 +498,7 @@ Optimization took 22 iterations and 0.4430 seconds.
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>1.40932608673483e-7</pre>
+<pre>1.3978790775089067e-7</pre>
 </div>
 
 </div>
@@ -522,7 +511,7 @@ Optimization took 22 iterations and 0.4430 seconds.
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We also observe that solving the quadratic programs is only a small fraction of the total effort. Nonetheless, the effort with the active-set implementation is about 5 times less than with MOSEK.</p>
+<p>Solving the quadratic programs is only a small fraction of the total effort. Nonetheless, the effort of the active-set computations is much less than solving the quadratic subproblems with MOSEK.</p>
 
 </div>
 </div>
@@ -550,8 +539,8 @@ Optimization took 22 iterations and 0.4430 seconds.
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total runtime of active set method:     0.011 s.
-Total runtime of interior point method: 0.033 s.
+<pre>Total runtime of active set method:     0.002 s.
+Total runtime of interior point method: 0.047 s.
 </pre>
 </div>
 </div>
@@ -659,8 +648,8 @@ Total runtime of interior point method: 0.033 s.
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  4.081609 seconds (71.63 k allocations: 2.956 GiB, 66.13% gc time)
-  5.948761 seconds (18.61 k allocations: 3.885 GiB, 60.98% gc time)
+<pre>  1.000902 seconds (50.91 k allocations: 1.532 GiB, 22.63% gc time)
+  0.950645 seconds (2.97 k allocations: 1.525 GiB, 14.49% gc time)
 </pre>
 </div>
 </div>
@@ -673,7 +662,7 @@ Total runtime of interior point method: 0.033 s.
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The first SQP run with the active-set method is slightly faster. And, as before, the solutions are very similar:</p>
+<p>The first SQP run with the active-set method is only slightly faster. And, as before, the solutions are very similar:</p>
 
 </div>
 </div>
@@ -702,7 +691,7 @@ Total runtime of interior point method: 0.033 s.
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>7.392572117970175e-5</pre>
+<pre>4.531836922726025e-5</pre>
 </div>
 
 </div>
@@ -743,8 +732,8 @@ Total runtime of interior point method: 0.033 s.
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total runtime of active set method:     0.018 s.
-Total runtime of interior point method: 0.062 s.
+<pre>Total runtime of active set method:     0.005 s.
+Total runtime of interior point method: 0.060 s.
 </pre>
 </div>
 </div>
@@ -757,108 +746,7 @@ Total runtime of interior point method: 0.062 s.
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Therefore, although the active-set method is faster than MOSEK (roughly a 5-fold improvement in runtime), the overall impact on performance is relatively small.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="SQP-with-MOSEK-sometimes-fails-to-converge-to-the-correct-solution">SQP with MOSEK sometimes fails to converge to the correct solution<a class="anchor-link" href="#SQP-with-MOSEK-sometimes-fails-to-converge-to-the-correct-solution">&#182;</a></h2><p>Perhaps a more important advantage of the active-set method is that it converges more reliably to the correct solution; in practice, we have found that the MOSEK solver does not provide the correct solution when the initial iterate is not sparse. (To safeguard against this issue, the default initial estimate is set to a vector with only two nonzero entries whenever the MOSEK solver is used.)</p>
-<p>To illustrate the convergence issue, we set the initial estimate to a vector in which all the entries are the same:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">out3</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">/</span><span class="n">k</span><span class="p">,</span><span class="n">qpsubprob</span> <span class="o">=</span> <span class="s">&quot;mosek&quot;</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">);</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Running SQP algorithm with the following settings:
-- 100000 x 40 data matrix
-- convergence tolerance = 1.00e-08
-- zero threshold        = 1.00e-03
-- Exact derivative computation (partial QR not used).
-iter      objective -min(g+1) #nnz #qp #ls
-   1 6.69043907e+04 +7.43e-01   40   0   0
-   2 3.43556702e+04 +2.17e-01   39   0   1
-   3 1.08872324e+04 -3.94e-02   39   0   1
-Optimization took 3 iterations and 0.5615 seconds.
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The optimization algorithm stops after only a small number of iterations, and we see that the solution is far from the correct solution:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">out1</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">out3</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[16]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.868145175450365</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Indeed, we see that the provide solution from this run is very far away from the solution obtained earlier.</p>
+<p>Therefore, although the active-set method is much faster than MOSEK, the overall impact on performance is relatively small.</p>
 
 </div>
 </div>
@@ -875,7 +763,7 @@ notebook, including the version of Julia, and the versions of the Julia packages
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">Pkg</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s">&quot;Distributions&quot;</span><span class="p">);</span>
@@ -898,19 +786,20 @@ notebook, including the version of Julia, and the versions of the Julia packages
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> - Distributions                 0.15.0
- - Mosek                         0.8.3
- - JuMP                          0.18.0
-Julia Version 0.6.2
-Commit d386e40c17 (2017-12-13 18:08 UTC)
+<pre><span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [31c24e10]</span><span class="ansi-white-fg"> Distributions v0.21.1</span>
+<span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [6405355b]</span><span class="ansi-white-fg"> Mosek v1.0.4</span>
+<span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [4076af6c]</span><span class="ansi-white-fg"> JuMP v0.19.2</span>
+Julia Version 1.1.1
+Commit 55e36cc (2019-05-16 04:10 UTC)
 Platform Info:
-  OS: macOS (x86_64-apple-darwin14.5.0)
+  OS: macOS (x86_64-apple-darwin15.6.0)
   CPU: Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz
   WORD_SIZE: 64
-  BLAS: libopenblas (USE64BITINT DYNAMIC_ARCH NO_AFFINITY Prescott)
-  LAPACK: libopenblas64_
   LIBM: libopenlibm
-  LLVM: libLLVM-3.9.1 (ORCJIT, broadwell)
+  LLVM: libLLVM-6.0.1 (ORCJIT, skylake)
 </pre>
 </div>
 </div>

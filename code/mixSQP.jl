@@ -8,9 +8,8 @@ end
 # likelihood matrix, where n is the number of samples and m is the
 # number of mixture components. Optional input argument x is the
 # initial estimate of the mixture weights (when one or more entries of
-# x are negative, the default initial estimate is used---the default
-# initial estimate depends on whether the active-set or MOSEK solver
-# is used).
+# x are negative, the default initial estimate is used in which all
+# the entries are set to 1/k, where k = size(L,2).
 function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
                 sptol = 1e-6, maxiter = 100, maxqpiter = 100,
                 lowrank = "svd", qpsubprob = "activeset",
@@ -25,14 +24,7 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   # estimate is set to a sparse vector in which all but two of the
   # entries are zero.
   if any(x .< 0)
-    if qpsubprob == "activeset"
-      x = ones(k)/k;
-    elseif qpsubprob == "mosek"
-      x = zeros(k);
-      x[1:2] = 0.5;
-    else
-      error("Input \"method\" should be \"activeset\" or \"mosek\"");
-    end
+    x = ones(k)/k;
   end
     
   # If requested (i.e., if pqrtol > 0), compute the partial QR
@@ -70,19 +62,12 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   end
 
   # Initialize storage for the outputs obj, gmin, nnz and nqp.
-  obj    = zeros(maxiter);
-  gmin   = zeros(maxiter);
-  nnz    = zeros(Int,maxiter);
-  nqp    = zeros(Int,maxiter);
-  timing = zeros(maxiter);
-    
-  # Initialize loop variables used in the loops below so that they
-  # are available outside the scope of the loop.
-  i     = 0;
-  j     = 0;
-  D     = 0;
-  t     = 0;
-  numls = -1;
+  obj      = zeros(maxiter);
+  gmin     = zeros(maxiter);
+  nnz      = zeros(Int,maxiter);
+  nqp      = zeros(Int,maxiter);
+  timing   = zeros(maxiter);
+  qptiming = zeros(maxiter);
     
   # Print the column labels for reporting the algorithm's progress.
   if verbose
@@ -91,8 +76,11 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
 
   # Repeat until we reach the maximum number of iterations, or until
   # convergence is reached.
+  numiter = 0;
+  numls   = 0;
   for i = 1:maxiter
-
+    numiter = i;
+      
     out, timing[i] = @timed begin
       
       # Compute the gradient and Hessian, optionally using the partial
@@ -134,7 +122,7 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
     
       # Solve the QP subproblem using either the active-set or
       # interior-point (MOSEK) method.
-      if qpsubprob == "activeset"
+      out, qptiming[i] = @timed if qpsubprob == "activeset"
         y, nqp[i] = qpactiveset(x,g,H,convtol = convtol,sptol = sptol,
                                 maxiter = maxqpiter);
       elseif qpsubprob == "mosek"
@@ -143,6 +131,7 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
     
       # Perform backtracking line search
       for t = 1:10
+        numls = t;
         if lowrank == "qr"
           D_new = 1 ./ (F[:Q]*(F[:R]*(P'*y)) .+ eps);
         elseif lowrank == "svd"
@@ -157,7 +146,8 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
         end
         y = (y-x)/2 + x;
       end
-      numls = t;
+
+      numiter = i;
     end
       
     # Update the solution to the original optimization problem.
@@ -169,12 +159,18 @@ function mixSQP(L; x = -1, convtol = 1e-8, pqrtol = 1e-8, eps = 1e-8,
   # the minimum gradient value of the modified objective at each
   # iteration; (4) the number of nonzero entries in the vector at each
   # iteration; (5) the number of inner iterations taken to solve the
-  # QP subproblem at each outer iteration; and (6) the runtime for
-  # each iteration.
+  # QP subproblem at each outer iteration; (6) the total runtime for
+  # each iteration; and (7) the runtime for solving the quadratic
+  # subproblem at each iteration.
   x[x .< sptol] .= 0;
   x = x/sum(x);
-  return Dict([("x",Vector(x)), ("obj",obj[1:i]), ("gmin",gmin[1:i]),
-               ("nnz",nnz[1:i]), ("nqp",nqp[1:i]), ("timing",timing[1:i])])
+  return Dict([("x",Vector(x)),
+               ("obj",obj[1:numiter]),
+               ("gmin",gmin[1:numiter]),
+               ("nnz",nnz[1:numiter]),
+               ("nqp",nqp[1:numiter]),
+               ("timing",timing[1:numiter]),
+               ("qptiming",qptiming[1:numiter])])
 end
 
 # Solve the QP subproblem for the mix-SQP algorithm using an active
@@ -188,12 +184,13 @@ function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-6, maxiter = 100)
   y       = zeros(k);
   ind     = findall(x .> sptol);
   y[ind] .= 1/length(ind);
-  i = 0;
 
   # Repeat until we reach the maximum number of iterations, or until
   # convergence is reached.
+  numiter = 0;
   for i = 1:maxiter
-        
+    numiter = i;
+      
     # Define the smaller QP subproblem.
     s   = length(ind);
     H_s = H[ind,ind];
@@ -244,24 +241,27 @@ function qpactiveset(x, g, H; convtol = 1e-8, sptol = 1e-6, maxiter = 100)
   end
 
   # Return the solution to the quadratic program.
-  return y, Int(i)
+  return y, numiter
 end
 
 # Solve the QP subproblem for the mix-SQP algorithm using MOSEK.
 function qpmosek(x, g, H)
   k      = length(g);
   y      = copy(x);
-  bkx    = repmat([MSK_BK_LO],k,1)[:];
+  bkx    = repeat([MSK_BK_LO],k,1)[:];
   blx    = zeros(k);
   bux    = Inf * ones(k);
   numvar = length(bkx);
-  c      = 2*g + 1;
+  c      = 2*g .+ 1;
     
   maketask() do task
     appendvars(task,numvar)
     putclist(task,[1:numvar;],c)
     putvarboundslice(task,1,numvar+1,bkx,blx,bux)
-    Q = LowerTriangular(H); ind = (Q .> 0); a, b = findalln(ind);
+    Q    = LowerTriangular(H);
+    ind  = findall(Q .> 0);
+    a    = (i->i[1]).(ind)
+    b    = (i->i[2]).(ind)
     putqobj(task,a,b,Q[ind])
     putobjsense(task,MSK_OBJECTIVE_SENSE_MINIMIZE)
     optimize(task)
