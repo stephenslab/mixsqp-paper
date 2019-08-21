@@ -3,8 +3,6 @@ to do
 
 + Figure out what to do with test_primaldual.jl.
 
-+ Figure out what to do with does_mixsqp_degrade.ipynb.
-
 * Revise/update setup instructions in README.
 
 * Fill out "What's included" section of README.
