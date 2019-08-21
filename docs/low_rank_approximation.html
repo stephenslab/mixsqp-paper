@@ -196,7 +196,12 @@ body {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Pkg</span>
+<span class="k">using</span> <span class="n">Random</span>
+<span class="k">using</span> <span class="n">Printf</span>
+<span class="k">using</span> <span class="n">Distributions</span>
+<span class="k">using</span> <span class="n">LinearAlgebra</span>
+<span class="k">using</span> <span class="n">SparseArrays</span>
 <span class="k">using</span> <span class="n">LowRankApprox</span>
 <span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/datasim.jl&quot;</span><span class="p">);</span>
 <span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/likelihood.jl&quot;</span><span class="p">);</span>
@@ -222,7 +227,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">srand</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -310,9 +315,9 @@ body {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;svd&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;qr&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;nothing&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;svd&quot;</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;qr&quot;</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;nothing&quot;</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -353,9 +358,9 @@ body {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  0.292655 seconds (35.48 k allocations: 441.592 MiB, 12.33% gc time)
-  0.308716 seconds (40.31 k allocations: 435.329 MiB, 11.74% gc time)
-  0.401027 seconds (35.54 k allocations: 810.007 MiB, 16.22% gc time)
+<pre>  0.227304 seconds (30.38 k allocations: 272.346 MiB, 10.40% gc time)
+  0.226690 seconds (30.03 k allocations: 264.711 MiB, 10.62% gc time)
+  0.249882 seconds (37.26 k allocations: 432.825 MiB, 13.55% gc time)
 </pre>
 </div>
 </div>
@@ -368,7 +373,7 @@ body {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You may see a slight improvement in the computation time with the QR and SVD approximations. And the solutions using the low-rank approximations are still very close to the solution without an approximation:</p>
+<p>You may see a slight improvement in the computation time with the QR and SVD approximations. The solutions using the low-rank approximations are still very close to the solution without an approximation:</p>
 
 </div>
 </div>
@@ -398,7 +403,7 @@ body {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(1.4551915228366852e-11, 7.34871719032526e-10)</pre>
+<pre>(1.8189894035458565e-12, 1.8189894035458565e-12)</pre>
 </div>
 
 </div>
@@ -489,7 +494,7 @@ body {
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="nd">@time</span> <span class="n">outSVD</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;svd&quot;</span><span class="p">,</span><span class="n">pqrtol</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
 <span class="nd">@time</span> <span class="n">outQR</span>  <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;qr&quot;</span><span class="p">,</span><span class="n">pqrtol</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
-<span class="nd">@time</span> <span class="n">out</span>    <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;nothing&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+<span class="nd">@time</span> <span class="n">out</span>    <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">lowrank</span> <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -506,9 +511,9 @@ body {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 13.664875 seconds (218.83 k allocations: 11.126 GiB, 21.27% gc time)
- 14.892133 seconds (123.45 k allocations: 11.292 GiB, 17.38% gc time)
- 78.424334 seconds (103.06 k allocations: 70.593 GiB, 10.29% gc time)
+<pre>  9.602211 seconds (485.50 k allocations: 6.457 GiB, 9.72% gc time)
+  8.688203 seconds (112.77 k allocations: 6.322 GiB, 8.06% gc time)
+ 39.652424 seconds (40.08 k allocations: 34.259 GiB, 9.46% gc time)
 </pre>
 </div>
 </div>
@@ -521,7 +526,7 @@ body {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In the larger data set, the QR and SVD approximations yield much larger improvements in computation time, which is not surprising because the matrix-vector operations (particularly in computing the gradient and Hessian) dominate the overall computation time.</p>
+<p>In the larger data set, the QR and SVD approximations yield much larger improvements in computation time, which is not surprising because the matrix-vector operations (particularly in computing the gradient and Hessian) dominate the computational cost.</p>
 <p>As before, the solutions using the low-rank approximations are still close to the solution that is obtained without any approximation:</p>
 
 </div>
@@ -552,7 +557,7 @@ body {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(-0.00029614841332659125, 0.0011941808625124395)</pre>
+<pre>(9.953510016202927e-9, 5.820766091346741e-9)</pre>
 </div>
 
 </div>
@@ -595,18 +600,18 @@ notebook, including the version of Julia, and the versions of the Julia packages
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> - Distributions                 0.15.0
- - LowRankApprox                 0.1.1
-Julia Version 0.6.2
-Commit d386e40c17 (2017-12-13 18:08 UTC)
+<pre><span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [31c24e10]</span><span class="ansi-white-fg"> Distributions v0.21.1</span>
+<span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [898213cb]</span><span class="ansi-white-fg"> LowRankApprox v0.2.3</span>
+Julia Version 1.1.1
+Commit 55e36cc (2019-05-16 04:10 UTC)
 Platform Info:
-  OS: macOS (x86_64-apple-darwin14.5.0)
+  OS: macOS (x86_64-apple-darwin15.6.0)
   CPU: Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz
   WORD_SIZE: 64
-  BLAS: libopenblas (USE64BITINT DYNAMIC_ARCH NO_AFFINITY Prescott)
-  LAPACK: libopenblas64_
   LIBM: libopenlibm
-  LLVM: libLLVM-3.9.1 (ORCJIT, broadwell)
+  LLVM: libLLVM-6.0.1 (ORCJIT, skylake)
 </pre>
 </div>
 </div>
