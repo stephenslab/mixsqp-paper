@@ -190,7 +190,7 @@ body {
 <li>maximum-likelihood estimation of the mixture proportions, and</li>
 <li>posterior computation.</li>
 </ol>
-<p>Here we profile the runtime of each of these steps, in which the second step (maximum-likelihood estimation) is solved using either an interior point method (<code>MOSEK</code>) or the SQP algorithm we have developed. Our initial solution used the commercial interior point solver MOSEK (called via the <code>KWDual</code> function in the <code>REBayes</code> R package), and here we show that the mix-SQP solver yields a large improvement in performance, to the point that the model fitting step is no longer the predominant computational effort.</p>
+<p>Here we profile the runtime of each of these steps, in which the second step (maximum-likelihood estimation) is solved using either an interior point method (<code>MOSEK</code>) or the SQP algorithm we have developed. Our initial solution used the commercial interior point solver MOSEK (called via the <code>KWDual</code> function in the <code>REBayes</code> R package), and here we show that the mix-SQP solver yields a large improvement in performance, to the point that the model fitting step is no longer the predominant step in terms of computational effort.</p>
 <p>The adaptive shrinkage calculations from the <a href="https://github.com/stephens999/ashr">ashr package</a> are reproduced here in Julia.</p>
 
 </div>
@@ -201,7 +201,7 @@ body {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Analysis-setup">Analysis setup<a class="anchor-link" href="#Analysis-setup">&#182;</a></h2><p><em>Before attempting to run this Julia code, make sure your computer is properly set up to run this code by following the setup instructions in the README of the <a href="https://github.com/stephenslab/mixsqp-paper">git repository</a>.</em></p>
-<p>We begin by loading the Distributions, LowRankApprox and RCall Julia packages, as well as some function definitions used in the code chunks below.</p>
+<p>We begin by loading the Distributions, LowRankApprox, RCall and other packages, as well as some function definitions used in the code chunks below.</p>
 
 </div>
 </div>
@@ -211,8 +211,13 @@ body {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Pkg</span>
+<span class="k">using</span> <span class="n">Random</span>
+<span class="k">using</span> <span class="n">Printf</span>
+<span class="k">using</span> <span class="n">Distributions</span>
 <span class="k">using</span> <span class="n">LowRankApprox</span>
+<span class="k">using</span> <span class="n">LinearAlgebra</span>
+<span class="k">using</span> <span class="n">SparseArrays</span>
 <span class="k">using</span> <span class="n">RCall</span>
 <span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/datasim.jl&quot;</span><span class="p">);</span>
 <span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/likelihood.jl&quot;</span><span class="p">);</span>
@@ -240,7 +245,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">srand</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -259,7 +264,7 @@ body {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="mf">5e4</span><span class="p">);</span>
@@ -276,7 +281,7 @@ body {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this example, the standard errors (<code>s</code>) of the provided estimates (<code>z</code>) are assumed to be all 1.</p>
+<p>In this example, the standard errors (<code>s</code>) of the provided estimates (<code>z</code>) are assumed to all be 1.</p>
 
 </div>
 </div>
@@ -292,7 +297,7 @@ body {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span></span><span class="n">gridmult</span>    <span class="o">=</span> <span class="mf">1.2</span><span class="p">;</span>
@@ -301,6 +306,26 @@ body {
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>┌ Warning: RCall.jl: Warning: package ‘REBayes’ was built under R version 3.4.4
+│ Loading required package: Matrix
+└ @ RCall /Users/pcarbo/.julia/packages/RCall/iojZI/src/io.jl:113
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -364,8 +389,8 @@ body {
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> solver likelihood fitting posterior
-  MOSEK      0.132   1.827     0.097
-mix-SQP      0.098   0.335     0.012
+  MOSEK      0.201   2.198     0.065
+mix-SQP      0.170   0.211     0.017
 </pre>
 </div>
 </div>
@@ -468,8 +493,8 @@ mix-SQP      0.098   0.335     0.012
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> solver likelihood fitting posterior
-  MOSEK      1.057  17.191     0.160
-mix-SQP      0.983   0.769     0.040
+  MOSEK      1.031  19.527     0.684
+mix-SQP      0.763   0.695     0.036
 </pre>
 </div>
 </div>
@@ -482,8 +507,8 @@ mix-SQP      0.983   0.769     0.040
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The result is similar to above, but more dramatic—the effort of model fitting with mix-SQP is comparable to the effort required to compute the likelihood matrix, whereas the model fitting using the interior point method (MOSEK) dominates the effort of the other steps.</p>
-<p>In summary, this illustrates the benefit of the SQP approach for adaptive shrinkage, particularly for large data sets.</p>
+<p>The result is similar to above, but more dramatic—in this example, the effort of model fitting with mix-SQP is comparable to the effort required to compute the likelihood matrix, whereas the model fitting using the interior point method (MOSEK) dominates the effort of the other steps.</p>
+<p>In summary, this illustrates the benefit of the SQP method for implementing adaptive shrinkage, particularly for large data sets.</p>
 
 </div>
 </div>
@@ -523,19 +548,20 @@ notebook, including the version of Julia and the Julia packages.</p>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> - Distributions                 0.15.0
- - LowRankApprox                 0.1.1
- - RCall                         0.10.2
-Julia Version 0.6.2
-Commit d386e40c17 (2017-12-13 18:08 UTC)
+<pre><span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [31c24e10]</span><span class="ansi-white-fg"> Distributions v0.21.1</span>
+<span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [898213cb]</span><span class="ansi-white-fg"> LowRankApprox v0.2.3</span>
+<span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [6f49c342]</span><span class="ansi-white-fg"> RCall v0.13.3</span>
+Julia Version 1.1.1
+Commit 55e36cc (2019-05-16 04:10 UTC)
 Platform Info:
-  OS: macOS (x86_64-apple-darwin14.5.0)
+  OS: macOS (x86_64-apple-darwin15.6.0)
   CPU: Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz
   WORD_SIZE: 64
-  BLAS: libopenblas (USE64BITINT DYNAMIC_ARCH NO_AFFINITY Prescott)
-  LAPACK: libopenblas64_
   LIBM: libopenlibm
-  LLVM: libLLVM-3.9.1 (ORCJIT, broadwell)
+  LLVM: libLLVM-6.0.1 (ORCJIT, skylake)
 </pre>
 </div>
 </div>
