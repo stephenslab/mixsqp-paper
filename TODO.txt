@@ -1,8 +1,6 @@
 to do
 =====
 
-+ Figure out what to do with test_primaldual.jl.
-
 * Revise/update setup instructions in README.
 
 * Fill out "What's included" section of README.

@@ -1,3 +1,7 @@
+# Note that the code in this file was tested in Julia 0.6.2 and may
+# not work in later versions of Julia (particularly versions Julia 1.0
+# and later).
+
 # Compute maximum-likelihood estimates of the mixture weights by
 # solving the (primal) simplex-constrained optimization problem with
 # MOSEK.

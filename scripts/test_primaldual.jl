@@ -1,6 +1,9 @@
 # Short script to test that the 2 x 3 = 6 different solvers (compared
 # in Fig. 1 of the manuscript) work on a medium-size simulated data
 # set.
+#
+# Note that this code was tested in Julia 0.6.2 and may not work in
+# later versions of Julia (particularly versions Julia 1.0 and later).
 using Distributions
 using Mosek
 using JuMP
