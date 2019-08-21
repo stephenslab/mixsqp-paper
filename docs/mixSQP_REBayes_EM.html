@@ -186,7 +186,7 @@ body {
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Comparing-performance-and-accuracy-of-EM,-IP-and-mix-SQP-algorithms">Comparing performance and accuracy of EM, IP and mix-SQP algorithms<a class="anchor-link" href="#Comparing-performance-and-accuracy-of-EM,-IP-and-mix-SQP-algorithms">&#182;</a></h1><p>In this example, we compare the runtime and accuracy of the EM algorithm, the mix-SQP algorithm, and the interior-point method implemented by the MOSEK commercial solver (and called via the <code>KWDual</code> function in the R package <code>REBayes</code>).</p>
 <h2 id="Analysis-setup">Analysis setup<a class="anchor-link" href="#Analysis-setup">&#182;</a></h2><p><em>Before attempting to run this Julia code, make sure your computer is properly set up to run this code by following the setup instructions in the README of the <a href="https://github.com/stephenslab/mixsqp-paper">git repository</a>.</em></p>
-<p>We begin by loading the Distributions, LowRankApprox and RCall Julia packages, as well as some function definitions used in the code chunks below.</p>
+<p>We begin by loading the Distributions, LowRankApprox, RCall and other packages, as well as some function definitions used in the code chunks below.</p>
 
 </div>
 </div>
@@ -196,7 +196,12 @@ body {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Pkg</span>
+<span class="k">using</span> <span class="n">Printf</span>
+<span class="k">using</span> <span class="n">Random</span>
+<span class="k">using</span> <span class="n">Distributions</span>
+<span class="k">using</span> <span class="n">LinearAlgebra</span>
+<span class="k">using</span> <span class="n">SparseArrays</span>
 <span class="k">using</span> <span class="n">LowRankApprox</span>
 <span class="k">using</span> <span class="n">RCall</span>
 <span class="n">include</span><span class="p">(</span><span class="s">&quot;../code/datasim.jl&quot;</span><span class="p">);</span>
@@ -225,7 +230,7 @@ body {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">srand</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -310,15 +315,35 @@ body {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">outem</span>  <span class="o">=</span> <span class="n">mixEM</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">100</span><span class="p">);</span>
+<div class=" highlight hl-julia"><pre><span></span><span class="n">outem</span>  <span class="o">=</span> <span class="n">mixEM</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">10</span><span class="p">);</span>
+<span class="n">outsqp</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">maxiter</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
 <span class="n">outip</span>  <span class="o">=</span> <span class="n">REBayes</span><span class="p">(</span><span class="n">L</span><span class="p">);</span>
-<span class="n">outsqp</span> <span class="o">=</span> <span class="n">mixSQP</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>┌ Warning: RCall.jl: Warning: package ‘REBayes’ was built under R version 3.4.4
+│ Loading required package: Matrix
+└ @ RCall /Users/pcarbo/.julia/packages/RCall/iojZI/src/io.jl:113
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -356,9 +381,9 @@ body {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  3.479721 seconds (25.40 k allocations: 7.243 GiB, 21.60% gc time)
-  1.314076 seconds (579 allocations: 30.897 KiB)
-  0.276557 seconds (38.24 k allocations: 404.534 MiB, 15.43% gc time)
+<pre>  3.929660 seconds (26.65 k allocations: 7.131 GiB, 22.02% gc time)
+  1.286706 seconds (3.54 k allocations: 243.581 KiB)
+  0.271515 seconds (35.16 k allocations: 252.154 MiB, 12.41% gc time)
 </pre>
 </div>
 </div>
@@ -371,8 +396,8 @@ body {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The mix-SQP algorithm algorithm is much faster than the other two methods, with the EM being the slowest.</p>
-<p>Further, the quality of the IP and SQP solutions is very similar, whereas the EM solution is much worse:</p>
+<p>The mix-SQP algorithm algorithm is much faster than the other two methods, with EM being the slowest.</p>
+<p>The quality of the IP and SQP solutions is very similar, whereas the EM solution is much worse:</p>
 
 </div>
 </div>
@@ -386,9 +411,9 @@ body {
 <span class="n">fip</span>  <span class="o">=</span> <span class="n">mixobjective</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">xip</span><span class="p">);</span>
 <span class="n">fsqp</span> <span class="o">=</span> <span class="n">mixobjective</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">outsqp</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">]);</span>
 <span class="n">fbest</span> <span class="o">=</span> <span class="n">minimum</span><span class="p">([</span><span class="n">fem</span> <span class="n">fip</span> <span class="n">fsqp</span><span class="p">]);</span>
-<span class="nd">@printf</span> <span class="s">&quot;Difference between EM and best solutions:  </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fem</span> <span class="o">-</span> <span class="n">fbest</span>
-<span class="nd">@printf</span> <span class="s">&quot;Difference between IP and best solutions:  </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fip</span> <span class="o">-</span> <span class="n">fbest</span>
-<span class="nd">@printf</span> <span class="s">&quot;Difference between SQP and best solutions: </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fsqp</span> <span class="o">-</span> <span class="n">fbest</span>
+<span class="nd">@printf</span> <span class="s">&quot;Difference between EM solution and best solution:  </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fem</span> <span class="o">-</span> <span class="n">fbest</span>
+<span class="nd">@printf</span> <span class="s">&quot;Difference between IP solution and best solution:  </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fip</span> <span class="o">-</span> <span class="n">fbest</span>
+<span class="nd">@printf</span> <span class="s">&quot;Difference between SQP solution and best solution: </span><span class="si">%0.2e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="n">fsqp</span> <span class="o">-</span> <span class="n">fbest</span>
 </pre></div>
 
 </div>
@@ -405,9 +430,9 @@ body {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Difference between EM and best solutions:  7.97e+00
-Difference between IP and best solutions:  0.00e+00
-Difference between SQP and best solutions: 2.22e-06
+<pre>Difference between EM solution and best solution:  1.88e+01
+Difference between IP solution and best solution:  3.07e-09
+Difference between SQP solution and best solution: 0.00e+00
 </pre>
 </div>
 </div>
@@ -515,9 +540,9 @@ Difference between SQP and best solutions: 2.22e-06
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 17.030483 seconds (12.71 k allocations: 11.820 GiB, 53.78% gc time)
- 19.056084 seconds (315 allocations: 16.172 KiB)
-  1.019957 seconds (134.62 k allocations: 872.181 MiB, 12.84% gc time)
+<pre> 11.760771 seconds (1.58 k allocations: 11.780 GiB, 45.34% gc time)
+ 13.678142 seconds (258 allocations: 12.984 KiB)
+  0.733824 seconds (473.63 k allocations: 537.169 MiB, 22.60% gc time)
 </pre>
 </div>
 </div>
@@ -564,9 +589,9 @@ Difference between SQP and best solutions: 2.22e-06
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Difference between EM and best solutions:  1.23e+02
-Difference between IP and best solutions:  0.00e+00
-Difference between SQP and best solutions: 2.00e-02
+<pre>Difference between EM and best solutions:  1.42e+02
+Difference between IP and best solutions:  5.15e-06
+Difference between SQP and best solutions: 0.00e+00
 </pre>
 </div>
 </div>
@@ -610,19 +635,20 @@ notebook, including the version of Julia, R and the packages used.</p>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> - Distributions                 0.15.0
- - LowRankApprox                 0.1.1
- - RCall                         0.10.2
-Julia Version 0.6.2
-Commit d386e40c17 (2017-12-13 18:08 UTC)
+<pre><span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [31c24e10]</span><span class="ansi-white-fg"> Distributions v0.21.1</span>
+<span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [898213cb]</span><span class="ansi-white-fg"> LowRankApprox v0.2.3</span>
+<span class="ansi-green-intense-fg ansi-bold">    Status</span> `~/.julia/environments/v1.1/Project.toml`
+ <span class="ansi-black-intense-fg"> [6f49c342]</span><span class="ansi-white-fg"> RCall v0.13.3</span>
+Julia Version 1.1.1
+Commit 55e36cc (2019-05-16 04:10 UTC)
 Platform Info:
-  OS: macOS (x86_64-apple-darwin14.5.0)
+  OS: macOS (x86_64-apple-darwin15.6.0)
   CPU: Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz
   WORD_SIZE: 64
-  BLAS: libopenblas (USE64BITINT DYNAMIC_ARCH NO_AFFINITY Prescott)
-  LAPACK: libopenblas64_
   LIBM: libopenlibm
-  LLVM: libLLVM-3.9.1 (ORCJIT, broadwell)
+  LLVM: libLLVM-6.0.1 (ORCJIT, skylake)
 </pre>
 </div>
 </div>
@@ -635,7 +661,7 @@ Platform Info:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Since we called the <code>KWDual</code> function in R, it is also useful to record information about R.</p>
+<p>Since we called the <code>KWDual</code> function in R, it is also useful to record information about R, and the R packages used.</p>
 
 </div>
 </div>
@@ -664,10 +690,10 @@ Platform Info:
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>RCall.RObject{RCall.VecSxp}
+<pre>RObject{VecSxp}
 R version 3.4.3 (2017-11-30)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS High Sierra 10.13.4
+Running under: macOS High Sierra 10.13.6
 
 Matrix products: default
 BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
@@ -680,7 +706,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] REBayes_1.3   Matrix_1.2-12
+[1] REBayes_1.8   Matrix_1.2-12
 
 loaded via a namespace (and not attached):
 [1] compiler_3.4.3  Rmosek_8.0.69   grid_3.4.3      lattice_0.20-35
