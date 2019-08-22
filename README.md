@@ -38,33 +38,36 @@ work, please cite our paper. The full citation is given above.
 ## What's included
 
 ```
-├── analysis
-├── code
 ├── data
-├── docs
+├── analysis
+├── scripts
+├── code
 ├── output
-└── scripts
+└── docs
 ```
 
 + The `data` directory is where raw and simulated data are stored.
 
-+ The `analysis` directory contains Jupyter notebooks illustrating
-  the optimization methods on simulated data sets.
++ The `analysis` directory contains Jupyter notebooks illustrating the
+  optimization methods on simulated data sets. The Julia code in these
+  notebooks has been tested in Julia 1.1.1.
 
 + The `scripts` directory contains various Julia and MATLAB scripts
-  implementing some of the numerical experiments, including R scripts
-  to generate plots for the paper. The MATLAB scripts were run in
+  implementing some of the numerical experiments described in the
+  paper. It also includes the R scripts to generate plots for the
+  paper. The Julia and MATLAB scripts were tested in Julia 1.1.1 and
   MATLAB 9.5.0 (2018b).
 
 + The `code` directory contains Julia and MATLAB code implementing the
   optimization algorithms, as well as other code used in the numerical
   experiments.
 
-+ The `docs` directory contains webpages generated from the Jupyter
-  notebooks.
-
 + Results of the demos and numerical experiments are stored in the
   `output` directory.
+
++ The `docs` directory contains webpages generated from the Jupyter
+  notebooks using the [nbconvert][https://nbconvert.readthedocs.io]
+  program.
 
 ## Setup instructions
 
