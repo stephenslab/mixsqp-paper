@@ -71,19 +71,16 @@ work, please cite our paper. The full citation is given above.
 ## Setup instructions
 
 To run the first two Julia demos [here][github-site], follow these
-steps.
+steps.  *Note:* If you encounter a problem running the demos, or
+installing any of the programs, we have recorded information at the
+bottom of each Jupyter notebook [here][github-site] about the exact
+setup used to run the Julia code.
 
-**Note:** If you encounter a problem running the demos, or installing
-any of the programs, you want to try replicating our computing setup
-as closely as possible. At the bottom of each Jupyter notebook and
-webpage included [here][github-site], we have recorded information
-about the setup used to run the Julia code.
-
-1. Install [Julia](http://julialang.org). *Note that all the code has
-   been tested in Julia 1.1.1.*
+1. Install [Julia][julia]. *Note that all the code has been tested in
+   Julia 1.1.1.*
 
 2. Install the [Distributions][distributions-julia] and
-   [LowRankApprox][lowrankapprox-julia] Julia packages:
+   [LowRankApprox][lowrankapprox-julia] packages in Julia:
 
    ```julia
    Pkg.add("Distributions")
@@ -102,16 +99,17 @@ about the setup used to run the Julia code.
 5. Work through the first and second demos [here][github-site]. To do
    this, start up Julia, making sure that the working directory is set
    to the `analysis` directory inside the git repository. To verify,
-   run `pwd()` in Julia; it should return a directory with
-   `mixsqp-paper/analysis` at the end.
+   run `readdir()` in Julia; it should return a list of the Jupyter
+   notebooks such as `mixSQP_example.ipynb`. If it does not, then you
+   are in the wrong directory.
 
    Alternatively, you may open the
    [mixsqp_example notebook](analysis/mixSQP_example.ipynb) in
    [Jupyter][jupyter] (e.g., Jupyter notebook), and run the code
-   inside Jupyter. This requires that you have already installed the
-   [Jupyter kernel for Julia][ijulia].
+   inside Jupyter. This requires Jupyter and the
+   [Julia kernel for Jupyter][ijulia].
 
-## More (optional) setup instructions
+## More setup instructions
 
 The simple setup instructions above will allow you to run the first
 two examples. If you have successfully run the first two examples, and
@@ -120,35 +118,30 @@ instructions. These additional examples compare performance of
 different methods, and require additional programs and Julia packages
 to run.
 
-1. Install [R][R]. Note that version 3.4.0 or later is required.
+1. Install [R][R].
 
 2. Install [MOSEK][mosek].
 
-3. Install the [Rmosek][rmosek] package in R (see [here][mosek-docs] for
+3. Install the Rmosek package in R (see [here][mosek-docs] for
    installation instructions).
 
 4. Run [this example](scripts/test_rmosek.R) in R to verify that MOSEK
    and Rmosek are correctly installed.
    
-5. Install the R package [REBayes][rebayes] from CRAN:
+5. Install the [REBayes][rebayes] package in R:
 
    ```R
    install.packages("REBayes")
    ```
 
 2. Install the [Mosek][mosek-julia], [JuMP][jump-julia] and
-   [RCall][rcall-julia] Julia packages:
+   [RCall][rcall-julia] packages in Julia, and precopmile the packages
+   to make sure they work:
 
    ```julia
    Pkg.add("Mosek")
    Pkg.add("JuMP")
    Pkg.add("RCall")
-   ```
-
-3. Restart Julia, then precompile the packages and load them to make
-   sure that they work:
-
-   ```julia
    using Mosek
    using JuMP
    using RCall
@@ -189,7 +182,6 @@ This project was developed by [Youngseok Kim][youngseok],
 [jupyter]: http://jupyter.org
 [nbconvert]: https://nbconvert.readthedocs.io
 [ijulia]: https://github.com/JuliaLang/IJulia.jl
-[rmosek]: https://CRAN.R-project.org/package=Rmosek
 [rebayes]: https://cran.r-project.org/package=REBayes
 [distributions-julia]: https://github.com/JuliaStats/Distributions.jl
 [lowrankapprox-julia]: https://github.com/klho/LowRankApprox.jl
