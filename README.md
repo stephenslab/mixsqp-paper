@@ -135,7 +135,7 @@ to run.
    ```
 
 2. Install the [Mosek][mosek-julia], [JuMP][jump-julia] and
-   [RCall][rcall-julia] packages in Julia, and precopmile the packages
+   [RCall][rcall-julia] packages in Julia, and precompile the packages
    to make sure they work:
 
    ```julia
