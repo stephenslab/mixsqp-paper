@@ -66,8 +66,7 @@ work, please cite our paper. The full citation is given above.
   `output` directory.
 
 + The `docs` directory contains webpages generated from the Jupyter
-  notebooks using the [nbconvert][https://nbconvert.readthedocs.io]
-  program.
+  notebooks using the [nbconvert][nbconvert] program.
 
 ## Setup instructions
 
@@ -171,8 +170,7 @@ jupyter nbconvert --template=../docs/nbconvert.tpl index.ipynb \
 
 This project was developed by [Youngseok Kim][youngseok],
 [Peter Carbonetto][peter], [Matthew Stephens][matthew] and
-[Mihai Anitescu][mihai] at the
-[University of Chicago](https://www.uchicago.edu).
+[Mihai Anitescu][mihai] at the [University of Chicago][uchicago].
 
 [github-site]: https://stephenslab.github.io/mixsqp-paper
 [mixsqp]: https://github.com/stephenslab/mixsqp
@@ -183,11 +181,13 @@ This project was developed by [Youngseok Kim][youngseok],
 [peter]: https://pcarbo.github.io
 [matthew]: http://stephenslab.uchicago.edu
 [mihai]: http://www.mcs.anl.gov/~anitescu
+[uchicago]: https://www.uchicago.edu
 [R]: https://www.r-project.org
 [julia]: http://julialang.org
 [mosek]: http://mosek.com
 [mosek-docs]: https://www.mosek.com/documentation
 [jupyter]: http://jupyter.org
+[nbconvert]: https://nbconvert.readthedocs.io
 [ijulia]: https://github.com/JuliaLang/IJulia.jl
 [rmosek]: https://CRAN.R-project.org/package=Rmosek
 [rebayes]: https://cran.r-project.org/package=REBayes
