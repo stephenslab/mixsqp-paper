@@ -16,7 +16,7 @@ demonstrations of the mix-SQP algorithm and comparisons with other
 optimization approaches, see [here][github-site].
 
 For an R implementation of the mix-SQP algorithm, see the
-[mixsqp][mixsqp] R package.
+[mixsqp R package][mixsqp].
 
 If you find a bug, or you have a question or feedback on our work,
 please post an [issue][issues].
@@ -79,8 +79,7 @@ setup used to run the Julia code.
 1. Install [Julia][julia]. *Note that all the code has been tested in
    Julia 1.1.1.*
 
-2. Install the [Distributions][distributions-julia] and
-   [LowRankApprox][lowrankapprox-julia] packages in Julia:
+2. Install the Distributions, LowRankApprox packages in Julia:
 
    ```julia
    Pkg.add("Distributions")
@@ -128,15 +127,14 @@ to run.
 4. Run [this example](scripts/test_rmosek.R) in R to verify that MOSEK
    and Rmosek are correctly installed.
    
-5. Install the [REBayes][rebayes] package in R:
+5. Install the REBayes package in R:
 
    ```R
    install.packages("REBayes")
    ```
 
-2. Install the [Mosek][mosek-julia], [JuMP][jump-julia] and
-   [RCall][rcall-julia] packages in Julia, and precompile the packages
-   to make sure they work:
+2. Install the Mosek, JuMP and RCall packages in Julia, and precompile
+   the packages to make sure they work:
 
    ```julia
    Pkg.add("Mosek")
@@ -146,6 +144,8 @@ to run.
    using JuMP
    using RCall
    ```
+
+Now try running the other demos listed [here][github-site].
 
 ## Developer notes
 
@@ -182,9 +182,4 @@ This project was developed by [Youngseok Kim][youngseok],
 [jupyter]: http://jupyter.org
 [nbconvert]: https://nbconvert.readthedocs.io
 [ijulia]: https://github.com/JuliaLang/IJulia.jl
-[rebayes]: https://cran.r-project.org/package=REBayes
-[distributions-julia]: https://github.com/JuliaStats/Distributions.jl
-[lowrankapprox-julia]: https://github.com/klho/LowRankApprox.jl
-[jump-julia]: https://github.com/JuliaOpt/JuMP.jl
-[mosek-julia]: https://github.com/JuliaOpt/Mosek.jl
-[rcall-julia]: https://github.com/JuliaInterop/RCall.jl
+
