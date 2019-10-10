@@ -1,7 +1,7 @@
 # This is the script used to generate the results comparing mix-SQP
 # vs. the EM algorithm. The results for the projected gradient method
 # are generated separately with run_pg.m.
-matfile         = "simdata-n=20000-m=20.csv"
+csvfile         = "simdata-n=20000-m=20.csv"
 outfile_em      = "em-n=20000-m=20.csv";
 outfile_mixsqp1 = "mixsqp-exact-n=20000-m=20.csv";
 outfile_mixsqp2 = "mixsqp-approx-n=20000-m=20.csv";
@@ -17,7 +17,7 @@ include("../code/mixSQP.jl");
 
 # Load data..
 @printf("Loading data.\n")
-L = readdlm(matfile,',');
+L = readdlm(csvfile,',');
 n = size(L,1);
 m = size(L,2);
 @printf "Loaded %d x %d matrix.\n" n m

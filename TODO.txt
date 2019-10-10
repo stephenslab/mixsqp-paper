@@ -1,7 +1,0 @@
-to do
-=====
-
-* Clean up and update Julia code.
-
-* Revise all Jupyter notebooks and webpages.
-

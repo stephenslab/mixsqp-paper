@@ -7,10 +7,10 @@
 using Distributions
 using Mosek
 using JuMP
-include("datasim.jl");
-include("likelihood.jl");
-include("primaldual.jl");
-include("mixSQP.jl");
+include("../code/datasim.jl");
+include("../code/likelihood.jl");
+include("../code/primaldual.jl");
+include("../code/mixSQP.jl");
 
 # Initialize the pseudorandom number generator.
 srand(1);
